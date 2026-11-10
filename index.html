@@ -1,0 +1,713 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#12161c">
+<title>Reuben Bangerter</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Reuben Bangerter — Business Analytics & IT and Supply Chain Management at Rutgers. Tracking where things go, and why.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&display=swap">
+<style>
+/* Layout: a loading dock at night. Dark floor, kraft-paper stamps on conveyor rails at both edges,
+   every experience shown as the paperwork it would ship with (label, work order, ID, manifest). */
+:root {
+  --night: #12161c;      /* warehouse floor */
+  --night-2: #1a1f27;    /* raised surface */
+  --fg: #e8e2d6;         /* chalk text */
+  --muted: #8d95a1;      /* faded stencil */
+  --kraft: #c9a671;      /* cardboard */
+  --label: #f2eee6;      /* label stock */
+  --ink: #1a1d22;        /* printer ink */
+  --hivis: #f0a03a;      /* safety amber */
+  --rule: rgba(232, 226, 214, 0.12);
+  --f-stencil: "Saira Stencil One", "Impact", sans-serif;
+  --f-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand: "Caveat", "Comic Sans MS", cursive;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--night);
+  color: var(--fg);
+  font-family: var(--f-mono);
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0;
+}
+body::after { /* film grain */
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+a { color: inherit; }
+:focus-visible { outline: 2px dashed var(--hivis); outline-offset: 3px; }
+.skip { position: absolute; left: -999px; }
+.skip:focus { left: 16px; top: 16px; background: var(--hivis); color: var(--ink); padding: 6px 10px; z-index: 60; }
+
+/* ---------- side conveyor rails ---------- */
+.rail { position: fixed; top: 0; bottom: 0; width: 84px; overflow: hidden; z-index: 5; display: none; pointer-events: none; }
+.rail.l { left: 0; } .rail.r { right: 0; }
+.rail::before { content: ""; position: absolute; top: 0; bottom: 0; left: 50%; width: 2px; transform: translateX(-50%);
+  background: repeating-linear-gradient(to bottom, var(--rule) 0 10px, transparent 10px 20px); }
+.track { display: flex; flex-direction: column; align-items: center; gap: 30px; padding: 20px 0; animation: belt 60s linear infinite; }
+.rail.r .track { animation-direction: reverse; }
+.track .stamp { width: 52px; position: relative; }
+@keyframes belt { from { transform: translateY(0); } to { transform: translateY(-50%); } }
+@media (min-width: 1100px) { .rail { display: block; } }
+
+/* ---------- nav ---------- */
+header.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--night) 88%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); }
+.nav-in { max-width: 820px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  padding-block: 12px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.brand { font-family: var(--f-stencil); font-size: 20px; letter-spacing: .04em; text-decoration: none; color: var(--kraft); }
+.nav ul { list-style: none; display: flex; gap: 20px; margin: 0; padding: 0; font-family: var(--f-hand); font-size: 20px; }
+.nav ul a { text-decoration: none; color: var(--muted); padding-bottom: 2px; }
+.nav ul a:hover { color: var(--fg); }
+.nav ul a[aria-current="page"] { color: var(--fg); background: linear-gradient(var(--hivis), var(--hivis)) left bottom / 100% 2px no-repeat; }
+
+/* ---------- page shell ---------- */
+main { max-width: 820px; margin: 0 auto; padding-block: 48px 24px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.view { animation: unload .5s ease-out both; }
+@keyframes unload { from { transform: translateY(10px); } to { transform: none; } }
+section { padding-block: 56px; }
+.eyebrow { font-family: var(--f-hand); font-size: 22px; color: var(--hivis); margin: 0; text-align: center; }
+h2 { font-family: var(--f-display); font-weight: 800; font-size: clamp(36px, 7vw, 56px); line-height: 1; letter-spacing: .01em; text-transform: uppercase;
+  text-align: center; margin: 4px 0 40px; text-wrap: balance; }
+h3 { font-family: var(--f-display); font-weight: 800; font-size: 34px; line-height: 1; margin: 0; letter-spacing: .01em; }
+.role { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin: 6px 0 14px; }
+.meta { font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+p { margin: 0; }
+.lede { max-width: 62ch; }
+.notable { font-family: var(--f-hand); font-size: 19px; color: var(--kraft); margin: 18px 0 4px; }
+.ticks { list-style: none; margin: 0; padding: 0; display: grid; gap: 4px; font-size: 13px; }
+.ticks li::before { content: "▸ "; color: var(--hivis); }
+
+/* ---------- stamps ---------- */
+.stamp { display: block; filter: url(#rough); }
+.stamp .fill { fill: var(--kraft); }
+.stamp .ink { fill: none; stroke: var(--ink); stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+
+/* ---------- hero ---------- */
+.hero { text-align: center; padding-block: 24px 40px; display: grid; justify-items: center; gap: 14px; }
+.hero .stamp { width: 96px; }
+.hero h1 { font-family: var(--f-stencil); font-weight: 400; font-size: clamp(44px, 10vw, 84px); line-height: .95; margin: 8px 0 0; letter-spacing: .02em; text-wrap: balance; }
+.hero .sub { color: var(--muted); max-width: 46ch; }
+.polaroid { background: var(--label); padding: 10px 10px 34px; width: 210px; max-width: 100%; transform: rotate(-2.5deg); box-shadow: 0 14px 30px rgba(0,0,0,.45); margin-top: 18px; position: relative; transition: transform .3s; }
+.polaroid:hover { transform: rotate(0deg); }
+.polaroid .ph { aspect-ratio: 4/5; max-width: 100%; background: repeating-linear-gradient(135deg, #d9d2c3 0 8px, #e4ddcf 8px 16px); display: grid; place-items: center; color: #8a826f; font-family: var(--f-mono); font-size: 11px; text-transform: uppercase; letter-spacing: .14em; overflow: hidden; }
+.polaroid .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
+.polaroid figcaption { position: absolute; left: 0; right: 0; bottom: 6px; font-family: var(--f-hand); color: var(--ink); font-size: 19px; }
+.tape { position: absolute; top: -12px; left: 50%; width: 92px; height: 24px; transform: translateX(-50%) rotate(3deg); background: rgba(201, 166, 113, .8); }
+.down { font-family: var(--f-hand); font-size: 22px; color: var(--kraft); text-decoration: none; margin-top: 14px; }
+
+/* ---------- work rows ---------- */
+.rows { display: grid; gap: 72px; }
+.row { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; }
+.row > * { min-width: 0; }
+.obj { display: grid; place-items: center; }
+@media (min-width: 720px) {
+  .row { grid-template-columns: 300px 1fr; gap: 44px; }
+  .row.flip { grid-template-columns: 1fr 300px; }
+  .row.flip .obj { order: 2; }
+}
+
+/* object: wine label */
+.wine { width: 230px; max-width: 100%; background: var(--label); color: var(--ink); padding: 10px; transform: rotate(-2deg); box-shadow: 0 14px 30px rgba(0,0,0,.45); transition: transform .3s; }
+.wine:hover, .order:hover, .idcard:hover { transform: rotate(0deg) translateY(-3px); }
+.wine-in { border: 1.5px solid var(--ink); outline: 1px solid var(--ink); outline-offset: -6px; padding: 22px 14px; text-align: center; display: grid; gap: 6px; }
+.wine .house { font-family: var(--f-display); font-weight: 800; font-size: 26px; line-height: .95; letter-spacing: .04em; }
+.wine .est { font-family: var(--f-hand); font-size: 20px; }
+.wine .vint { font-family: var(--f-display); font-weight: 600; letter-spacing: .3em; font-size: 15px; border-block: 1px solid var(--ink); padding-block: 4px; margin-top: 4px; }
+.wine .small { font-size: 9.5px; letter-spacing: .14em; text-transform: uppercase; }
+.wine .foot { display: flex; justify-content: space-between; font-size: 9.5px; letter-spacing: .1em; margin-top: 8px; }
+
+/* object: maintenance work order tag */
+.order { width: 230px; max-width: 100%; background: #e7c98a; color: var(--ink); padding: 34px 16px 46px; transform: rotate(2deg); box-shadow: 0 14px 30px rgba(0,0,0,.45); position: relative;
+  clip-path: polygon(14% 0, 86% 0, 100% 9%, 100% 100%, 0 100%, 0 9%); transition: transform .3s; font-size: 11px; }
+.order::before { content: ""; position: absolute; top: 10px; left: 50%; width: 14px; height: 14px; margin-left: -7px; border-radius: 50%; background: var(--night); box-shadow: 0 0 0 3px #b8984f; }
+.order .t { font-family: var(--f-display); font-weight: 800; font-size: 22px; letter-spacing: .06em; text-align: center; border-bottom: 2px solid var(--ink); padding-bottom: 4px; }
+.order dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 8px; margin: 10px 0; letter-spacing: .06em; text-transform: uppercase; }
+.order dt { opacity: .7; } .order dd { margin: 0; border-bottom: 1px dotted var(--ink); }
+.order ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 2px; }
+.order li::before { content: "☑ "; }
+.closed { position: absolute; right: 12px; bottom: 10px; transform: rotate(-14deg); border: 2.5px solid #b5401f; color: #b5401f; font-family: var(--f-stencil); font-size: 18px; padding: 0 6px; letter-spacing: .06em; opacity: .9; }
+
+/* object: student ID */
+.idcard { width: 270px; max-width: 100%; aspect-ratio: 1.586; background: var(--label); color: var(--ink); border-radius: 12px; overflow: hidden; transform: rotate(-1.5deg); box-shadow: 0 14px 30px rgba(0,0,0,.45); transition: transform .3s; display: grid; grid-template-rows: auto 1fr auto; font-size: 9.5px; letter-spacing: .08em; text-transform: uppercase; }
+.idcard .band { background: var(--ink); color: var(--label); padding: 6px 12px; display: flex; justify-content: space-between; font-weight: 600; }
+.idcard .band span:last-child { color: var(--hivis); }
+.idcard .body { display: grid; grid-template-columns: 62px 1fr; gap: 12px; padding: 10px 12px; align-items: center; }
+.idcard .pic { aspect-ratio: 3/4; background: #d9d2c3; display: grid; place-items: center; font-family: var(--f-stencil); font-size: 22px; color: #8a826f; border-radius: 3px; overflow: hidden; }
+.idcard .pic img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 15%; }
+.idcard .nm { font-family: var(--f-display); font-weight: 800; font-size: 17px; letter-spacing: .04em; line-height: 1; margin-bottom: 4px; }
+.idcard .bar { height: 26px; margin: 0 12px 10px; }
+
+/* ---------- campus line items (manifest) ---------- */
+.manifest { border: 1px solid var(--rule); border-radius: 4px; }
+.manifest-head { display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; padding: 10px 16px; border-bottom: 1px solid var(--rule); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.line { display: grid; grid-template-columns: 70px 1fr; gap: 16px; padding: 22px 16px; border-bottom: 1px dashed var(--rule); }
+.line:last-child { border-bottom: 0; }
+.line > div { min-width: 0; }
+.line .no { font-size: 11px; letter-spacing: .14em; color: var(--muted); padding-top: 6px; }
+.line h3 { font-size: 26px; display: inline; }
+.line .r { font-family: var(--f-hand); color: var(--kraft); font-size: 19px; margin-left: 8px; }
+.line p { margin-top: 6px; max-width: 60ch; }
+.sku { display: inline-block; margin-top: 10px; font-size: 10.5px; letter-spacing: .16em; color: var(--hivis); }
+
+/* ---------- off the clock ---------- */
+.hobbies { display: flex; flex-wrap: wrap; justify-content: center; gap: 22px; }
+.hobby { display: grid; justify-items: center; gap: 6px; width: 88px; text-align: center; background: none; border: 0; padding: 6px 2px; color: inherit; cursor: pointer; border-radius: 6px; }
+.hobby .stamp { width: 68px; transition: transform .25s; }
+.hobby:hover .stamp, .hobby[aria-expanded="true"] .stamp { transform: rotate(-8deg) scale(1.08); }
+.hobby span { font-family: var(--f-hand); font-size: 17px; color: var(--muted); line-height: 1.1; }
+.hobby[aria-expanded="true"] span { color: var(--hivis); }
+.hobby .count { font-family: var(--f-mono); font-size: 10px; letter-spacing: .12em; color: var(--muted); }
+.hint { text-align: center; font-family: var(--f-hand); font-size: 18px; color: var(--muted); margin-top: 18px; }
+
+/* photo drawer: an opened box */
+.drawer { margin-top: 28px; background: var(--night-2); border: 1px solid var(--rule); border-top: 3px solid var(--kraft); padding: 22px 18px 26px; position: relative; animation: open .35s ease-out; }
+@keyframes open { from { transform: translateY(-8px); } to { transform: none; } }
+.drawer-hd { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 18px; }
+.drawer-hd h3 { font-size: 30px; }
+.drawer-hd p { color: var(--muted); max-width: 52ch; margin-top: 4px; }
+.drawer .x { background: none; border: 1px solid var(--rule); color: var(--fg); font-family: var(--f-mono); font-size: 12px; padding: 4px 10px; cursor: pointer; border-radius: 3px; }
+.drawer .x:hover { border-color: var(--kraft); }
+.pics { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 22px; }
+.pic { background: var(--label); padding: 8px 8px 30px; margin: 0; position: relative; box-shadow: 0 10px 22px rgba(0,0,0,.45); border: 0; cursor: zoom-in; transition: transform .25s; text-align: center; color: var(--ink); }
+.pic:nth-child(3n+1) { transform: rotate(-2deg); } .pic:nth-child(3n+2) { transform: rotate(1.5deg); } .pic:nth-child(3n) { transform: rotate(-.5deg); }
+.pic:hover { transform: rotate(0) translateY(-4px); }
+.pic img, .pic .empty { display: block; width: 100%; aspect-ratio: 1; max-width: 100%; object-fit: cover; }
+.pic .empty { background: repeating-linear-gradient(135deg, #d9d2c3 0 8px, #e4ddcf 8px 16px); display: grid; place-items: center; font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #8a826f; padding: 8px; }
+.pic span { position: absolute; left: 4px; right: 4px; bottom: 5px; font-family: var(--f-hand); font-size: 17px; line-height: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.pic.placeholder { cursor: default; }
+
+/* lightbox */
+.lightbox { position: fixed; inset: 0; z-index: 70; background: rgba(8, 10, 13, .9); display: grid; place-items: center; padding: max(16px, env(safe-area-inset-top, 0px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px)); }
+.lightbox figure { margin: 0; background: var(--label); padding: 12px 12px 44px; position: relative; max-width: min(900px, 100%); box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+.lightbox img { display: block; max-width: 100%; max-height: 72vh; object-fit: contain; margin: 0 auto; }
+.lightbox figcaption { position: absolute; left: 0; right: 0; bottom: 10px; text-align: center; font-family: var(--f-hand); font-size: 22px; color: var(--ink); }
+.lb-btn { position: absolute; background: var(--night-2); color: var(--fg); border: 1px solid var(--rule); font-family: var(--f-mono); font-size: 13px; padding: 8px 12px; cursor: pointer; border-radius: 3px; }
+.lb-btn:hover { border-color: var(--kraft); }
+.lb-close { top: max(16px, env(safe-area-inset-top, 0px)); right: max(16px, env(safe-area-inset-right, 0px)); }
+.lb-prev { left: max(16px, env(safe-area-inset-left, 0px)); top: 50%; }
+.lb-next { right: max(16px, env(safe-area-inset-right, 0px)); top: 50%; }
+.lb-count { position: absolute; bottom: max(16px, env(safe-area-inset-bottom, 0px)); left: 0; right: 0; text-align: center; font-size: 11px; letter-spacing: .14em; color: var(--muted); }
+
+/* ---------- projects ---------- */
+.projects { display: grid; gap: 64px; }
+.proj { display: grid; grid-template-columns: 1fr; gap: 24px; align-items: center; }
+.proj > * { min-width: 0; }
+@media (min-width: 720px) { .proj { grid-template-columns: 320px 1fr; gap: 40px; } }
+.ship { background: #fff; color: var(--ink); width: 300px; max-width: 100%; border: 2px solid var(--ink); font-size: 10px; letter-spacing: .06em; text-transform: uppercase; transform: rotate(-1.5deg); box-shadow: 0 14px 30px rgba(0,0,0,.45); justify-self: center; }
+.ship > div { border-bottom: 2px solid var(--ink); padding: 8px 10px; }
+.ship > div:last-child { border-bottom: 0; }
+.ship .top { display: flex; justify-content: space-between; align-items: center; }
+.ship .big { font-family: var(--f-display); font-weight: 800; font-size: 30px; line-height: 1; letter-spacing: .02em; }
+.ship .pri { background: var(--ink); color: #fff; font-family: var(--f-display); font-weight: 800; font-size: 26px; padding: 2px 10px; }
+.ship .ft { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.ship .ft b { display: block; font-size: 12px; font-family: var(--f-mono); }
+.ship .bar { height: 46px; }
+.ship .trk { text-align: center; font-size: 10px; letter-spacing: .3em; margin-top: 4px; }
+.customs { background: #e9e3d4; color: var(--ink); width: 300px; max-width: 100%; padding: 12px; font-size: 10px; letter-spacing: .08em; text-transform: uppercase; transform: rotate(1.5deg); box-shadow: 0 14px 30px rgba(0,0,0,.45); justify-self: center; }
+.customs .hd { display: flex; justify-content: space-between; border-bottom: 2px solid var(--ink); padding-bottom: 4px; font-weight: 600; }
+.customs .ttl { font-family: var(--f-display); font-weight: 800; font-size: 24px; letter-spacing: .03em; margin: 8px 0 2px; }
+.customs svg { display: block; width: 100%; height: auto; margin: 4px 0; }
+.customs .note { font-family: var(--f-hand); text-transform: none; letter-spacing: 0; font-size: 16px; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tag { border: 1px solid var(--rule); border-radius: 3px; padding: 2px 8px; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-top: 18px; }
+.stats div { border-top: 2px solid var(--hivis); padding-top: 6px; }
+.stats b { display: block; font-family: var(--f-display); font-weight: 800; font-size: 28px; line-height: 1; font-variant-numeric: tabular-nums; }
+.stats span { font-size: 11px; color: var(--muted); }
+.status { display: inline-block; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--ink); background: var(--hivis); padding: 1px 8px; border-radius: 2px; margin-left: 8px; vertical-align: middle; }
+.status.done { background: var(--kraft); }
+.golink { display: inline-block; margin-top: 16px; font-family: var(--f-hand); font-size: 20px; color: var(--kraft); }
+.golink.todo { color: var(--muted); text-decoration: none; }
+
+/* ---------- inventory (misc) ---------- */
+.shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; }
+.bin { background: var(--kraft); color: var(--ink); padding: 14px 12px 12px; position: relative; box-shadow: inset 0 -6px 0 rgba(0,0,0,.12); transition: transform .25s; }
+.bin:nth-child(odd) { transform: rotate(-1deg); } .bin:nth-child(even) { transform: rotate(1deg); }
+.bin:hover { transform: translateY(-4px); }
+.bin::before { content: ""; position: absolute; top: 0; left: 50%; width: 40px; height: 100%; margin-left: -20px; background: rgba(255,255,255,.12); } /* packing tape */
+.bin .skuno { font-size: 9.5px; letter-spacing: .16em; position: relative; }
+.bin .nm { font-family: var(--f-display); font-weight: 800; font-size: 24px; line-height: 1.05; margin: 6px 0 4px; position: relative; }
+.bin .use { font-size: 11px; position: relative; }
+.bin .bar { height: 18px; margin-top: 10px; position: relative; }
+.certs { display: grid; gap: 18px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.cert { border: 2px solid var(--fg); padding: 16px; position: relative; border-radius: 2px; }
+.cert .pass { position: absolute; right: 12px; top: 12px; transform: rotate(8deg); border: 2px solid var(--hivis); color: var(--hivis); font-family: var(--f-stencil); font-size: 15px; padding: 0 6px; }
+.cert h3 { font-size: 24px; padding-right: 76px; }
+.course { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+
+/* ---------- footer ---------- */
+footer { border-top: 1px solid var(--rule); text-align: center; padding-block: 40px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 14px; justify-items: center; }
+footer .eyebrow { margin: 0; }
+.contact { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; }
+.contact a, .contact button { font-family: var(--f-mono); font-size: 13px; color: var(--fg); background: var(--night-2); border: 1px solid var(--rule); border-radius: 3px; padding: 8px 12px; text-decoration: none; cursor: pointer; }
+.contact a:hover, .contact button:hover { border-color: var(--kraft); }
+.copy { font-size: 11px; color: var(--muted); letter-spacing: .1em; }
+
+@media (max-width: 520px) {
+  .nav ul { gap: 14px; font-size: 18px; }
+  .brand { font-size: 17px; }
+  .line { grid-template-columns: 1fr; gap: 4px; }
+  .stats b { font-size: 22px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .track, .view { animation: none; }
+  html { scroll-behavior: auto; }
+}
+</style>
+
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <filter id="rough" x="-10%" y="-10%" width="120%" height="120%">
+    <feTurbulence type="fractalNoise" baseFrequency="0.05" numOctaves="3" result="n"/>
+    <feDisplacementMap in="SourceGraphic" in2="n" scale="2.6"/>
+  </filter>
+</svg>
+
+<a class="skip" href="#main">Skip to content</a>
+<div class="rail l" aria-hidden="true"><div class="track" id="railL"></div></div>
+<div class="rail r" aria-hidden="true"><div class="track" id="railR"></div></div>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="#home" aria-label="Reuben Bangerter, home">R·B</a>
+    <nav aria-label="Main"><ul>
+      <li><a href="#home" data-v="home">About</a></li>
+      <li><a href="#projects" data-v="projects">Projects</a></li>
+      <li><a href="#inventory" data-v="inventory">Inventory</a></li>
+      <li><a href="#contact" data-v="contact">Contact</a></li>
+    </ul></nav>
+  </div>
+</header>
+
+<main id="main"></main>
+
+<footer id="contact">
+  <p class="eyebrow">send a shipment my way</p>
+  <div class="contact" id="contactLinks"></div>
+  <p class="copy" id="copyline"></p>
+</footer>
+
+<script>
+/* =============================================================
+   YOUR CONTENT — edit everything in this block.
+   ============================================================= */
+const SITE = {
+  name: "Reuben Bangerter",
+  initials: "RB",
+  subtitle: "Business Analytics & Information Technology + Supply Chain Management at Rutgers",
+  tagline: "follow the shipment ↓",
+  photo: "photos/me.jpg",
+  photoCaption: "New Brunswick, NJ",
+  email: "rlewisbangerter@gmail.com",
+  linkedin: "https://linkedin.com/in/reuben-bangerter",
+
+  work: [
+    {
+      object: "wine",
+      company: "Hopewell Valley Vineyards",
+      role: "Bartender & Busser · Pennington, NJ · June 2025 – present",
+      summary: "I run bar restocking, glassware inventory and supply logistics for private events of 150+ guests, and keep service timing in sync with the kitchen.",
+      notable: ["Par-level tracking + end-of-shift stock counts", "20% fewer drink-prep delays", "Stock-outs caught before service"]
+    },
+    {
+      object: "order",
+      company: "Rambling Pines Day Camp",
+      role: "Maintenance · Hopewell, NJ · Summer 2025",
+      summary: "I handled site prep, waste management and equipment staging that kept daily camp operations moving, then matched supply orders to what we actually used.",
+      notable: ["25% faster morning setup", "10% lower supply purchases", "Usage tracked across every facility"]
+    },
+    {
+      object: "id",
+      company: "Rutgers University",
+      role: "B.S. BAIT + Supply Chain Management · Class of 2029",
+      summary: "Studying how data and systems move goods: information systems, business programming, operations analytics, statistics and supply chain.",
+      notable: ["GPA 3.55 / 4.0", "2× Dean's List", "Beta Alpha Psi honors society"]
+    }
+  ],
+
+  campus: [
+    { name: "RUSCA", r: "Operations & Mentorship Committee", text: "I match 15+ mentor–mentee pairs on career track and academic background, which lifted mentor satisfaction 20%. I also built the Excel attendance and points system that tracks standing for 150+ members.", sku: "EXCEL · MATCHING · 150+ MEMBERS" },
+    { name: "Beta Alpha Psi", r: "Member", text: "International honor society for accounting, finance and information systems students.", sku: "HONORS SOCIETY" },
+    { name: "BITS", r: "Member", text: "Business Information Technology Society at Rutgers.", sku: "IT · NETWORKING" }
+  ],
+
+  /* Off the clock — click a stamp to open its photos.
+     To add a photo: put the file in the "photos" folder next to index.html,
+     then add { src: "photos/your-file.jpg", caption: "short caption" } to that hobby's list. */
+  hobbies: [
+    { icon: "snowboard", label: "Snowboarding", blurb: "On a board since I was a kid. Powder days are the best days.", photos: [
+      { src: "photos/snow-angels.jpg", caption: "powder day" },
+      { src: "photos/snow-powder.jpg", caption: "deep in the trees" },
+      { src: "photos/snow-first-board.jpg", caption: "where it started" } ] },
+    { icon: "soccer", label: "Soccer", blurb: "Following England through the 2026 World Cup, one stadium at a time.", photos: [
+      { src: "photos/soccer-atlanta.jpg", caption: "World Cup 2026, Atlanta" },
+      { src: "photos/soccer-stands.jpg", caption: "England vs Croatia" },
+      { src: "photos/soccer-boston.jpg", caption: "Boston fan fest" } ] },
+    { icon: "pan", label: "Cooking", blurb: "Dinners for friends and family, from braises to rice bowls.", photos: [
+      { src: "photos/cook-short-rib.jpg", caption: "braised short rib" },
+      { src: "photos/cook-steak.jpg", caption: "steak + mash" },
+      { src: "photos/cook-rice-bowl.jpg", caption: "pork rice bowl" } ] },
+    { icon: "whisk", label: "Baking", blurb: "Cookies and cakes, mostly for other people.", photos: [
+      { src: "photos/cook-kitchen.jpg", caption: "baking prep" },
+      { src: "photos/bake-cookie.jpg", caption: "chocolate chip" },
+      { src: "photos/bake-cake.jpg", caption: "layer cake" } ] },
+    { icon: "plane", label: "Traveling", blurb: "Places I've been so far.", photos: [
+      { src: "photos/travel-harbor.jpg", caption: "Greek harbor at sunset" },
+      { src: "photos/travel-night.jpg", caption: "nights abroad" },
+      { src: "photos/travel-madrid.jpg", caption: "Madrid at dusk" } ] },
+    { icon: "camera", label: "Photography", blurb: "Shots I'm proud of.", photos: [
+      { src: "photos/photo-chapel.jpg", caption: "chapel at sundown" },
+      { src: "photos/photo-bougainvillea.jpg", caption: "bougainvillea" },
+      { src: "photos/photo-wisteria.jpg", caption: "wisteria season" } ] }
+  ],
+
+  projects: [
+    {
+      kind: "ship",
+      title: "Last-Mile Route Optimization",
+      status: "In transit", done: false,
+      dates: "Oct 2026 – present",
+      text: "Last-mile delivery eats about 53% of total shipping cost. I used generative AI to work through UPS and Amazon industry reports, built an Excel route-cost model comparing manual and optimized routing, and put the cost drivers in a Power BI dashboard.",
+      stats: [["~10%", "lower cost per package"], ["~$650K", "saved per year"], ["50", "route fleet modeled"]],
+      tags: ["Excel", "Power BI", "Generative AI"],
+      link: ""             // add a link to the dashboard or write-up
+    },
+    {
+      kind: "customs",
+      title: "The Invisible Chain",
+      status: "Delivered", done: true,
+      dates: "Apr – May 2026",
+      text: "A multimodal research website on how global supply chains undervalue physical labor. It uses the Smile Curve to show profit pooling in upstream R&D and downstream branding while midstream manufacturing gets squeezed.",
+      stats: [],
+      tags: ["Research", "Web", "Smile Curve"],
+      link: "https://sites.google.com/view/the-invisible-chain/home"
+    }
+  ],
+
+  skills: [
+    ["Excel", "models, trackers, adv. formulas"], ["Power BI", "dashboards"], ["SQL", "queries"],
+    ["Python", "analysis, scripting"], ["Java", "programming"], ["Claude + Gemini", "research, analysis"]
+  ],
+  certs: [
+    { name: "AI Fluency: Framework & Foundations", by: "Anthropic · Claude Academy", date: "Nov 2026", url: "https://academy.claude.com/verify/bcef8b40ca8ee895c799c03122451a82" },
+    { name: "Power BI Essential Training", by: "LinkedIn Learning", date: "Oct 2026", url: "https://www.linkedin.com/learning/certificates/daf9a644b69a2ab4d328c993f0fe14814709729e6f4e1f0bd658ef4eed7192f1/" },
+    { name: "Excel: Advanced Formulas & Functions", by: "LinkedIn Learning", date: "Oct 2026", url: "https://www.linkedin.com/learning/certificates/987f54d395f270799279097cc7e4bccf7f2249069ad5e7fb8d239b6290234e61/" },
+    { name: "Google AI Professional Certificate", by: "Google", date: "", url: "" }
+  ],
+  coursework: ["Management Information Systems", "Business Programming", "Business Operations Analytics", "Financial Accounting", "Statistical Methods in Business", "Intro to Supply Chain"]
+};
+
+/* =============================================================
+   Stamp drawings (64×64 line art on a kraft shape)
+   ============================================================= */
+const ICONS = {
+  box: '<path d="M18 26 L32 19 L46 26 L46 42 L32 49 L18 42 Z"/><path d="M18 26 L32 33 L46 26 M32 33 V49"/><path d="M25 22.5 L39 29.5"/>',
+  truck: '<path d="M14 24 h22 v16 h-22 z"/><path d="M36 29 h8 l5 6 v5 h-13"/><circle cx="22" cy="42" r="3.5"/><circle cx="42" cy="42" r="3.5"/>',
+  snowboard: '<path d="M20 44 C16 40 40 16 44 20 C48 24 24 48 20 44 Z"/><path d="M27 33 l4 4 M33 27 l4 4"/>',
+  soccer: '<circle cx="32" cy="32" r="14"/><path d="M32 25 l6 4 -2 7 h-8 l-2 -7 z"/><path d="M32 25 V18 M38 29 l6 -2 M36 36 l4 6 M28 36 l-4 6 M26 29 l-6 -2"/>',
+  pan: '<ellipse cx="28" cy="34" rx="12" ry="8"/><path d="M40 33 L52 29"/><path d="M24 26 c0 -3 2 -3 2 -6 M30 26 c0 -3 2 -3 2 -6"/>',
+  whisk: '<path d="M32 46 V52"/><path d="M32 46 C22 40 24 18 32 16 C40 18 42 40 32 46 Z"/><path d="M32 46 C28 38 28 22 32 16 C36 22 36 38 32 46"/>',
+  plane: '<path d="M14 34 L50 20 L40 46 L32 38 Z"/><path d="M50 20 L32 38 L30 46"/>',
+  camera: '<rect x="16" y="23" width="32" height="22" rx="3"/><circle cx="32" cy="34" r="6.5"/><path d="M25 23 l3 -4 h8 l3 4"/>',
+  pen: '<path d="M32 16 L42 34 L32 48 L22 34 Z"/><circle cx="32" cy="34" r="2.5"/><path d="M32 16 V31"/>',
+  barcode: '<path d="M18 20 V44 M22 20 V44 M27 20 V44 M30 20 V44 M35 20 V44 M40 20 V44 M43 20 V44 M46 20 V44"/>',
+  forklift: '<path d="M16 42 V24 h12 l4 10 v8"/><path d="M40 16 V44 h10"/><circle cx="21" cy="44" r="3"/><circle cx="31" cy="44" r="3"/><path d="M32 30 h8"/>',
+  globe: '<circle cx="32" cy="32" r="14"/><path d="M18 32 h28 M32 18 c-7 8 -7 20 0 28 M32 18 c7 8 7 20 0 28"/>',
+  chart: '<path d="M18 46 h28 M18 46 V18"/><path d="M22 40 L29 32 L35 36 L45 23"/>'
+};
+function stamp(icon, shape = "square", label = "") {
+  const shp = shape === "circle" ? '<circle class="fill" cx="32" cy="32" r="30"/><circle cx="32" cy="32" r="25" class="ink" stroke-width="1.6"/>'
+    : shape === "diamond" ? '<rect class="fill" x="10" y="10" width="44" height="44" rx="8" transform="rotate(45 32 32)"/><rect class="ink" x="15" y="15" width="34" height="34" rx="5" stroke-width="1.6" transform="rotate(45 32 32)"/>'
+    : '<rect class="fill" x="2" y="2" width="60" height="60" rx="9"/><rect class="ink" x="7" y="7" width="50" height="50" rx="6" stroke-width="1.6"/>';
+  return `<svg class="stamp" viewBox="0 0 64 64" ${label ? `role="img" aria-label="${label}"` : 'aria-hidden="true"'}>${shp}<g class="ink">${ICONS[icon]}</g></svg>`;
+}
+function monogram() {
+  return `<svg class="stamp" viewBox="0 0 64 80" role="img" aria-label="RB monogram"><rect class="fill" x="2" y="2" width="60" height="76" rx="9"/><rect class="ink" x="7" y="7" width="50" height="66" rx="6" stroke-width="1.6"/>
+    <text x="32" y="28" text-anchor="middle" font-family="Saira Stencil One, Impact, sans-serif" font-size="17" fill="#1a1d22">${SITE.initials}</text>
+    <g class="ink" transform="translate(0 16)">${ICONS.box}</g></svg>`;
+}
+/* deterministic barcode from text */
+function barcode(seed, color = "#1a1d22") {
+  let h = 0; for (const c of seed) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+  let x = 0, out = "";
+  while (x < 196) { h = (h * 1103515245 + 12345) >>> 0; const w = 1 + (h >> 16) % 4; if ((h >> 8) & 1) out += `<rect x="${x}" width="${w}" height="40" fill="${color}"/>`; x += w + 1 + ((h >> 4) % 2); }
+  return `<svg class="bar" viewBox="0 0 200 40" preserveAspectRatio="none" aria-hidden="true" style="display:block;width:100%">${out}</svg>`;
+}
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+
+/* =============================================================
+   Objects for each work entry
+   ============================================================= */
+function objectFor(w) {
+  if (w.object === "wine") return `<div class="wine" role="img" aria-label="Wine label for ${esc(w.company)}"><div class="wine-in">
+      <span class="small">Hopewell Valley</span>
+      <svg viewBox="0 0 64 40" width="54" style="margin:0 auto" aria-hidden="true"><g fill="none" stroke="#1a1d22" stroke-width="1.6" stroke-linecap="round"><path d="M32 4 c4 -2 8 0 9 3"/><circle cx="26" cy="14" r="4"/><circle cx="34" cy="14" r="4"/><circle cx="30" cy="21" r="4"/><circle cx="38" cy="21" r="4"/><circle cx="34" cy="28" r="4"/><path d="M8 34 h48"/></g></svg>
+      <span class="house">Behind<br>the Bar</span>
+      <span class="est">bartender &amp; busser</span>
+      <span class="vint">VINTAGE 2025</span>
+      <span class="small">Private events · 150+ guests</span>
+      <div class="foot"><span>−20% PREP DELAY</span><span>750 mL</span></div></div></div>`;
+  if (w.object === "order") return `<div class="order" role="img" aria-label="Maintenance work order for ${esc(w.company)}">
+      <div class="t">WORK ORDER</div>
+      <dl><dt>No.</dt><dd>RP-0625</dd><dt>Dept</dt><dd>Maintenance</dd><dt>Site</dt><dd>Hopewell, NJ</dd></dl>
+      <ul><li>Site prep</li><li>Waste mgmt</li><li>Equipment staging</li><li>Supply audit −10%</li></ul>
+      <span class="closed">CLOSED</span></div>`;
+  return `<div class="idcard" role="img" aria-label="Student ID card">
+      <div class="band"><span>Rutgers · New Brunswick</span><span>STUDENT</span></div>
+      <div class="body"><div class="pic">${SITE.photo ? `<img src="photos/me-id.jpg" alt="">` : SITE.initials}</div><div>
+        <div class="nm">BANGERTER,<br>REUBEN</div>
+        <div>B.S. BAIT + SCM</div><div>Class of 2029</div><div>Dean's List ×2</div></div></div>
+      ${barcode("rutgers-2029")}</div>`;
+}
+
+/* =============================================================
+   Views
+   ============================================================= */
+function home() {
+  const photo = SITE.photo ? `<img src="${esc(SITE.photo)}" alt="Photo of ${esc(SITE.name)}">` : "your photo here";
+  return `
+  <div class="hero">
+    ${monogram()}
+    <h1>${esc(SITE.name)}</h1>
+    <p class="sub">${esc(SITE.subtitle)}</p>
+    <figure class="polaroid" style="margin-inline:auto"><span class="tape"></span><div class="ph">${photo}</div><figcaption>${esc(SITE.photoCaption)}</figcaption></figure>
+    <a class="down" href="#work">${esc(SITE.tagline)}</a>
+  </div>
+
+  <section id="work" aria-labelledby="h-work">
+    <p class="eyebrow">where I've clocked in</p>
+    <h2 id="h-work">Received &amp; signed for</h2>
+    <div class="rows">
+      ${SITE.work.map((w, i) => `
+      <article class="row ${i % 2 ? "flip" : ""}">
+        <div class="obj">${objectFor(w)}</div>
+        <div>
+          <h3>${esc(w.company)}</h3>
+          <p class="role">${esc(w.role)}</p>
+          <p class="lede">${esc(w.summary)}</p>
+          <p class="notable">notable</p>
+          <ul class="ticks">${w.notable.map(n => `<li>${esc(n)}</li>`).join("")}</ul>
+        </div>
+      </article>`).join("")}
+    </div>
+  </section>
+
+  <section aria-labelledby="h-campus">
+    <p class="eyebrow">on campus</p>
+    <h2 id="h-campus">Packing list</h2>
+    <div class="manifest">
+      <div class="manifest-head"><span>Manifest · Rutgers NB</span><span>${SITE.campus.length} line items</span></div>
+      ${SITE.campus.map((c, i) => `
+      <div class="line"><span class="no">LINE ${String(i + 1).padStart(2, "0")}</span><div>
+        <h3>${esc(c.name)}</h3><span class="r">${esc(c.r)}</span>
+        <p>${esc(c.text)}</p><span class="sku">${esc(c.sku)}</span></div></div>`).join("")}
+    </div>
+  </section>
+
+  <section aria-labelledby="h-off">
+    <p class="eyebrow">off the clock</p>
+    <h2 id="h-off">The rest of me</h2>
+    <div class="hobbies" role="group" aria-label="Hobbies">
+      ${SITE.hobbies.map((h, i) => `<button type="button" class="hobby" id="hobby-${i}" data-i="${i}" aria-expanded="false" aria-controls="drawer">
+        ${stamp(h.icon, ["square", "circle", "diamond"][i % 3])}<span>${esc(h.label)}</span>
+        <span class="count">${h.photos.length ? `${h.photos.length} photo${h.photos.length > 1 ? "s" : ""}` : "open"}</span></button>`).join("")}
+    </div>
+    <p class="hint" id="hobbyHint">tap a stamp to open the box</p>
+    <div id="drawer" hidden></div>
+  </section>`;
+}
+
+function projects() {
+  return `
+  <section aria-labelledby="h-proj" style="padding-top:8px">
+    <p class="eyebrow">things I've built</p>
+    <h2 id="h-proj">Projects</h2>
+    <div class="projects">
+      ${SITE.projects.map(p => `
+      <article class="proj">
+        ${p.kind === "ship" ? shipLabel(p) : customsForm(p)}
+        <div>
+          <h3>${esc(p.title)}<span class="status ${p.done ? "done" : ""}">${esc(p.status)}</span></h3>
+          <p class="role">${esc(p.dates)} · Independent research</p>
+          <p class="lede">${esc(p.text)}</p>
+          ${p.stats.length ? `<div class="stats">${p.stats.map(([b, s]) => `<div><b>${esc(b)}</b><span>${esc(s)}</span></div>`).join("")}</div>` : ""}
+          <div class="tags">${p.tags.map(t => `<span class="tag">${esc(t)}</span>`).join("")}</div>
+          ${p.link ? `<a class="golink" href="${esc(p.link)}" target="_blank" rel="noopener">see it →</a>` : `<span class="golink todo">link coming soon</span>`}
+        </div>
+      </article>`).join("")}
+    </div>
+  </section>`;
+}
+function shipLabel(p) {
+  return `<div class="ship" role="img" aria-label="Shipping label for ${esc(p.title)}">
+    <div class="top"><span class="pri">P</span><div style="text-align:right">PRIORITY · LAST MILE<br>ZONE 07 · NJ</div></div>
+    <div class="ft"><div>From<b>Manual routes</b></div><div>To<b>Optimized routes</b></div></div>
+    <div><div>Ship to</div><div class="big">50-ROUTE FLEET</div></div>
+    <div>${barcode(p.title)}<div class="trk">1Z RB 2026 0650 K</div></div>
+    <div style="display:flex;justify-content:space-between"><span>Est. savings ~$650K/yr</span><span>Wt: 53% of cost</span></div>
+  </div>`;
+}
+function customsForm(p) {
+  return `<div class="customs" role="img" aria-label="Customs declaration with a smile curve chart for ${esc(p.title)}">
+    <div class="hd"><span>Customs declaration</span><span>CN-23</span></div>
+    <div class="ttl">Value added, by stage</div>
+    <svg viewBox="0 0 260 120" aria-hidden="true">
+      <g stroke="#1a1d22" fill="none" stroke-linecap="round">
+        <path d="M24 100 H248 M24 100 V10" stroke-width="1.4"/>
+        <path d="M34 22 C80 98 190 98 238 22" stroke-width="2.6"/>
+        <path d="M136 82 v14" stroke="#b5401f" stroke-width="2" stroke-dasharray="3 3"/>
+      </g>
+      <circle cx="136" cy="80" r="4" fill="#b5401f"/>
+      <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1d22">
+        <text x="30" y="114">R&amp;D</text><text x="104" y="114">MANUFACTURING</text><text x="208" y="114">BRAND</text>
+        <text x="146" y="95" fill="#b5401f">labor squeezed</text>
+      </g>
+    </svg>
+    <div class="note">contents: undervalued physical labor</div>
+  </div>`;
+}
+
+function inventory() {
+  return `
+  <section aria-labelledby="h-inv" style="padding-top:8px">
+    <p class="eyebrow">what's in stock</p>
+    <h2 id="h-inv">Inventory</h2>
+    <div class="shelf">
+      ${SITE.skills.map(([n, u], i) => `<div class="bin"><div class="skuno">SKU RB-${String(101 + i)}</div><div class="nm">${esc(n)}</div><div class="use">${esc(u)}</div>${barcode(n)}</div>`).join("")}
+    </div>
+  </section>
+  <section aria-labelledby="h-cert">
+    <p class="eyebrow">quality checked</p>
+    <h2 id="h-cert">Certifications</h2>
+    <div class="certs">
+      ${SITE.certs.map(c => `<div class="cert"><span class="pass">PASSED</span><h3>${esc(c.name)}</h3>
+        <p class="meta" style="margin-top:8px">Inspected by ${esc(c.by)}${c.date ? ` · ${esc(c.date)}` : ""}</p>
+        ${c.url ? `<a class="golink" style="margin-top:8px" href="${esc(c.url)}" target="_blank" rel="noopener">verify →</a>` : ""}</div>`).join("")}
+    </div>
+  </section>
+  <section aria-labelledby="h-course">
+    <p class="eyebrow">parts on order</p>
+    <h2 id="h-course">Coursework</h2>
+    <div class="course">${SITE.coursework.map(c => `<span class="tag">${esc(c)}</span>`).join("")}</div>
+  </section>`;
+}
+
+/* =============================================================
+   Off-the-clock photo drawer + lightbox
+   ============================================================= */
+let openHobby = -1;
+function toggleHobby(i) {
+  const drawer = document.getElementById("drawer");
+  if (!drawer) return;
+  document.querySelectorAll(".hobby").forEach(b => b.setAttribute("aria-expanded", "false"));
+  if (openHobby === i) { openHobby = -1; drawer.hidden = true; drawer.innerHTML = ""; document.getElementById("hobbyHint").hidden = false; return; }
+  openHobby = i;
+  const h = SITE.hobbies[i];
+  document.getElementById("hobby-" + i).setAttribute("aria-expanded", "true");
+  document.getElementById("hobbyHint").hidden = true;
+  const pics = h.photos.length
+    ? h.photos.map((p, k) => `<button type="button" class="pic" data-k="${k}" aria-label="Enlarge: ${esc(p.caption || h.label)}"><img src="${esc(p.src)}" alt="${esc(p.caption || h.label)}" loading="lazy"><span>${esc(p.caption || "")}</span></button>`).join("")
+    : [1, 2, 3].map(() => `<div class="pic placeholder"><div class="empty">${esc(h.label)} photo coming soon</div><span>&nbsp;</span></div>`).join("");
+  drawer.innerHTML = `<div class="drawer" role="region" aria-labelledby="drawer-title">
+      <div class="drawer-hd"><div><h3 id="drawer-title">${esc(h.label)}</h3><p>${esc(h.blurb)}</p></div>
+      <button type="button" class="x" data-close>Close box ✕</button></div>
+      <div class="pics">${pics}</div></div>`;
+  drawer.hidden = false;
+  drawer.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "nearest" });
+}
+
+let lb = null;
+function openLightbox(k) {
+  const photos = SITE.hobbies[openHobby].photos;
+  if (!photos.length) return;
+  lb = { k: (k + photos.length) % photos.length, photos };
+  let el = document.getElementById("lightbox");
+  if (!el) { el = document.createElement("div"); el.id = "lightbox"; el.className = "lightbox"; el.setAttribute("role", "dialog"); el.setAttribute("aria-modal", "true"); document.body.appendChild(el); }
+  const p = photos[lb.k];
+  const many = photos.length > 1;
+  el.innerHTML = `<figure><img src="${esc(p.src)}" alt="${esc(p.caption || "")}"><figcaption>${esc(p.caption || "")}</figcaption></figure>
+    <button type="button" class="lb-btn lb-close" data-lb="close">Close ✕</button>
+    ${many ? `<button type="button" class="lb-btn lb-prev" data-lb="prev" aria-label="Previous photo">←</button><button type="button" class="lb-btn lb-next" data-lb="next" aria-label="Next photo">→</button>` : ""}
+    <div class="lb-count">${lb.k + 1} / ${photos.length}</div>`;
+  el.hidden = false;
+  el.querySelector(".lb-close").focus();
+}
+function closeLightbox() {
+  const el = document.getElementById("lightbox");
+  if (el) el.hidden = true;
+  const back = lb && document.querySelector(`.pic[data-k="${lb.k}"]`);
+  lb = null;
+  if (back) back.focus();
+}
+document.addEventListener("click", e => {
+  const hobby = e.target.closest(".hobby"); if (hobby) return toggleHobby(+hobby.dataset.i);
+  if (e.target.closest("[data-close]")) { const i = openHobby; toggleHobby(i); document.getElementById("hobby-" + i)?.focus(); return; }
+  const pic = e.target.closest(".pic[data-k]"); if (pic) return openLightbox(+pic.dataset.k);
+  const lbBtn = e.target.closest("[data-lb]");
+  if (lbBtn) { const a = lbBtn.dataset.lb; return a === "close" ? closeLightbox() : openLightbox(lb.k + (a === "next" ? 1 : -1)); }
+  if (lb && e.target.id === "lightbox") closeLightbox();
+});
+document.addEventListener("keydown", e => {
+  if (!lb) return;
+  if (e.key === "Escape") closeLightbox();
+  if (e.key === "ArrowRight") openLightbox(lb.k + 1);
+  if (e.key === "ArrowLeft") openLightbox(lb.k - 1);
+});
+
+/* =============================================================
+   Router + chrome
+   ============================================================= */
+const VIEWS = { home, projects, inventory };
+function route() {
+  let v = location.hash.slice(1);
+  if (v === "contact") { document.getElementById("contact").scrollIntoView(); return; }
+  if (v === "work") { if (!document.getElementById("work")) render("home"); document.getElementById("work").scrollIntoView(); setNav("home"); return; }
+  if (!VIEWS[v]) v = "home";
+  render(v);
+  window.scrollTo(0, 0);
+}
+function render(v) {
+  const main = document.getElementById("main");
+  openHobby = -1;
+  main.innerHTML = `<div class="view">${VIEWS[v]()}</div>`;
+  setNav(v);
+}
+function setNav(v) {
+  document.querySelectorAll(".nav ul a").forEach(a => a.dataset.v === v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+}
+function chrome() {
+  const icons = ["box", "truck", "snowboard", "barcode", "soccer", "forklift", "pan", "globe", "camera", "chart", "whisk", "plane"];
+  const col = icons.map((ic, i) => stamp(ic, ["square", "circle", "diamond"][i % 3])).join("");
+  document.getElementById("railL").innerHTML = col + col;
+  document.getElementById("railR").innerHTML = col + col;
+  const c = document.getElementById("contactLinks");
+  c.innerHTML = `<a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>
+    <button type="button" id="copyEmail">Copy email</button>
+    <a href="${esc(SITE.linkedin)}" target="_blank" rel="noopener">LinkedIn →</a>`;
+  document.getElementById("copyEmail").addEventListener("click", e => {
+    const b = e.currentTarget;
+    navigator.clipboard?.writeText(SITE.email).then(() => { b.textContent = "Copied"; }, () => { b.textContent = SITE.email; });
+  });
+  document.getElementById("copyline").textContent = `© ${new Date().getFullYear()} ${SITE.name} · packed in New Brunswick, NJ`;
+}
+chrome();
+route();
+window.addEventListener("hashchange", route);
+</script>
+
+</body>
+</html>
