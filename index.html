@@ -683,8 +683,7 @@ const SITE = {
     { src: "photos/places/paros-boat.jpg", name: "Paros", where: "Cyclades, Greece", coords: "37.08°N 25.15°E" },
     { src: "photos/places/dc-capitol.jpg", name: "Washington", where: "D.C.", coords: "38.91°N 77.04°W" },
     { src: "photos/travel-madrid.jpg", name: "Madrid", where: "Spain", coords: "40.42°N 3.70°W" },
-    { src: "photos/places/athens-church.jpg", name: "Athens", where: "Greece", coords: "37.98°N 23.73°E" },
-    { src: "photos/places/paros-night.jpg", name: "Paros", where: "Cyclades, Greece", coords: "37.08°N 25.15°E" }
+    { src: "photos/places/athens-church.jpg", name: "Athens", where: "Greece", coords: "37.98°N 23.73°E" }
   ],
   coursework: ["Management Information Systems", "Business Programming", "Business Operations Analytics", "Financial Accounting", "Statistical Methods in Business", "Intro to Supply Chain"],
 
@@ -1495,6 +1494,30 @@ skyway();
     render(cur);
     if (open) raf = requestAnimationFrame(frame);
   }
+  // Snap: when scrolling pauses, glide to the nearest stop so text sits still and readable
+  // stops = the name on the doors (0), every chapter title and card (it.t), and the arrival screen (1)
+  let snapTimer = 0, touching = false, snapping = false;
+  function snap() {
+    if (!open || touching) return;
+    const max = el.scrollHeight - el.clientHeight;
+    if (max <= 0) return;
+    const p = el.scrollTop / max;
+    if (p > .985) return; // leave the end alone so a final scroll still enters the site
+    const stops = [0, ...items.map(it => it.t), 1];
+    let best = stops[0];
+    stops.forEach(s => { if (Math.abs(s - p) < Math.abs(best - p)) best = s; });
+    const top = Math.round(best * max);
+    if (Math.abs(top - el.scrollTop) < 3) { snapping = false; return; }
+    snapping = true;
+    el.scrollTo({ top, behavior: RM ? "auto" : "smooth" });
+  }
+  el.addEventListener("scroll", () => {
+    clearTimeout(snapTimer);
+    snapTimer = setTimeout(snap, snapping ? 400 : 160);
+  }, { passive: true });
+  el.addEventListener("wheel", () => { snapping = false; }, { passive: true });
+  el.addEventListener("touchstart", () => { touching = true; snapping = false; clearTimeout(snapTimer); }, { passive: true });
+  el.addEventListener("touchend", () => { touching = false; clearTimeout(snapTimer); snapTimer = setTimeout(snap, 220); }, { passive: true });
   function show() {
     build();
     open = true;
