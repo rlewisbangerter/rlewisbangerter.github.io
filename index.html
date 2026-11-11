@@ -55,24 +55,23 @@ a { color: inherit; }
 .skip:focus { left: 16px; top: 16px; background: var(--hivis); color: var(--ink); padding: 6px 10px; z-index: 60; }
 
 /* ---------- side conveyor belts carrying interest packages ---------- */
-.rail { position: fixed; top: 0; bottom: 0; width: 100px; overflow: hidden; z-index: 5; display: none; pointer-events: none; background: #161b22; box-shadow: inset 0 0 18px rgba(0,0,0,.7); }
-.rail.l { left: 0; border-right: 1px solid var(--rule); } .rail.r { right: 0; border-left: 1px solid var(--rule); }
-.rail::before, .rail::after { content: ""; position: absolute; top: 0; bottom: 0; width: 9px; z-index: 2;
-  background: radial-gradient(circle at 50% 50%, #8a94a3 0 1.6px, transparent 2px) 0 0 / 9px 28px repeat-y, linear-gradient(90deg, #262d37, #48525f 50%, #262d37); }
-.rail::before { left: 6px; } .rail::after { right: 6px; }
-.track { position: absolute; left: 15px; right: 15px; top: 0; display: flex; flex-direction: column; align-items: center; gap: 34px; padding: 18px 0;
-  background: repeating-linear-gradient(180deg, transparent 0 13px, rgba(232,226,214,.06) 13px 15px); animation: belt 110s linear infinite; }
+.rail { position: fixed; top: 0; bottom: 0; width: 84px; overflow: hidden; z-index: 5; display: none; pointer-events: none; }
+.rail.l { left: 0; } .rail.r { right: 0; }
+.rail::before, .rail::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--rule); z-index: 1; }
+.rail::before { left: 10px; } .rail::after { right: 10px; }
+.track { position: absolute; left: 11px; right: 11px; top: 0; display: flex; flex-direction: column; align-items: center; gap: 46px; padding: 30px 0;
+  background: repeating-linear-gradient(180deg, transparent 0 22px, rgba(232,226,214,.05) 22px 23px); animation: belt 120s linear infinite; will-change: transform; }
 .rail.r .track { animation-direction: reverse; }
-@keyframes belt { from { transform: translateY(0); } to { transform: translateY(-33.3333%); } }
-.pkg { position: relative; flex: none; width: var(--w, 62px); height: var(--h, 52px); transform: rotate(var(--t, 0deg)); border: 1px solid #8f6e3e; border-radius: 2px; box-shadow: 0 7px 12px rgba(0,0,0,.5);
-  background: linear-gradient(180deg, rgba(0,0,0,.14) 0 2px, transparent 2px 46%, rgba(0,0,0,.08) 46% calc(46% + 1px), transparent 0), linear-gradient(90deg, #b48f58, var(--kraft) 16%, #d6b583 50%, var(--kraft) 84%, #b48f58); }
-.pkg::before { content: ""; position: absolute; left: 50%; top: -1px; bottom: -1px; width: 12px; margin-left: -6px; background: rgba(244,232,206,.5); border-inline: 1px solid rgba(143,110,62,.35); }
-.pkg .lbl { position: absolute; left: 4px; right: 4px; bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 3px; overflow: hidden; padding: 2px 3px; background: var(--label); color: var(--ink); border-radius: 1px; box-shadow: 0 1px 0 rgba(0,0,0,.25); }
-.pkg .lbl svg { width: 15px; height: 15px; flex: none; }
-.pkg .lbl svg * { fill: none; stroke: var(--ink); stroke-width: 4; stroke-linecap: round; stroke-linejoin: round; }
-.pkg .lbl i { font-family: var(--f-hand); font-style: normal; font-weight: 700; font-size: 12.5px; line-height: 1; white-space: nowrap; }
-.pkg .mk { position: absolute; top: 5px; left: 5px; font-family: var(--f-stencil); font-size: 7.5px; line-height: 1.35; color: #b5401f; border: 1px solid #b5401f; padding: 0 2px; transform: rotate(-7deg); }
-.pkg .up { position: absolute; top: 4px; right: 5px; font-size: 9px; line-height: 1; color: rgba(26,29,34,.55); letter-spacing: -1px; }
+@keyframes belt { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -33.3333%, 0); } }
+.pkg { display: grid; justify-items: center; gap: 7px; transform: rotate(var(--t, 0deg)); }
+.pkg svg { width: var(--w, 46px); height: auto; overflow: visible; }
+.pkg .face-top { fill: rgba(201,166,113,.16); }
+.pkg .face-l { fill: rgba(201,166,113,.09); }
+.pkg .face-r { fill: rgba(201,166,113,.04); }
+.pkg .edge { fill: none; stroke: var(--kraft); stroke-width: 1.4; stroke-linejoin: round; opacity: .75; }
+.pkg .btape { stroke: var(--kraft); stroke-width: 3; opacity: .35; stroke-linecap: butt; }
+.pkg .ico { fill: none; stroke: var(--kraft); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
+.pkg span { font-family: var(--f-mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .brandrow { display: flex; align-items: center; gap: 12px; }
 .introchip { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 9px 0 7px; border: 1px solid var(--rule); border-radius: 13px; background: none; color: var(--muted); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s; }
 .introchip svg { width: 11px; height: 11px; fill: var(--hivis); }
@@ -1270,15 +1269,23 @@ function chrome() {
   // conveyor belts: one package per interest, three copies so the loop is seamless
   const pkg = ([ic, label], i, k) => {
     const r = n => { const x = Math.sin((i + 1) * 91.7 + k * 13.1 + n * 7.3) * 9999; return x - Math.floor(x); };
-    const w = 62 + Math.round(r(1) * 8), h = 46 + Math.round(r(2) * 18), t = ((r(3) - .5) * 8).toFixed(1);
-    const mk = r(4) < .25 ? '<span class="mk">FRAGILE</span>' : r(4) > .8 ? '<span class="up">↑↑</span>' : "";
-    return `<div class="pkg" style="--w:${w}px;--h:${h}px;--t:${t}deg">${mk}<span class="lbl"><svg viewBox="12 12 40 40" aria-hidden="true">${ICONS[ic] || ICONS.box}</svg><i>${esc(label)}</i></span></div>`;
+    const w = 40 + Math.round(r(1) * 10), t = ((r(3) - .5) * 4).toFixed(1);
+    return `<div class="pkg" style="--w:${w}px;--t:${t}deg"><svg viewBox="0 0 60 56" aria-hidden="true">
+      <polygon class="face-top" points="30,4 56,16 30,28 4,16"/><polygon class="face-l" points="4,16 30,28 30,52 4,40"/><polygon class="face-r" points="30,28 56,16 56,40 30,52"/>
+      <line class="btape" x1="17" y1="10" x2="43" y2="22"/>
+      <g class="ico" transform="matrix(.4,.185,0,.4,4.2,15)">${ICONS[ic] || ICONS.box}</g>
+      <path class="edge" d="M30 4 L56 16 L56 40 L30 52 L4 40 L4 16 Z M4 16 L30 28 L56 16 M30 28 L30 52"/></svg><span>${esc(label)}</span></div>`;
   };
   const list = SITE.interests;
   const left = list.map((it, i) => pkg(it, i, 1)).join("");
   const right = [...list].reverse().map((it, i) => pkg(it, i, 2)).join("");
   document.getElementById("railL").innerHTML = left + left + left;
   document.getElementById("railR").innerHTML = right + right + right;
+  const pace = () => ["railL", "railR"].forEach(id => {
+    const t = document.getElementById(id), loop = t.scrollHeight / 3;
+    if (loop > 0) t.style.animationDuration = `${(loop / 30).toFixed(1)}s`; // about 30px per second
+  });
+  requestAnimationFrame(pace); addEventListener("resize", pace);
   const c = document.getElementById("contactLinks");
   c.innerHTML = `<a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>
     <button type="button" id="copyEmail">Copy email</button>
