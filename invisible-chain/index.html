@@ -1,0 +1,414 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="theme-color" content="#12161c">
+<title>The Invisible Chain · Reuben Bangerter</title>
+<meta name="description" content="A research project on why physical labor is systematically undervalued in global supply chains, using the Smile Curve to trace where value goes.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&display=swap">
+<style>
+/* Same loading-dock look as the main site and the Last-Mile page. */
+:root {
+  --night: #12161c; --night-2: #1a1f27; --fg: #e8e2d6; --muted: #8d95a1;
+  --kraft: #c9a671; --label: #f2eee6; --ink: #1a1d22; --hivis: #f0a03a; --rust: #d0623e;
+  --rule: rgba(232, 226, 214, 0.12);
+  --f-stencil: "Saira Stencil One", "Impact", sans-serif;
+  --f-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand: "Caveat", "Comic Sans MS", cursive;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 64px; }
+body { background: var(--night); color: var(--fg); font-family: var(--f-mono); font-size: 14px; line-height: 1.7; margin: 0; }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50; opacity: .07;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+a { color: var(--kraft); }
+:focus-visible { outline: 2px dashed var(--hivis); outline-offset: 3px; }
+p { margin: 0 0 14px; }
+em { color: var(--label); }
+
+header.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--night) 88%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); }
+.nav-in { max-width: 920px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 16px; }
+.brand { font-family: var(--f-stencil); font-size: 20px; letter-spacing: .04em; text-decoration: none; color: var(--kraft); }
+.nav ul { list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; font-family: var(--f-hand); font-size: 20px; }
+.nav ul a { text-decoration: none; color: var(--muted); }
+.nav ul a:hover { color: var(--fg); }
+@media (max-width: 680px) { .nav ul .opt { display: none; } }
+
+main { max-width: 920px; margin: 0 auto; padding: 40px 16px 24px; }
+section { padding-block: 48px; border-top: 1px dashed var(--rule); }
+section:first-child { border-top: 0; padding-top: 16px; }
+.eyebrow { font-family: var(--f-hand); font-size: 22px; color: var(--hivis); margin: 0; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(42px, 9vw, 80px); line-height: .95; text-transform: uppercase; margin: 6px 0 18px; letter-spacing: .01em; text-wrap: balance; }
+h2 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 6vw, 44px); line-height: 1; text-transform: uppercase; margin: 4px 0 22px; letter-spacing: .01em; }
+h3 { font-family: var(--f-display); font-weight: 800; font-size: 24px; line-height: 1.1; margin: 0 0 8px; letter-spacing: .02em; }
+.meta { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.lede { font-size: 15.5px; max-width: 64ch; }
+.prose { max-width: 68ch; }
+.tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+.tag { border: 1px solid var(--rule); border-radius: 3px; padding: 2px 8px; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+
+.grid2 { display: grid; gap: 22px; grid-template-columns: 1fr; }
+.grid2 > *, .grid3 > * { min-width: 0; }
+@media (min-width: 760px) { .grid2 { grid-template-columns: 1fr 1fr; } }
+.grid3 { display: grid; gap: 18px; grid-template-columns: 1fr; }
+@media (min-width: 760px) { .grid3 { grid-template-columns: repeat(3, 1fr); } }
+.card { background: var(--night-2); border: 1px solid var(--rule); border-radius: 4px; padding: 18px; }
+.card p:last-child { margin-bottom: 0; }
+.card .num { font-family: var(--f-display); font-weight: 800; font-size: 34px; line-height: 1; color: var(--hivis); display: block; margin-bottom: 6px; }
+ul.plain { margin: 0; padding-left: 20px; }
+ul.plain li { margin-bottom: 8px; }
+
+/* paper elements */
+.ticket { background: var(--label); color: var(--ink); padding: 16px 18px; border-radius: 2px; box-shadow: 0 12px 26px rgba(0,0,0,.4); font-size: 13px; }
+.ticket .meta { color: #5d636c; }
+.ticket em { color: var(--ink); }
+.question { font-size: 16px; line-height: 1.55; margin: 8px 0 0; }
+.quote { border-left: 3px solid var(--hivis); padding: 4px 0 4px 18px; margin: 20px 0; font-size: 15px; font-style: italic; color: var(--label); max-width: 64ch; }
+.quote cite { display: block; font-style: normal; font-size: 12px; color: var(--muted); margin-top: 6px; }
+
+/* customs-form smile curve (matches the project card on the home page) */
+.customs { background: var(--label); color: var(--ink); border-radius: 2px; padding: 14px 16px; box-shadow: 0 12px 26px rgba(0,0,0,.4); }
+.customs .hd { display: flex; justify-content: space-between; font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; border-bottom: 1px solid #c8c2b6; padding-bottom: 6px; }
+.customs .ttl { font-family: var(--f-display); font-weight: 800; font-size: 20px; text-transform: uppercase; margin: 8px 0 2px; }
+.customs svg { width: 100%; height: auto; display: block; }
+.customs .note { font-family: var(--f-hand); font-size: 20px; color: #b5401f; }
+
+/* figures (photos uploaded later fall back to a placeholder) */
+.shots { display: grid; gap: 22px; grid-template-columns: 1fr; margin-top: 24px; }
+@media (min-width: 760px) { .shots.two { grid-template-columns: 1fr 1fr; } .shots.three { grid-template-columns: repeat(3, 1fr); } }
+.shots > * { min-width: 0; }
+figure.shot { margin: 0; }
+figure.shot .frame { background: var(--night-2); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; aspect-ratio: 4 / 3; display: flex; align-items: center; justify-content: center; }
+figure.shot.wide .frame { aspect-ratio: 16 / 9; }
+figure.shot.tall .frame { aspect-ratio: 4 / 5; }
+figure.shot img { width: 100%; height: 100%; object-fit: cover; display: block; cursor: zoom-in; }
+figure.shot.fit img { object-fit: contain; background: #fff; }
+figure.shot .ph { display: none; text-align: center; padding: 16px; color: var(--muted); font-size: 12px; }
+figure.shot .ph b { display: block; font-family: var(--f-hand); font-size: 22px; color: var(--kraft); font-weight: 500; }
+figure.shot .ph code { color: var(--fg); }
+figure.shot.missing img { display: none; }
+figure.shot.missing .frame { border-style: dashed; }
+figure.shot.missing .ph { display: block; }
+figure.shot figcaption { margin-top: 10px; font-size: 13px; color: var(--muted); }
+figure.shot figcaption b { color: var(--fg); }
+
+.video { position: relative; aspect-ratio: 16 / 9; margin-top: 24px; border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; background: var(--night-2); }
+.video iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.video-cap { font-size: 13px; color: var(--muted); margin-top: 10px; }
+
+/* policy proposals as shipping tickets */
+.policy { display: grid; gap: 22px; grid-template-columns: 1fr; margin-top: 24px; }
+@media (min-width: 760px) { .policy { grid-template-columns: repeat(3, 1fr); } }
+.policy .card { display: flex; flex-direction: column; gap: 12px; }
+.policy .card figure.shot figcaption { font-size: 12px; }
+
+.debate { display: grid; gap: 18px; grid-template-columns: 1fr; margin-top: 8px; }
+@media (min-width: 760px) { .debate { grid-template-columns: 1fr 1fr; } }
+.side { border-top: 2px solid var(--muted); padding-top: 10px; }
+.side.mine { border-top-color: var(--hivis); }
+
+.orgs { display: grid; gap: 12px; margin-top: 18px; }
+.org { display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center; background: var(--night-2); border: 1px solid var(--rule); border-radius: 4px; padding: 12px 14px; }
+.org h3 { font-size: 20px; margin: 0; }
+.org p { margin: 2px 0 0; font-size: 12px; color: var(--muted); }
+.btn { display: inline-flex; align-items: center; gap: 8px; text-decoration: none; background: var(--hivis); color: var(--ink); font-weight: 600; font-size: 12.5px; letter-spacing: .06em; text-transform: uppercase; padding: 9px 14px; border-radius: 3px; }
+.btn.ghost { background: transparent; color: var(--fg); border: 1px solid var(--rule); }
+.btn:hover { filter: brightness(1.08); }
+.btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+@media (max-width: 560px) { .org { grid-template-columns: 1fr; } .org .btn { justify-content: center; } }
+
+ol.cites { margin: 0; padding: 0; list-style: none; max-width: 76ch; }
+ol.cites li { padding-left: 2em; text-indent: -2em; margin-bottom: 12px; font-size: 13px; }
+ol.cites a { word-break: break-all; }
+
+.lb { position: fixed; inset: 0; background: rgba(8,10,13,.94); display: none; align-items: center; justify-content: center; z-index: 60; padding: 20px; cursor: zoom-out; }
+.lb.open { display: flex; }
+.lb img { max-width: 100%; max-height: 100%; }
+
+footer { max-width: 920px; margin: 0 auto; padding: 30px 16px 60px; color: var(--muted); font-size: 12px; border-top: 1px solid var(--rule); }
+</style>
+</head>
+<body>
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../">RB</a>
+    <ul>
+      <li class="opt"><a href="#background">Background</a></li>
+      <li class="opt"><a href="#data">Data</a></li>
+      <li class="opt"><a href="#solutions">Solutions</a></li>
+      <li><a href="#sources">Sources</a></li>
+      <li><a href="../">← Site</a></li>
+    </ul>
+  </div>
+</header>
+
+<main>
+  <!-- ============ HERO ============ -->
+  <section aria-labelledby="h-top">
+    <p class="eyebrow">research project · Apr – May 2026</p>
+    <h1 id="h-top">The Invisible Chain</h1>
+    <p class="lede">The invisible human cost of global logistics. One-click ordering hides the people who physically make and move our goods. This project uses the Smile Curve to show why they are paid the least, and argues that the gap is a design feature of global supply chains, not a glitch.</p>
+    <div class="tags">
+      <span class="tag">Research</span><span class="tag">Smile Curve</span><span class="tag">Global value chains</span><span class="tag">Labor &amp; policy</span><span class="tag">Web</span>
+    </div>
+
+    <div class="grid2" style="margin-top:30px; align-items:start">
+      <div class="ticket">
+        <div class="meta">Central question</div>
+        <p class="question">Why has physical labor become systematically undervalued in a world of instant delivery, and how does this create poverty chains that keep workers in cycles of inequality?</p>
+      </div>
+      <div class="customs" role="img" aria-label="Smile curve: value added is high at R&amp;D and branding, lowest at manufacturing">
+        <div class="hd"><span>Customs declaration</span><span>CN-23</span></div>
+        <div class="ttl">Value added, by stage</div>
+        <svg viewBox="0 0 260 120" aria-hidden="true">
+          <g stroke="#1a1d22" fill="none" stroke-linecap="round">
+            <path d="M24 100 H248 M24 100 V10" stroke-width="1.4"/>
+            <path d="M34 22 C80 98 190 98 238 22" stroke-width="2.6"/>
+            <path d="M136 82 v14" stroke="#b5401f" stroke-width="2" stroke-dasharray="3 3"/>
+          </g>
+          <circle cx="136" cy="80" r="4" fill="#b5401f"/>
+          <g font-family="IBM Plex Mono, monospace" font-size="9" fill="#1a1d22">
+            <text x="30" y="114">R&amp;D</text><text x="104" y="114">MANUFACTURING</text><text x="208" y="114">BRAND</text>
+            <text x="146" y="95" fill="#b5401f">labor squeezed</text>
+          </g>
+        </svg>
+        <div class="note">contents: undervalued physical labor</div>
+      </div>
+    </div>
+
+    <div class="shots three">
+      <figure class="shot">
+        <div class="frame"><img src="images/plane.jpg" alt="Cargo plane"><div class="ph"><b>photo coming</b>upload <code>images/plane.jpg</code></div></div>
+        <figcaption>Planes are the fastest way to move goods through a supply chain.</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame"><img src="images/truck.jpg" alt="Freight truck on a highway"><div class="ph"><b>photo coming</b>upload <code>images/truck.jpg</code></div></div>
+        <figcaption>Trucks carry goods across the road network.</figcaption>
+      </figure>
+      <figure class="shot">
+        <div class="frame"><img src="images/ship.jpg" alt="Container ship at sea"><div class="ph"><b>photo coming</b>upload <code>images/ship.jpg</code></div></div>
+        <figcaption>Cargo ships move high volumes across oceans.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============ STANCE ============ -->
+  <section aria-labelledby="h-stance">
+    <p class="eyebrow">my argument</p>
+    <h2 id="h-stance">A feature, not a bug</h2>
+    <div class="grid2">
+      <div class="prose">
+        <p>Most people treat global labor as a simple debate between providing jobs and exploiting workers. My research shows that the problem is structural. Costinot, Vogel and Wang (2012) show that pay gaps are built into the system’s logic: because production happens in a fixed order, the most productive workers end up at the final stages of the chain, and lower-skilled workers in the Global South are pushed into the earliest, lowest-paying roles. That efficiency needs a bottom tier of labor to function.</p>
+        <p><b>My stance:</b> the systematic undervaluation of physical labor is a deliberate structural feature of global supply chains. The Smile Curve shows value being redirected away from manufacturing and toward Western branding, which institutionalizes poverty for workers in the Global South.</p>
+      </div>
+      <div>
+        <figure class="shot tall">
+          <div class="frame"><img src="images/author.jpg" alt="Reuben Bangerter"><div class="ph"><b>photo coming</b>upload <code>images/author.jpg</code></div></div>
+          <figcaption><b>Why I took this on.</b> As a Supply Chain and Business Analytics student, I kept noticing the gap between the digital ease of one-click ordering and the physical reality of the hands that move those products. The workers’ invisibility isn’t an accident; the system’s efficiency depends on it.</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ BACKGROUND ============ -->
+  <section id="background" aria-labelledby="h-bg">
+    <p class="eyebrow">the background</p>
+    <h2 id="h-bg">The logistics of inequality</h2>
+    <div class="grid2">
+      <div class="prose">
+        <h3>The Smile Curve</h3>
+        <p>First proposed in the 1990s, the Smile Curve shows how value is distributed across a product’s life. The two ends, pre-production (R&amp;D, design) and post-production (marketing, retail), capture the most profit. The middle, physical manufacturing, is a “valley” of low value added (Rungi &amp; Del Prete, 2018). Put simply: the system pays the people who physically make the goods the least.</p>
+        <h3 style="margin-top:22px">The “one-click” world</h3>
+        <p>International trade expanded rapidly after 1990, and countries stopped trading only finished goods; they started trading <em>tasks</em> (World Bank, 2020). A single phone or pair of sneakers can cross a dozen borders before it reaches your door. Unbundling production lets brands distance themselves from conditions in the factories they hire, and keeps consumers focused on the brand and the price tag instead of the worker.</p>
+      </div>
+      <figure class="shot fit">
+        <div class="frame"><img src="images/smile-curve.jpg" alt="Smile Curve diagram"><div class="ph"><b>image coming</b>upload <code>images/smile-curve.jpg</code></div></div>
+        <figcaption>Physical assembly, the middle of the curve, is the least profitable stage of the supply chain (Rungi &amp; Del Prete, 2018).</figcaption>
+      </figure>
+    </div>
+
+    <h3 style="margin-top:36px">Key terms</h3>
+    <div class="grid3" style="margin-top:12px">
+      <div class="card"><h3>Global North vs. South</h3><p>Economic power, not just geography. The North (e.g., US, EU) controls the high-value ends of the curve; the South (e.g., Bangladesh, Vietnam) is held in the low-value middle.</p></div>
+      <div class="card"><h3>Shadow factories</h3><p>Unregistered sites operating outside government oversight, where the worst labor-rights violations happen, hidden behind layers of subcontracting (World Bank, 2020).</p></div>
+      <div class="card"><h3>Poverty chains</h3><p>Supply chains that rely on the “superexploitation” of workers to stay competitive in a global market.</p></div>
+    </div>
+
+    <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/4OUpUlBFmIo" title="Supply chain overview, Michigan State University" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+    <p class="video-cap">Michigan State University’s overview of the stages of a supply chain: the context for how tasks get unbundled across the globe.</p>
+  </section>
+
+  <!-- ============ DATA ============ -->
+  <section id="data" aria-labelledby="h-data">
+    <p class="eyebrow">the data</p>
+    <h2 id="h-data">Evidence of the value gap</h2>
+    <div class="grid2">
+      <div class="prose">
+        <p>The Smile Curve is measurable. Baldwin and Ito (2021) analyzed international input–output data in the <em>Canadian Journal of Economics</em> and found value moving toward the ends of the chain:</p>
+        <ul class="plain">
+          <li><b>The high ends:</b> research, development and marketing capture the most profit.</li>
+          <li><b>The squeezed middle:</b> the value of physically making the product has fallen.</li>
+        </ul>
+        <p style="margin-top:14px">Our economy values the front end of business far more than the behind-the-scenes labor that makes a product exist.</p>
+      </div>
+      <figure class="shot fit">
+        <div class="frame"><img src="images/smiling-curve.jpg" alt="Smiling Curve chart"><div class="ph"><b>image coming</b>upload <code>images/smiling-curve.jpg</code></div></div>
+        <figcaption>Value concentrates in pre- and post-production, leaving manufacturing as the lowest value-added point (Baldwin &amp; Ito, 2021).</figcaption>
+      </figure>
+    </div>
+
+    <h3 style="margin-top:40px">Testimony: Maya’s story</h3>
+    <div class="grid2">
+      <div class="prose">
+        <p>Maya Aktar, a garment worker from Bangladesh, describes being the invisible part of the chain:</p>
+        <blockquote class="quote">“I left my home… for a job at a garment factory in Jordan… we could hardly make ends meet.”<cite>Aktar, 2022, UN News</cite></blockquote>
+        <p>As a liaison officer, she points to a structural barrier: language. Most workers from Bangladesh or India don’t speak Arabic or English, so when “instructions, announcements, and financial documents are in these languages,” workers are walled off from their own rights (Aktar, 2022). The chain is held together not just by low wages but by a lack of transparency and communication.</p>
+      </div>
+      <figure class="shot tall">
+        <div class="frame"><img src="images/maya-aktar.jpg" alt="Maya Aktar"><div class="ph"><b>photo coming</b>upload <code>images/maya-aktar.jpg</code></div></div>
+        <figcaption>Maya Aktar represents migrant workers in Jordan’s garment sector (Aktar, 2022).</figcaption>
+      </figure>
+    </div>
+
+    <h3 style="margin-top:40px">The digital poverty chain: AI labor</h3>
+    <div class="prose">
+      <p>The pattern holds in high tech. Casilli et al. (2025) show that AI production resembles a traditional poverty chain: an invisible workforce in low-income countries does repetitive data labeling for very low pay. In global value chain terms, data labeling is the new “task” (World Bank, 2020). The high-value coding happens in Silicon Valley, while the essential, labor-intensive labeling sits in the valley of the curve.</p>
+    </div>
+    <div class="video"><iframe src="https://www.youtube-nocookie.com/embed/rMNUKPxMi_w" title="The hidden labor behind AI" loading="lazy" allow="encrypted-media; picture-in-picture" allowfullscreen></iframe></div>
+    <p class="video-cap">Training AI models follows the same geography of exploitation as 20th-century manufacturing.</p>
+  </section>
+
+  <!-- ============ SOLUTIONS ============ -->
+  <section id="solutions" aria-labelledby="h-sol">
+    <p class="eyebrow">sociology &amp; policy</p>
+    <h2 id="h-sol">Worker identity and future reform</h2>
+    <div class="grid2">
+      <div class="prose">
+        <p>Workers aren’t passive units of labor. In my study of the restaurant industry, workers built social networks, mutual-aid systems and their own hierarchies based on skill and tenure, none of which management sees. Labor is a social ecosystem, not just a transaction.</p>
+        <p>Scholars disagree on how far these networks go. Some sociologists argue mutual aid is enough to provide dignity and resilience; the <em>World Development Report 2020</em> suggests informal networks can’t escape the Smile Curve trap without policy. My view: build on these networks to form stronger, more inclusive unions, like the ones Maya Aktar (2022) supports by using her languages to bridge management and workers.</p>
+      </div>
+      <figure class="shot">
+        <div class="frame"><img src="images/workplace-networks.jpg" alt="Workers collaborating"><div class="ph"><b>image coming</b>upload <code>images/workplace-networks.jpg</code></div></div>
+        <figcaption>Informal networks are workers’ first line of defense, but lasting change needs formal union support.</figcaption>
+      </figure>
+    </div>
+
+    <h3 style="margin-top:40px">Three policy proposals</h3>
+    <div class="policy">
+      <div class="card">
+        <span class="num">01</span>
+        <h3>Supply chain transparency</h3>
+        <p>Move past voluntary Fair Trade labels: require <b>“Value Distribution Tags”</b> on retail goods showing what share of the price stayed with the manufacturing workforce.</p>
+        <figure class="shot fit"><div class="frame"><img src="images/qr-labels.jpg" alt="QR code product label"><div class="ph"><b>image coming</b><code>images/qr-labels.jpg</code></div></div>
+          <figcaption>QR labels link products to wage data.</figcaption></figure>
+      </div>
+      <div class="card">
+        <span class="num">02</span>
+        <h3>Close subcontracting loopholes</h3>
+        <p>Pass <b>Joint-Liability</b> laws making the brand at the top legally responsible for every link beneath it, however many subcontracting layers deep (World Bank, 2020).</p>
+        <figure class="shot fit"><div class="frame"><img src="images/shadow-factory-map.jpg" alt="Map of supplier tiers"><div class="ph"><b>image coming</b><code>images/shadow-factory-map.jpg</code></div></div>
+          <figcaption>Mapping shadow-factory tiers that escape accountability.</figcaption></figure>
+      </div>
+      <div class="card">
+        <span class="num">03</span>
+        <h3>Digital labor rights</h3>
+        <p>Classify AI data labelers as <b>employees</b>, not independent contractors, so “algorithmic management” can’t be used to bypass minimum-wage laws.</p>
+        <figure class="shot fit"><div class="frame"><img src="images/ai-data-labeling.jpg" alt="Data labeling work"><div class="ph"><b>image coming</b><code>images/ai-data-labeling.jpg</code></div></div>
+          <figcaption>Data labeling is the new manufacturing floor.</figcaption></figure>
+      </div>
+    </div>
+
+    <h3 style="margin-top:40px">The debate: is the chain broken, or working as intended?</h3>
+    <div class="debate">
+      <div class="side">
+        <p class="meta">Efficiency view</p>
+        <p>Some trade theorists see global supply chains as an engine of poverty reduction: low-skill manufacturing lets developing countries enter the global market, which eventually leads to industrialization and growth (World Bank, 2020).</p>
+      </div>
+      <div class="side mine">
+        <p class="meta">Structural view · where I land</p>
+        <p>Costinot, Vogel and Wang (2012) argue supply chains institutionalize wage inequality: high-productivity firms in the North systematically match with low-wage labor in the South, so the gap is permanent, not a phase. Without transparency and Joint-Liability laws, the system defaults to exploitation. The question isn’t whether the chain works, but who it works for.</p>
+      </div>
+    </div>
+    <div class="shots"><figure class="shot fit wide">
+      <div class="frame"><img src="images/ai-capital-wages.jpg" alt="Chart of AI capital and wage prospects"><div class="ph"><b>image coming</b>upload <code>images/ai-capital-wages.jpg</code></div></div>
+      <figcaption>AI capital raises wage prospects across sectors but favors high-skilled administrative and technical roles, reinforcing the curve (Drydakis, 2024).</figcaption>
+    </figure></div>
+  </section>
+
+  <!-- ============ CONCLUSION ============ -->
+  <section aria-labelledby="h-conc">
+    <p class="eyebrow">final reflections</p>
+    <h2 id="h-conc">Breaking the chain</h2>
+    <div class="grid2">
+      <div class="prose">
+        <p>I started this project seeing one-click logistics as a triumph of technology. Applying the Smile Curve showed me that the efficiency often rests on making labor invisible. Maya Aktar’s testimony was the turning point: it turned abstract economic “tasks” into real people fighting language barriers and subcontracting loopholes.</p>
+        <p>The Invisible Chain isn’t a market failure; it’s a design choice. While AI capital offers some wage gains (Drydakis, 2024), it risks reinforcing these inequalities unless it comes with radical transparency.</p>
+        <div class="ticket" style="margin-top:20px">
+          <div class="meta">Still unresolved</div>
+          <p class="question">Can a consumer truly act ethically in a system designed to hide the worker? Even with Fair Trade labels, Tier 2 and Tier 3 shadow factories stay opaque.</p>
+        </div>
+      </div>
+      <figure class="shot">
+        <div class="frame"><img src="images/maritime-to-digital.jpg" alt="Port logistics overlaid with digital networks"><div class="ph"><b>image coming</b>upload <code>images/maritime-to-digital.jpg</code></div></div>
+        <figcaption>From physical maritime logistics to the data-driven networks of modern global value chains.</figcaption>
+      </figure>
+    </div>
+
+    <h3 style="margin-top:36px">Take action</h3>
+    <div class="orgs">
+      <div class="org"><div><h3>International Labour Organization</h3><p>International labor standards and worker rights.</p></div><a class="btn ghost" href="https://www.ilo.org/" target="_blank" rel="noopener">Visit</a></div>
+      <div class="org"><div><h3>Better Work Jordan</h3><p>Programs improving the garment sector where Maya Aktar works.</p></div><a class="btn ghost" href="https://betterwork.org/jordan/" target="_blank" rel="noopener">Visit</a></div>
+      <div class="org"><div><h3>Fashion Revolution</h3><p>A global movement for transparency in fashion supply chains.</p></div><a class="btn ghost" href="https://www.fashionrevolution.org/" target="_blank" rel="noopener">Visit</a></div>
+    </div>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section id="sources" aria-labelledby="h-src">
+    <p class="eyebrow">receipts</p>
+    <h2 id="h-src">Works cited</h2>
+    <ol class="cites">
+      <li>Aktar, M. (2022, March 12). First person: ‘I speak up for those who cannot’. <em>UN News</em>. <a href="https://news.un.org/en/story/2022/03/1113482">https://news.un.org/en/story/2022/03/1113482</a></li>
+      <li>Baldwin, R., &amp; Ito, T. (2021). The smile curve: Evolving sources of value added in manufacturing. <em>Canadian Journal of Economics, 54</em>(4), 1842–1880. <a href="https://doi.org/10.1111/caje.12555">https://doi.org/10.1111/caje.12555</a></li>
+      <li>Casilli, A. A., Tubaro, P., Cornet, M., Le Ludec, C., Torres-Cierpe, J., &amp; Braz, M. V. (2025). <em>Global inequalities in the production of artificial intelligence: A four-country study on data work</em> [Preprint]. arXiv. <a href="https://doi.org/10.48550/arXiv.2410.14230">https://doi.org/10.48550/arXiv.2410.14230</a></li>
+      <li>Costinot, A., Vogel, J., &amp; Wang, S. (2012). Global supply chains and wage inequality. <em>American Economic Review, 102</em>(3), 396–401. <a href="https://doi.org/10.1257/aer.102.3.396">https://doi.org/10.1257/aer.102.3.396</a></li>
+      <li>Drydakis, N. (2024). Artificial intelligence and labor market outcomes. <em>IZA World of Labor</em>. <a href="https://doi.org/10.15185/izawol.515">https://doi.org/10.15185/izawol.515</a></li>
+      <li>Rungi, A., &amp; Del Prete, D. (2018). The smile curve at the firm level: Where value is added along supply chains. <em>Economics Letters, 164</em>, 38–42. <a href="https://doi.org/10.1016/j.econlet.2017.12.038">https://doi.org/10.1016/j.econlet.2017.12.038</a></li>
+      <li>World Bank. (2020). <em>World development report 2020: Trading for development in the age of global value chains</em>. <a href="https://doi.org/10.1596/978-1-4648-1457-0">https://doi.org/10.1596/978-1-4648-1457-0</a></li>
+    </ol>
+    <div class="btns">
+      <a class="btn ghost" href="https://sites.google.com/view/the-invisible-chain/home" target="_blank" rel="noopener">Original Google Site</a>
+      <a class="btn ghost" href="https://github.com/rlewisbangerter/rlewisbangerter.github.io/tree/main/invisible-chain">View the source on GitHub</a>
+    </div>
+  </section>
+</main>
+
+<footer>
+  Reuben Bangerter · B.S. Business Analytics &amp; IT and Supply Chain Management, Rutgers University · <a href="../">reubenbangerter.org</a>
+</footer>
+
+<div class="lb" id="lb" role="dialog" aria-label="Enlarged image"><img alt=""></div>
+<script>
+  // Show a placeholder for any image that hasn't been uploaded yet.
+  document.querySelectorAll("figure.shot img").forEach(img => {
+    const miss = () => img.closest("figure").classList.add("missing");
+    if (img.complete && img.naturalWidth === 0) miss();
+    img.addEventListener("error", miss);
+  });
+  // Click to enlarge.
+  const lb = document.getElementById("lb"), lbImg = lb.querySelector("img");
+  document.querySelectorAll("figure.shot img").forEach(img => img.addEventListener("click", () => {
+    lbImg.src = img.src; lbImg.alt = img.alt; lb.classList.add("open");
+  }));
+  lb.addEventListener("click", () => lb.classList.remove("open"));
+  document.addEventListener("keydown", e => { if (e.key === "Escape") lb.classList.remove("open"); });
+</script>
+</body>
+</html>
