@@ -70,6 +70,9 @@ h3 { font-family: var(--f-display); font-weight: 800; font-size: 24px; line-heig
 .card p:last-child { margin-bottom: 0; }
 ol.steps, ul.plain { margin: 0; padding-left: 20px; }
 ol.steps li, ul.plain li { margin-bottom: 8px; }
+.src ul.plain li { font-size: 14px; margin-bottom: 12px; overflow-wrap: anywhere; }
+.src ul.plain li span { display: block; color: var(--muted); font-size: 13px; }
+.src h3 { margin-bottom: 14px; }
 .ticket { background: var(--label); color: var(--ink); padding: 16px 18px; border-radius: 2px; box-shadow: 0 12px 26px rgba(0,0,0,.4); font-size: 13px; }
 .ticket .meta { color: #5d636c; }
 .formula { font-family: var(--f-mono); font-size: 14px; font-weight: 600; background: var(--ink); color: var(--label); padding: 10px 12px; border-radius: 3px; margin: 10px 0; overflow-x: auto; white-space: nowrap; }
@@ -134,6 +137,7 @@ footer { max-width: 920px; margin: 0 auto; padding: 30px 16px 60px; color: var(-
       <li class="opt"><a href="#powerbi">Power BI</a></li>
       <li class="opt"><a href="#findings">Findings</a></li>
       <li><a href="#files">Files</a></li>
+      <li class="opt"><a href="#sources">Sources</a></li>
       <li><a href="../">← Site</a></li>
     </ul>
   </div>
@@ -349,6 +353,42 @@ footer { max-width: 920px; margin: 0 auto; padding: 30px 16px 60px; color: var(-
     </div>
     <p class="meta" style="margin-top:18px">To re-run Solver on a lab: enable the Solver add-in, open a Lab sheet, Data → Solver, minimize the optimized-miles cell by changing the stop-order column with an AllDifferent constraint, Evolutionary method.</p>
     <p style="margin-top:14px"><a href="https://github.com/rlewisbangerter/last-mile-route-optimization">View the project on GitHub →</a></p>
+  </section>
+
+  <!-- ============ SOURCES ============ -->
+  <section id="sources" aria-labelledby="h-src">
+    <p class="eyebrow">where the numbers come from</p>
+    <h2 id="h-src">Sources</h2>
+    <p class="lede">Every sourced input is also labeled next to its cell on the workbook's Inputs sheet. Industry and vendor figures are directional benchmarks, not audited numbers.</p>
+    <div class="grid2 src" style="margin-top:22px">
+      <div>
+        <h3>Phase 1 research &amp; V1 model</h3>
+        <ul class="plain">
+          <li><a href="https://smartroutes.io/blogs/last-mile-delivery-statistics-the-complete-data-resource/">Last-Mile Delivery Statistics 2026</a>, SmartRoutes. <span>Last mile ≈ 53% of total shipping cost; urban vs. rural cost per package.</span></li>
+          <li><a href="https://www.dropoff.com/blog/last-mile-delivery-costs-breakdown-and-how-to-reduce-them/">Breakdown of Last-Mile Delivery Costs</a>, Dropoff. <span>Labor, fuel and equipment shares of last-mile cost.</span></li>
+          <li><a href="https://fleetenable.com/?p=14093">Why Your Final Mile Is Bleeding Money</a>, FleetEnable. <span>$17.78 per failed delivery (model input).</span></li>
+          <li><a href="https://atlasagility.duckdns.org/insights/ind-courier-3pl">Last-mile is the expensive mile</a>, ATLAS. <span>5–10% first-attempt failure rate (model uses 8%).</span></li>
+          <li><a href="https://www.logisticsinsider.in/making-sense-of-the-ever-so-expensive-last-mile/">Making sense of the ever so expensive last mile</a>, Logistics Insider. <span>Manual routes run ~20–25% more miles (V1's 20% assumption).</span></li>
+          <li><a href="https://www.upperinc.com/blog/delivery/how-much-to-charge-per-mile-for-delivery-business/">How Much to Charge for Delivery Per Mile</a>, Upper. <span>$0.56/mile vehicle cost and $30/hour loaded driver cost.</span></li>
+          <li><a href="https://app.3blmedia.com/news/ups-accelerates-use-routing-optimization-software-reduce-100-million-miles-driven">UPS Accelerates Use of Routing Optimization Software</a>, UPS via 3BL. <span>~120-stop typical route; ORION saves ~100M miles a year.</span></li>
+          <li><a href="https://www.informs.org/Impact/O.R.-Analytics-Success-Stories/Optimizing-Delivery-Routes">UPS ORION: Optimizing Delivery Routes</a>, INFORMS. <span>Route optimization case study.</span></li>
+          <li><a href="https://pubsonline.informs.org/doi/abs/10.1287/inte.2025.0295">Regionalize and Scale: Amazon's Fulfillment Network Design</a>, INFORMS Journal on Applied Analytics. <span>Amazon regionalization and cost to serve.</span></li>
+          <li><a href="https://iora.nus.edu.sg/?p=2357">Evaluating the Locker Alliance pilot</a>, NUS IORA. <span>11 parcels/hour to lockers vs. 5/hour to homes.</span></li>
+          <li><a href="https://trid.trb.org/View/2681454">Influence of self-pickup incentives on last-mile deliveries</a>, Research in Transportation Economics (TRID). <span>Locker savings stronger in urban than rural areas.</span></li>
+          <li><a href="https://academicnewsletter.sufe.edu.cn/info/404098">Do it right the first time: Vehicle routing with home delivery attempt predictors</a>, Lim et al. (SUFE summary). <span>Failure-aware sequencing cuts failed attempts ~10%.</span></li>
+        </ul>
+      </div>
+      <div>
+        <h3>V2–V3 model inputs &amp; method</h3>
+        <ul class="plain">
+          <li>Seghezzi, A., Siragusa, C. &amp; Mangiaracina, R. (2022). <a href="https://doi.org/10.1108/IJPDLM-03-2020-0072">Parcel lockers vs. home delivery: a model to compare last-mile delivery cost in urban and rural areas</a>. <i>International Journal of Physical Distribution &amp; Logistics Management</i>, 52(3), 213–237. <span>Locker purchase cost, compartments, site cost and fill rates.</span></li>
+          <li>Hovi, I. B. et al. (2023). <a href="https://toi.no/publications/parcel-lockers-as-delivery-solution-usage-patterns-experiences-and-effects-of-network-expansions-article38266-29.html">Parcel lockers as delivery solution: Usage patterns, experiences and effects of network expansions</a>. TØI Report 1959/2023, Institute of Transport Economics (Norway). <span>How customers travel to lockers; pickups combined with other errands.</span></li>
+          <li>Internal Revenue Service (2026). <a href="https://www.irs.gov/irb/2026-29_irb">Announcement 2026-11, Optional Standard Mileage Rates</a>, Internal Revenue Bulletin 2026-29. <span>76¢/mile business rate from July 1, 2026 (customer trip cost).</span></li>
+          <li>ParcelHive (2025), vendor product information. <span>Lockers claimed to last 10+ years (basis for the 10-year life assumption).</span></li>
+          <li>Beardwood, J., Halton, J. H. &amp; Hammersley, J. M. (1959). <a href="https://doi.org/10.1017/S0305004100034095">The shortest path through many points</a>. <i>Proceedings of the Cambridge Philosophical Society</i>, 55(4), 299–327. <span>Route-length formula (k = 0.7124) used on Scale-Up, Density and Lockers.</span></li>
+        </ul>
+      </div>
+    </div>
   </section>
 </main>
 
