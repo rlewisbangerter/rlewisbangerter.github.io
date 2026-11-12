@@ -1,9 +1,9 @@
 # Files
 
-Upload these here with **exactly** these names so the page's download buttons work:
+Downloads linked from the project page. Keep **exactly** these names so the download buttons work:
 
-- `LastMile_Dashboard.pbix`
-- `LastMile_Model_V3_Excel.xlsx`
-- `LastMile_Model_V2_Excel.xlsx`
+- `LastMile_Dashboard.pbix`: Power BI dashboard (final)
+- `LastMile_Model_V3_Excel.xlsx`: Excel model V3
+- `LastMile_Model_V2_Excel.xlsx`: Excel model V2 (earlier version)
 
-GitHub's web uploader accepts files up to 25 MB, which covers all three.
+To replace a file, upload a new one with the same name. GitHub's web uploader accepts files up to 25 MB.

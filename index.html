@@ -630,8 +630,8 @@ const SITE = {
       title: "Last-Mile Route Optimization",
       status: "In transit", done: false,
       dates: "Oct 2026 – present",
-      text: "Last-mile delivery eats about 53% of total shipping cost. I used generative AI to work through UPS and Amazon industry reports, built an Excel route-cost model comparing manual and optimized routing, and put the cost drivers in a Power BI dashboard.",
-      stats: [["~10%", "lower cost per package"], ["~$650K", "saved per year"], ["50", "route fleet modeled"]],
+      text: "Last-mile delivery eats about 53% of total shipping cost. I used generative AI to work through UPS and Amazon industry reports, built an Excel route-cost model that tests manual vs. optimized routing across 15 delivery areas, and turned it into an interactive 3-page Power BI dashboard.",
+      stats: [["4–12%", "lower cost per package"], ["$175–906K", "saved per year"], ["50", "route fleet modeled"]],
       tags: ["Excel", "Power BI", "Generative AI"],
       link: "last-mile/"
     },
@@ -893,7 +893,7 @@ function shipLabel(p) {
     <div class="ft"><div>From<b>Manual routes</b></div><div>To<b>Optimized routes</b></div></div>
     <div><div>Ship to</div><div class="big">50-ROUTE FLEET</div></div>
     <div>${barcode(p.title)}<div class="trk">1Z RB 2026 0650 K</div></div>
-    <div style="display:flex;justify-content:space-between"><span>Est. savings ~$650K/yr</span><span>Wt: 53% of cost</span></div>
+    <div style="display:flex;justify-content:space-between"><span>Est. savings $175–906K/yr</span><span>Wt: 53% of cost</span></div>
   </div>`;
 }
 function customsForm(p) {
