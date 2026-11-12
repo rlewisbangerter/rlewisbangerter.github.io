@@ -340,13 +340,6 @@ p { margin: 0; }
 .card .x:hover { background: rgba(26,29,34,.18); }
 .card .k { padding-right: 40px; }
 @media (max-width: 600px) { .card { position: static; width: auto; box-shadow: none; } .card .cover img { aspect-ratio: 16/9; } .maphint { display: none; } }
-.logbook { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 28px; margin-top: 34px; }
-.logbook h3 { font-size: 22px; padding-bottom: 6px; border-bottom: 2px solid var(--rule); margin-bottom: 8px; }
-.logbook h3 small { font-family: var(--f-mono); font-weight: 400; font-size: 11px; letter-spacing: .14em; color: var(--muted); margin-left: 6px; }
-.logbook ul { list-style: none; margin: 0; padding: 0; display: grid; }
-.logbook button { width: 100%; display: flex; justify-content: space-between; gap: 10px; background: none; border: 0; border-bottom: 1px dashed var(--rule); color: var(--fg); font-family: var(--f-mono); font-size: 13px; text-align: left; padding: 7px 2px; cursor: pointer; }
-.logbook button:hover, .logbook button[aria-current="true"] { color: var(--hivis); }
-.logbook button span:last-child { color: var(--muted); font-size: 11px; letter-spacing: .08em; white-space: nowrap; }
 
 /* ---------- first-visit intro (container doors → photo flight → arrival) ---------- */
 html.intro-on, html.intro-on body { overflow: hidden; }
@@ -472,6 +465,111 @@ footer .eyebrow { margin: 0; }
   .track, .view { animation: none; }
   html { scroll-behavior: auto; }
 }
+
+/* ---------- passport (travel page) ---------- */
+.pp { margin-top: 56px; }
+.pp h3.pp-title { text-align: center; font-size: clamp(30px, 5vw, 40px); text-transform: uppercase; }
+.pp-hint { text-align: center; font-family: var(--f-hand); font-size: 18px; color: var(--muted); margin: 6px 0 0; }
+.pp-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin: 16px 0 22px; }
+.pp-tabs button, .pp-nav button { background: var(--night-2); color: var(--muted); border: 1px solid var(--rule); font-family: var(--f-mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; padding: 7px 11px; border-radius: 3px; cursor: pointer; }
+.pp-tabs button:hover, .pp-nav button:hover:not(:disabled) { color: var(--fg); }
+.pp-tabs button[aria-pressed="true"] { color: var(--ink); background: var(--kraft); border-color: var(--kraft); }
+.pp-nav { display: flex; justify-content: center; align-items: center; gap: 14px; margin-top: 22px; }
+.pp-nav button { font-size: 13px; padding: 9px 14px; min-width: 44px; }
+.pp-nav button:disabled { opacity: .35; cursor: default; }
+.pp-nav output { font-family: var(--f-mono); font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); min-width: 170px; text-align: center; }
+.pp-wrap { position: relative; height: 480px; outline: none; }
+.pp-wrap:focus-visible { outline: 2px dashed var(--hivis); outline-offset: 8px; }
+.pp-stage { position: absolute; left: 50%; top: 0; height: 480px; transform-origin: top center; perspective: 2400px; }
+.pp-book { position: relative; width: 100%; height: 100%; transform-style: preserve-3d; transition: transform .7s cubic-bezier(.3,.7,.2,1); }
+.pp .leaf { position: absolute; left: 50%; top: 0; width: 50%; height: 100%; transform-style: preserve-3d; transform-origin: left center; transition: transform .9s cubic-bezier(.35,.55,.2,1); }
+.pp .face { position: absolute; inset: 0; overflow: hidden; backface-visibility: hidden; -webkit-backface-visibility: hidden; box-shadow: 0 22px 40px -18px rgba(0,0,0,.7); }
+.pp .leaf .face { box-shadow: none; }
+.pp-shade { position: absolute; top: 0; height: 100%; left: 0; width: 100%; border-radius: 12px; box-shadow: 0 28px 50px -18px rgba(0,0,0,.8), 0 2px 0 rgba(0,0,0,.25); transition: left .7s, width .7s; pointer-events: none; }
+.pp .leaf .front { border-radius: 0 12px 12px 0; cursor: e-resize; }
+.pp .leaf .back { transform: rotateY(180deg); border-radius: 12px 0 0 12px; cursor: w-resize; }
+.pp .leaf .front::after, .pp .leaf .back::after { content: ""; position: absolute; top: 0; bottom: 0; width: 34px; pointer-events: none; }
+.pp .leaf .front::after { left: 0; background: linear-gradient(90deg, rgba(0,0,0,.22), transparent); }
+.pp .leaf .back::after { right: 0; background: linear-gradient(-90deg, rgba(0,0,0,.22), transparent); }
+.pp-single { position: relative; width: 100%; height: 100%; perspective: 1600px; }
+.pp-single .face { border-radius: 4px 12px 12px 4px; transform-origin: left center; }
+.pp-single .face::after { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 22px; background: linear-gradient(90deg, rgba(0,0,0,.2), transparent); pointer-events: none; }
+.pp-single .turn-out { animation: ppOut .55s ease-in forwards; z-index: 2; }
+.pp-single .turn-in { animation: ppIn .55s ease-out; z-index: 2; }
+@keyframes ppOut { to { transform: rotateY(-105deg); opacity: .15; } }
+@keyframes ppIn { from { transform: rotateY(-105deg); opacity: .15; } }
+@media (prefers-reduced-motion: reduce) { .pp .leaf, .pp-book { transition: none; } .pp-single .turn-out, .pp-single .turn-in { animation: none; } }
+
+/* pages */
+.pg { position: relative; width: 100%; height: 100%; color: var(--ink); font-family: var(--f-mono); }
+.pg.paper {
+  background:
+    radial-gradient(120% 90% at 50% 45%, transparent 55%, rgba(120,90,40,.16)),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='22'%3E%3Cpath d='M0 11 Q15 0 30 11 T60 11 T90 11 T120 11' fill='none' stroke='%232f6b78' stroke-opacity='.15'/%3E%3Cpath d='M0 11 Q15 22 30 11 T60 11 T90 11 T120 11' fill='none' stroke='%23a8361c' stroke-opacity='.09'/%3E%3C/svg%3E"),
+    #f2ede1;
+}
+.pg .wm { position: absolute; left: 50%; top: 52%; transform: translate(-50%, -50%) rotate(-18deg); font-family: var(--f-stencil); font-size: 150px; color: #2f6b78; opacity: .06; pointer-events: none; white-space: nowrap; }
+.pg header { position: absolute; top: 0; left: 0; right: 0; display: flex; justify-content: space-between; align-items: baseline; padding: 14px 18px 0; font-size: 8.5px; letter-spacing: .22em; text-transform: uppercase; color: #2f6b78; }
+.pg header b { font-family: var(--f-display); font-weight: 800; font-size: 17px; letter-spacing: .06em; color: #24303b; }
+.pg .pno { position: absolute; left: 20px; right: 20px; bottom: 9px; text-align: left; font-size: 9.5px; letter-spacing: .25em; color: #7c8188; }
+.slots { position: absolute; top: 40px; bottom: 26px; left: 12px; right: 12px; display: grid; grid-template-rows: repeat(3, 1fr); }
+.slot { display: flex; align-items: center; justify-content: space-between; gap: 6px; min-height: 0; }
+.slot.flip { flex-direction: row-reverse; }
+.slot.solo { justify-content: center; }
+.stp { flex: none; background: none; border: 0; padding: 0; cursor: pointer; width: 144px; transform: translateX(var(--dx, 0)) rotate(var(--rot, 0deg)); transition: transform .2s, opacity .2s; mix-blend-mode: multiply; opacity: .88; border-radius: 8px; }
+.stp:hover, .stp:focus-visible { transform: translateX(var(--dx, 0)) rotate(var(--rot, 0deg)) scale(1.06); opacity: 1; }
+.stp:focus-visible, .snap:focus-visible { outline: 2px dashed var(--hivis); outline-offset: 3px; }
+.stp svg { display: block; width: 100%; height: auto; overflow: visible; }
+.stp .d { font-family: var(--f-display); font-weight: 800; }
+.stp .m { font-family: var(--f-mono); font-weight: 600; }
+.stp .s { font-family: var(--f-stencil); }
+.snap { flex: none; position: relative; background: #fff; border: 0; padding: 5px 5px 20px; width: 112px; box-shadow: 0 3px 8px rgba(0,0,0,.28); transform: rotate(var(--rot, 0deg)); cursor: zoom-in; transition: transform .2s; }
+.snap:hover { transform: rotate(0deg) scale(1.04); }
+.snap img { display: block; width: 102px; height: 78px; object-fit: cover; background: #d9d2c3; }
+.snap span { position: absolute; left: 0; right: 0; bottom: 1px; font-family: var(--f-hand); font-size: 15px; line-height: 1.1; color: var(--ink); text-align: center; }
+.snap::before { content: ""; position: absolute; top: -8px; left: 50%; width: 46px; height: 16px; transform: translateX(-50%) rotate(-5deg); background: rgba(236,222,186,.8); box-shadow: 0 1px 1px rgba(0,0,0,.12); }
+.pnote { flex: 1; font-family: var(--f-hand); font-size: 20px; line-height: 1; color: #2c4f86; text-align: center; transform: rotate(-5deg); }
+
+/* cover */
+.pg.cover { background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.22'/%3E%3C/svg%3E"),
+    radial-gradient(110% 80% at 40% 30%, #6e2329, #4a171c 70%, #3a1115);
+  color: #d9ba7c; display: flex; flex-direction: column; align-items: center; justify-content: space-between; padding: 46px 26px 36px; text-align: center; }
+.cover .gold { text-shadow: 0 1px 0 rgba(0,0,0,.45), 0 -1px 0 rgba(255,230,170,.18); }
+.cover .cv-top { font-family: var(--f-display); font-weight: 600; font-size: 16px; letter-spacing: .32em; text-transform: uppercase; }
+.cover .cv-t { font-family: var(--f-display); font-weight: 800; font-size: 46px; letter-spacing: .2em; margin-right: -.2em; line-height: 1; }
+.cover .cv-sub { font-family: var(--f-mono); font-size: 9.5px; letter-spacing: .34em; text-transform: uppercase; margin-top: 8px; opacity: .85; }
+.cover svg { display: block; }
+.cover .crest { width: 150px; height: 150px; filter: drop-shadow(0 1px 0 rgba(0,0,0,.4)); }
+.pg.cover.backc { justify-content: flex-end; gap: 14px; }
+.backc .url { font-family: var(--f-mono); font-size: 10px; letter-spacing: .28em; text-transform: uppercase; opacity: .7; }
+
+/* endpapers */
+.pg.endp { padding: 54px 30px 30px; }
+.endp h4 { font-family: var(--f-display); font-weight: 800; font-size: 13px; letter-spacing: .3em; text-transform: uppercase; color: #2f6b78; margin: 0 0 14px; }
+.endp p { font-family: var(--f-hand); font-size: 21px; line-height: 1.15; color: #2c3a4a; margin: 0 0 12px; }
+.endp .rules { position: absolute; left: 30px; right: 30px; bottom: 44px; height: 120px; background: repeating-linear-gradient(transparent 0 29px, rgba(47,107,120,.28) 29px 30px); }
+.endp .key { font-family: var(--f-mono); font-size: 10.5px; line-height: 1.7; color: #4b525b; letter-spacing: .04em; }
+.endp .key b { color: var(--ink); }
+
+/* data page */
+.pg.data { padding: 44px 20px 0; }
+.dp { display: flex; gap: 14px; }
+.dp-photo { flex: none; width: 98px; height: 126px; background: #d9d2c3; border: 1px solid rgba(0,0,0,.15); overflow: hidden; position: relative; }
+.dp-photo img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(.55) contrast(1.05) sepia(.15); }
+.dp-photo::after { content: ""; position: absolute; inset: 0; background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='22'%3E%3Cpath d='M0 11 Q15 0 30 11 T60 11 T90 11 T120 11' fill='none' stroke='%232f6b78' stroke-opacity='.25'/%3E%3C/svg%3E"); mix-blend-mode: multiply; }
+.dp dl { margin: 0; display: grid; gap: 7px; min-width: 0; }
+.dp dt { font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase; color: #2f6b78; }
+.dp dd { margin: 1px 0 0; font-size: 12px; font-weight: 600; letter-spacing: .04em; line-height: 1.25; }
+.dp-stats { display: grid; grid-template-columns: repeat(4, 1fr); margin-top: 16px; border-block: 1px solid rgba(47,107,120,.35); }
+.dp-stats div { text-align: center; padding: 8px 2px; }
+.dp-stats div + div { border-left: 1px dashed rgba(47,107,120,.35); }
+.dp-stats b { display: block; font-family: var(--f-display); font-weight: 800; font-size: 26px; line-height: 1; font-variant-numeric: tabular-nums; }
+.dp-stats span { font-size: 7.5px; letter-spacing: .14em; text-transform: uppercase; color: #4b525b; }
+.dp-sig { margin-top: 14px; }
+.dp-sig span { display: block; font-size: 7.5px; letter-spacing: .18em; text-transform: uppercase; color: #2f6b78; }
+.dp-sig b { display: block; font-family: var(--f-hand); font-weight: 700; font-size: 30px; line-height: 1; color: #1d2f55; transform: rotate(-3deg); margin-top: 2px; }
+.mrz { position: absolute; left: 0; right: 0; bottom: 0; padding: 10px 16px 14px; background: rgba(255,255,255,.45); border-top: 1px solid rgba(0,0,0,.08); font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .07em; line-height: 1.5; white-space: pre; overflow: hidden; color: #2a2e33; }
 </style>
 
 </head>
@@ -954,13 +1052,6 @@ function mapView() {
   const been = all.filter(p => !p.want);
   const countries = new Set(been.map(p => p.country)).size;
   const states = new Set(been.filter(p => p.state).map(p => p.state)).size;
-  const li = (p, i) => `<li><button type="button" data-place="${i}"><span>${esc(p.name)}</span><span>${esc(p.where)}</span></button></li>`;
-  const groups = [
-    ["Home ports", all.map((p, i) => [p, i]).filter(([p]) => p.lived)],
-    ["Europe", all.map((p, i) => [p, i]).filter(([p]) => !p.lived && !p.want && p.region === "Europe")],
-    ["United States", all.map((p, i) => [p, i]).filter(([p]) => !p.lived && !p.want && p.region === "US")],
-    ["Want to go", all.map((p, i) => [p, i]).filter(([p]) => p.want)]
-  ];
   return `
   <section aria-labelledby="h-map" style="padding-top:8px">
     <p class="eyebrow">ports of call</p>
@@ -988,10 +1079,272 @@ function mapView() {
       <p class="maphint">drag to pan · ctrl/⌘ + scroll or pinch to zoom · tap a dot</p>
       <div class="card" id="mapcard" hidden></div>
     </div>
-    <div class="logbook">
-      ${groups.map(([t, items]) => `<div><h3>${t}<small>${items.length}</small></h3><ul>${items.map(([p, i]) => li(p, i)).join("")}</ul></div>`).join("")}
-    </div>
+    ${passportView()}
   </section>`;
+}
+
+
+/* =============================================================
+   Passport: flip-through travel log on the map page.
+   Built from SITE.lived / SITE.visited / SITE.wishlist, so new
+   places get a stamp automatically.
+   ============================================================= */
+const PP_INK = ["#a8361c", "#24467e", "#2c6a4c", "#6a3a78", "#8d5a14", "#1f5f6b"];
+let MAP_SELECT = null;   // set by initMap: show place i on the map
+let PP_RO = null;
+function ppHash(s) { let h = 2166136261; for (const c of s) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return h >>> 0; }
+function ppRand(seed) { let t = seed; return () => { t = (t + 0x6D2B79F5) | 0; let r = Math.imul(t ^ (t >>> 15), 1 | t); r ^= r + Math.imul(r ^ (r >>> 7), 61 | r); return ((r ^ (r >>> 14)) >>> 0) / 4294967296; }; }
+function ppCoords(p) { return `${Math.abs(p.lat).toFixed(2)}°${p.lat >= 0 ? "N" : "S"} ${Math.abs(p.lon).toFixed(2)}°${p.lon >= 0 ? "E" : "W"}`; }
+
+function ppStamp(p, i) {
+  const r = ppRand(ppHash(p.name + p.where));
+  const kind = p.want ? "pend" : p.lived ? "home" : ["circle", "rect", "oval", "oct"][Math.floor(r() * 4)];
+  const ink = p.want ? "#7d838b" : p.lived ? "#24467e" : PP_INK[Math.floor(r() * PP_INK.length)];
+  const name = p.name.toUpperCase(), where = p.where.toUpperCase(), C = ppCoords(p);
+  // squeeze long words to fit; condensed display font ≈ .5em per glyph, mono ≈ .62em
+  const fit = (txt, max, size, k = .5) => txt.length * size * k > max ? ` textLength="${max}" lengthAdjust="spacingAndGlyphs"` : "";
+  const T = (x, y, cls, fs, txt, extra = "") => `<text class="${cls}" x="${x}" y="${y}" font-size="${fs}" text-anchor="middle" fill="${ink}"${extra}>${esc(txt)}</text>`;
+  const N = (y, fs, max) => T(80, y, "d", fs, name, fit(name, max, fs));
+  const Wh = (y, fs, max) => T(80, y, "m", fs, where, ` letter-spacing=".6"${fit(where, max, fs, .68)}`);
+  const Co = y => T(80, y, "m", 6.5, C, ' letter-spacing=".8"');
+  let g = "";
+  if (kind === "circle") {
+    g = `<g fill="none" stroke="${ink}"><circle cx="80" cy="60" r="55" stroke-width="3"/><circle cx="80" cy="60" r="43" stroke-width="1.1"/></g>
+      <path id="ppa${i}" d="M33 60 A47 47 0 0 1 127 60" fill="none"/><path id="ppb${i}" d="M28 60 A52 52 0 0 0 132 60" fill="none"/>
+      <text class="m" font-size="7.2" letter-spacing="1" fill="${ink}"><textPath href="#ppa${i}" startOffset="50%" text-anchor="middle"${where.length > 20 ? ' textLength="138" lengthAdjust="spacingAndGlyphs"' : ""}>${esc(where)}</textPath></text>
+      <text class="m" font-size="6.8" letter-spacing="2.2" fill="${ink}"><textPath href="#ppb${i}" startOffset="50%" text-anchor="middle">• ARRIVED •</textPath></text>
+      ${N(66, 16, 74)}<line x1="52" x2="108" y1="72" y2="72" stroke="${ink}" stroke-width=".8"/>${Co(82)}`;
+  } else if (kind === "rect") {
+    g = `<g fill="none" stroke="${ink}"><rect x="6" y="14" width="148" height="92" rx="5" stroke-width="3"/><rect x="11" y="19" width="138" height="82" rx="2" stroke-width="1"/></g>
+      ${T(80, 33, "m", 7, "ADMITTED · ENTRY", ' letter-spacing="2.2"')}${N(63, 24, 126)}${Wh(79, 7.5, 122)}
+      <line x1="24" x2="136" y1="85" y2="85" stroke="${ink}" stroke-width=".8"/>${Co(96)}`;
+  } else if (kind === "oval") {
+    g = `<g fill="none" stroke="${ink}"><ellipse cx="80" cy="60" rx="74" ry="52" stroke-width="3"/><ellipse cx="80" cy="60" rx="67" ry="45" stroke-width="1"/></g>
+      ${T(80, 31, "m", 7, "ENTRY", ' letter-spacing="3"')}${N(63, 21, 108)}${Wh(78, 7, 100)}${Co(90)}`;
+  } else if (kind === "oct") {
+    g = `<g fill="none" stroke="${ink}"><polygon points="32,8 128,8 152,32 152,88 128,112 32,112 8,88 8,32" stroke-width="3"/><polygon points="35,14 125,14 146,35 146,85 125,106 35,106 14,85 14,35" stroke-width="1"/></g>
+      ${T(80, 31, "m", 7, "PORT OF ENTRY", ' letter-spacing="2"')}${N(64, 22, 118)}${Wh(80, 7.2, 116)}${Co(93)}`;
+  } else if (kind === "home") {
+    g = `<rect x="5" y="10" width="150" height="100" rx="3" fill="none" stroke="${ink}" stroke-width="2.6"/><rect x="5" y="10" width="150" height="21" fill="${ink}"/>
+      <text class="m" x="80" y="24.5" font-size="8" letter-spacing="2.4" text-anchor="middle" fill="#f2ede1">RESIDENCE PERMIT</text>
+      ${N(62, 22, 132)}${Wh(78, 7.4, 130)}<line x1="20" x2="140" y1="85" y2="85" stroke="${ink}" stroke-width=".8"/>
+      ${T(80, 98, "m", 6.5, (p.note || "").toUpperCase(), ` letter-spacing=".6"${fit((p.note || ""), 132, 6.5, .68)}`)}`;
+  } else {
+    g = `<rect x="6" y="14" width="148" height="92" rx="5" fill="none" stroke="${ink}" stroke-width="2" stroke-dasharray="6 4"/>
+      ${T(80, 36, "s", 12, "VISA PENDING", ' letter-spacing="1.5"')}${N(66, 22, 126)}${Wh(81, 7.2, 122)}${T(80, 96, "m", 6.5, "WANT TO GO", ' letter-spacing="2.4"')}`;
+  }
+  return `<svg viewBox="0 0 160 120" aria-hidden="true"><g filter="url(#rough)">${g}</g></svg>`;
+}
+
+function passportFaces() {
+  const all = ALL_PLACES();
+  const been = all.filter(p => !p.want);
+  const nCountries = new Set(been.map(p => p.country)).size;
+  const nStates = new Set(been.filter(p => p.state).map(p => p.state)).size;
+  const idx = all.map((p, i) => [p, i]);
+  const groups = [
+    ["Residence", "Residence permits", idx.filter(([p]) => p.lived)],
+    ["Europe", "Europe", idx.filter(([p]) => !p.lived && !p.want && p.region === "Europe")],
+    ["USA", "United States", idx.filter(([p]) => !p.lived && !p.want && p.region === "US")],
+    ["Other", "Elsewhere", idx.filter(([p]) => !p.lived && !p.want && p.region !== "Europe" && p.region !== "US")],
+    ["Pending", "Visas pending", idx.filter(([p]) => p.want)]
+  ].filter(g => g[2].length);
+
+  const parts = SITE.name.trim().split(/\s+/), surname = parts.pop(), given = parts.join(" ");
+  const homes = SITE.lived, now = homes.find(p => /now/i.test(p.note || "")) || homes[homes.length - 1];
+  const before = homes.filter(p => p !== now);
+  const place = p => `${p.name}, ${p.state || p.where}`;
+  const mrz = (s) => (s + "<".repeat(36)).slice(0, 36);
+  const crest = `<svg class="crest gold" viewBox="0 0 150 150" fill="none" stroke="currentColor" aria-hidden="true">
+      <circle cx="75" cy="75" r="70" stroke-width="2"/><circle cx="75" cy="75" r="62" stroke-width="1"/>
+      ${Array.from({ length: 48 }, (_, k) => { const a = k * Math.PI / 24, r1 = 62, r2 = k % 4 ? 66 : 70; return `<line x1="${75 + r1 * Math.cos(a)}" y1="${75 + r1 * Math.sin(a)}" x2="${75 + r2 * Math.cos(a)}" y2="${75 + r2 * Math.sin(a)}" stroke-width="1"/>`; }).join("")}
+      <circle cx="75" cy="75" r="40" stroke-width="1.6"/><ellipse cx="75" cy="75" rx="18" ry="40" stroke-width="1"/><line x1="75" y1="35" x2="75" y2="115" stroke-width="1"/>
+      <path d="M38 62 Q75 56 112 62 M38 88 Q75 94 112 88 M35 75 H115" stroke-width="1"/>
+      <path d="M75 4 L80 16 L75 13 L70 16 Z" fill="currentColor" stroke="none"/>
+      <text x="75" y="139" font-family="var(--f-stencil)" font-size="15" text-anchor="middle" fill="currentColor" stroke="none" letter-spacing="2">${esc(SITE.initials)}</text></svg>`;
+  const chip = `<svg class="gold" width="40" height="26" viewBox="0 0 40 26" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="1" y="1" width="38" height="24" rx="3"/><circle cx="20" cy="13" r="6.5"/><line x1="1" y1="13" x2="13.5" y2="13"/><line x1="26.5" y1="13" x2="39" y2="13"/></svg>`;
+
+  const faces = [], sections = [["Cover", 0]];
+  faces.push(`<div class="pg cover"><div class="cv-top gold">${esc(SITE.name)}</div>${crest}<div><div class="cv-t gold">PASSPORT</div><div class="cv-sub gold">Ports of call</div></div>${chip}</div>`);
+  faces.push(`<div class="pg paper endp"><span class="wm">${esc(SITE.initials)}</span><h4>Observations</h4>
+      <p>Every stamp in here is a place I've actually been. The pending ones at the back are where I'm going next.</p>
+      <div class="key"><b>Tap a stamp</b> to find it on the map.<br><b>Tap a photo</b> to open it.<br><b>Turn pages</b> by tapping a page edge, swiping, or with ← →.</div>
+      <div class="rules"></div></div>`);
+  sections.push(["Holder", faces.length]);
+  faces.push(`<div class="pg paper data"><span class="wm">${esc(SITE.initials)}</span>
+      <header><span>Passport · Passeport</span><span>Type P</span></header>
+      <div class="dp"><div class="dp-photo"><img src="photos/me-id.jpg" alt="${esc(SITE.name)}"></div>
+        <dl><div><dt>Surname</dt><dd>${esc(surname.toUpperCase())}</dd></div>
+            <div><dt>Given names</dt><dd>${esc(given.toUpperCase())}</dd></div>
+            <div><dt>Home port</dt><dd>${esc(place(now))}</dd></div>
+            ${before.length ? `<div><dt>Previously</dt><dd>${before.map(p => esc(place(p))).join("<br>")}</dd></div>` : ""}</dl></div>
+      <div class="dp-stats"><div><b>${nCountries}</b><span>countries</span></div><div><b>${nStates}</b><span>US states</span></div><div><b>${SITE.visited.length}</b><span>stops</span></div><div><b>${(SITE.wishlist || []).length}</b><span>pending</span></div></div>
+      <div class="dp-sig"><span>Holder's signature</span><b>${esc(SITE.name)}</b></div>
+      <div class="mrz">${esc(mrz(`P<${SITE.initials}${surname.toUpperCase()}<<${given.toUpperCase().replace(/\s+/g, "<")}`))}\n${esc(mrz(`${String(SITE.visited.length).padStart(3, "0")}STOPS<${nCountries}CTRY<${nStates}USST<<${SITE.initials}`))}</div></div>`);
+
+  const slot = (p, i, k) => {
+    const r = ppRand(ppHash(p.name));
+    const rot = ((r() * 2 - 1) * 9).toFixed(1), dx = ((r() * 2 - 1) * 10).toFixed(0), prot = ((r() * 2 - 1) * 5).toFixed(1);
+    const ph = p.photos || [];
+    const side = ph.length
+      ? `<button type="button" class="snap" data-gal="${i}" style="--rot:${prot}deg" aria-label="Open ${ph.length} photo${ph.length > 1 ? "s" : ""} of ${esc(p.name)}"><img src="${esc(ph[0].src)}" alt="" loading="lazy"><span>${ph.length > 1 ? `${ph.length} photos` : esc(p.name)}</span></button>`
+      : p.note && !p.lived ? `<span class="pnote">${esc(p.note)}</span>` : "";
+    return `<div class="slot${k % 2 ? " flip" : ""}${side ? "" : " solo"}"><button type="button" class="stp" data-place="${i}" style="--rot:${rot}deg;--dx:${side ? 0 : dx}px" aria-label="${esc(p.name)}, ${esc(p.where)}: show on map">${ppStamp(p, i)}</button>${side}</div>`;
+  };
+  for (const [tab, title, items] of groups) {
+    sections.push([tab, faces.length]);
+    for (let s = 0; s < items.length; s += 3) {
+      const chunk = items.slice(s, s + 3);
+      faces.push(`<div class="pg paper visa"><span class="wm">${esc(SITE.initials)}</span><header><b>${esc(title)}</b><span>Visas · Visas</span></header>
+        <div class="slots">${chunk.map(([p, i], k) => slot(p, i, k + s)).join("")}</div><div class="pno" style="text-align:${faces.length % 2 ? "left" : "right"}">${faces.length}</div></div>`);
+    }
+  }
+  const back = [`<div class="pg paper endp"><span class="wm">${esc(SITE.initials)}</span><h4>Observations</h4><p>Room for more stamps.</p><div class="rules" style="height:240px"></div></div>`,
+    `<div class="pg cover backc">${chip}<div class="url gold">reubenbangerter.org</div></div>`];
+  if ((faces.length + back.length) % 2) faces.push(`<div class="pg paper endp"><span class="wm">${esc(SITE.initials)}</span><h4>Notes</h4><div class="rules" style="height:330px"></div><div class="pno" style="text-align:${faces.length % 2 ? "left" : "right"}">${faces.length}</div></div>`);
+  faces.push(...back);
+  return { faces, sections };
+}
+
+function passportView() {
+  return `<div class="pp" id="pp">
+      <p class="eyebrow">stamped &amp; signed for</p>
+      <h3 class="pp-title">The passport</h3>
+      <p class="pp-hint">flip through it · tap a stamp to find it on the map</p>
+      <div class="pp-tabs" role="group" aria-label="Jump to a section"></div>
+      <div class="pp-wrap" tabindex="0" role="region" aria-roledescription="passport" aria-label="Travel passport. Use the left and right arrow keys to turn pages."><div class="pp-stage"></div></div>
+      <div class="pp-nav"><button type="button" data-go="-1" aria-label="Previous page">←</button><output aria-live="polite"></output><button type="button" data-go="1" aria-label="Next page">→</button></div>
+    </div>`;
+}
+
+function initPassport() {
+  const root = document.getElementById("pp");
+  if (!root) return;
+  if (PP_RO) PP_RO.disconnect();
+  const { faces, sections } = passportFaces();
+  const wrap = root.querySelector(".pp-wrap"), stage = root.querySelector(".pp-stage");
+  const out = root.querySelector("output"), [bPrev, bNext] = root.querySelectorAll(".pp-nav button");
+  const RM = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const PW = 340, PH = 480, L = faces.length / 2;
+  let mode = null, s = 0, f = 0, token = 0, leaves = [];
+
+  root.querySelector(".pp-tabs").innerHTML = sections.map(([t, fi]) => `<button type="button" data-face="${fi}" aria-pressed="false">${t}</button>`).join("");
+
+  const visibleFace = () => mode === "spread" ? (s === L ? faces.length - 1 : 2 * s) : f;
+  function status() {
+    const vf = visibleFace();
+    let cur = sections[0];
+    for (const sec of sections) if (sec[1] <= vf) cur = sec;
+    if (mode === "spread" && s === L) cur = ["Back cover"];
+    root.querySelectorAll(".pp-tabs button").forEach(b => b.setAttribute("aria-pressed", b.dataset.face == cur[1] ? "true" : "false"));
+    const atStart = mode === "spread" ? s === 0 : f === 0, atEnd = mode === "spread" ? s === L : f === faces.length - 1;
+    out.textContent = atStart ? "Cover" : atEnd ? "Back cover" : mode === "spread" ? `${cur[0]} · pages ${2 * s - 1}–${2 * s}` : `${cur[0]} · page ${f}`;
+    bPrev.disabled = atStart; bNext.disabled = atEnd;
+  }
+  function apply(moving = -1) {
+    leaves.forEach((lf, j) => {
+      const flipped = j < s;
+      lf.style.transform = `rotateY(${flipped ? -180 : 0}deg)`;
+      if (j !== moving) lf.style.zIndex = flipped ? j + 1 : L - j;
+      lf.querySelector(".front").inert = !(j === s);
+      lf.querySelector(".back").inert = !(j === s - 1);
+    });
+    const sh = stage.querySelector(".pp-shade"); sh.style.left = s === 0 ? "50%" : "0"; sh.style.width = s === 0 || s === L ? "50%" : "100%";
+    stage.querySelector(".pp-book").style.transform = `translateX(${s === 0 ? -PW / 2 : s === L ? PW / 2 : 0}px)`;
+    status();
+  }
+  function build() {
+    if (mode === "spread") {
+      stage.innerHTML = `<div class="pp-book"><div class="pp-shade"></div>${Array.from({ length: L }, (_, j) => `<div class="leaf"><div class="face front">${faces[2 * j]}</div><div class="face back">${faces[2 * j + 1]}</div></div>`).join("")}</div>`;
+      leaves = [...stage.querySelectorAll(".leaf")];
+      s = f % 2 ? (f + 1) / 2 : f / 2;
+      leaves.forEach(l => l.style.transition = "none");
+      apply();
+      stage.offsetWidth; leaves.forEach(l => l.style.transition = "");
+    } else {
+      f = visibleFace();
+      stage.innerHTML = `<div class="pp-single"><div class="face cur">${faces[f]}</div></div>`;
+      status();
+    }
+  }
+  function layout() {
+    const avail = wrap.clientWidth;
+    if (!avail) return;
+    const m = avail >= 620 ? "spread" : "single";
+    const w = m === "spread" ? PW * 2 : PW, k = Math.min(1, avail / w);
+    stage.style.width = w + "px";
+    stage.style.transform = `translateX(-50%) scale(${k})`;
+    wrap.style.height = PH * k + "px";
+    if (m !== mode) { if (mode === "spread") f = visibleFace(); mode = m; build(); }
+  }
+  function turnTo(target) {   // spread mode: flip leaves one after another
+    target = Math.max(0, Math.min(L, target));
+    if (target === s) return;
+    const dir = target > s ? 1 : -1, my = ++token, many = Math.abs(target - s) > 1;
+    let z = L + 10;
+    const step = () => {
+      if (my !== token) return;
+      const j = dir > 0 ? s : s - 1;
+      s += dir;
+      leaves[j].style.zIndex = z++;
+      apply(j);
+      if (s !== target) setTimeout(step, RM ? 0 : many ? 110 : 0);
+      else setTimeout(() => { if (my === token) apply(); }, RM ? 0 : 950);
+    };
+    step();
+  }
+  function showFace(nf) {     // single mode
+    nf = Math.max(0, Math.min(faces.length - 1, nf));
+    if (nf === f) return;
+    const box = stage.querySelector(".pp-single"), old = box.querySelector(".cur");
+    const nu = document.createElement("div");
+    nu.className = "face cur"; nu.innerHTML = faces[nf];
+    old.classList.remove("cur");
+    box.querySelectorAll(".face:not(.cur)").forEach(e => e !== old && e.remove());
+    if (RM) old.remove();
+    if (nf > f) { box.insertBefore(nu, old); if (!RM) { old.classList.add("turn-out"); setTimeout(() => old.remove(), 600); } }
+    else { box.appendChild(nu); if (!RM) { nu.classList.add("turn-in"); setTimeout(() => { nu.classList.remove("turn-in"); old.remove(); }, 600); } }
+    f = nf; status();
+  }
+  const next = () => mode === "spread" ? turnTo(s + 1) : showFace(f + 1);
+  const prev = () => mode === "spread" ? turnTo(s - 1) : showFace(f - 1);
+  const goFace = fi => mode === "spread" ? turnTo(fi % 2 ? (fi + 1) / 2 : fi / 2) : showFace(fi);
+
+  bPrev.addEventListener("click", prev);
+  bNext.addEventListener("click", next);
+  root.querySelector(".pp-tabs").addEventListener("click", e => { const b = e.target.closest("[data-face]"); if (b) goFace(+b.dataset.face); });
+  wrap.addEventListener("keydown", e => {
+    if (e.key === "ArrowRight") { e.preventDefault(); next(); }
+    else if (e.key === "ArrowLeft") { e.preventDefault(); prev(); }
+    else if (e.key === "Home") { e.preventDefault(); goFace(0); }
+    else if (e.key === "End") { e.preventDefault(); goFace(faces.length - 1); }
+  });
+  let swiped = false, sx = null, sy = 0;
+  stage.addEventListener("pointerdown", e => { sx = e.clientX; sy = e.clientY; swiped = false; });
+  stage.addEventListener("pointerup", e => {
+    if (sx == null) return;
+    const dx = e.clientX - sx, dy = e.clientY - sy; sx = null;
+    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) { swiped = true; dx < 0 ? next() : prev(); }
+  });
+  stage.addEventListener("click", e => {
+    if (swiped) { swiped = false; return; }
+    const all = ALL_PLACES();
+    const g = e.target.closest("[data-gal]");
+    if (g) return openGallery(all[+g.dataset.gal].photos, 0);
+    const st = e.target.closest("[data-place]");
+    if (st) {
+      const i = +st.dataset.place;
+      if (MAP_SELECT) MAP_SELECT(i); else if (all[i].photos) openGallery(all[i].photos, 0);
+      return;
+    }
+    const face = e.target.closest(".face");
+    if (!face) return;
+    if (mode === "spread") face.classList.contains("back") ? prev() : next();
+    else { const r = face.getBoundingClientRect(); e.clientX - r.left < r.width * .35 ? prev() : next(); }
+  });
+  PP_RO = new ResizeObserver(layout);
+  PP_RO.observe(wrap);
+  layout();
 }
 
 function galleryHTML(photos, name) {
@@ -1129,7 +1482,6 @@ function initMap() {
     sel = i;
     pins.classed("on", p => p.i === i);
     recluster(d3.zoomTransform(svg.node()));
-    document.querySelectorAll(".logbook button").forEach(b => b.setAttribute("aria-current", +b.dataset.place === i ? "true" : "false"));
     card.className = "card" + (d.lived ? " home" : d.want ? " want" : "");
     card.innerHTML = `<button type="button" class="x" aria-label="Close">✕</button>
       <div class="k">${d.lived ? "Home port" : d.want ? "Next port · want to go" : "Port of call"} · ${esc(d.where)}</div>
@@ -1150,10 +1502,10 @@ function initMap() {
     const t = e.target.closest("[data-ph]");
     if (t && sel != null) openGallery(all[sel].photos, +t.dataset.ph);
   });
-  document.querySelectorAll(".logbook button").forEach(b => b.addEventListener("click", () => {
-    select(+b.dataset.place, true);
-    document.getElementById("chart").scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }));
+  MAP_SELECT = i => {
+    select(i, true);
+    document.getElementById("chart").scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "center" });
+  };
   document.querySelectorAll(".seg button").forEach(b => b.addEventListener("click", () => {
     document.querySelectorAll(".seg button").forEach(x => x.setAttribute("aria-pressed", x === b ? "true" : "false"));
     deselect();
@@ -1258,7 +1610,8 @@ function render(v) {
   const main = document.getElementById("main");
   openHobby = -1;
   main.innerHTML = `<div class="view">${VIEWS[v]()}</div>`;
-  if (v === "map") initMap();
+  MAP_SELECT = null;
+  if (v === "map") { initMap(); initPassport(); }
   setNav(v);
 }
 function setNav(v) {
