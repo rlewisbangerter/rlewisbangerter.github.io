@@ -33,7 +33,7 @@ Each sourced input is also labeled next to its cell on the workbook's Inputs she
 - [Last-Mile Delivery Statistics 2026](https://smartroutes.io/blogs/last-mile-delivery-statistics-the-complete-data-resource/), SmartRoutes: last mile ≈ 53% of total shipping cost; urban vs. rural cost per package
 - [Breakdown of Last-Mile Delivery Costs](https://www.dropoff.com/blog/last-mile-delivery-costs-breakdown-and-how-to-reduce-them/), Dropoff: labor, fuel and equipment shares
 - [Why Your Final Mile Is Bleeding Money](https://fleetenable.com/?p=14093), FleetEnable: $17.78 per failed delivery
-- [Last-mile is the expensive mile](https://atlasagility.duckdns.org/insights/ind-courier-3pl), ATLAS: 5–10% first-attempt failure rate (model uses 8%)
+- [Delivery Success Rates: Key Stats for Retail and eCommerce](https://smartroutes.io/blogs/delivery-success-rates-key-stats-for-retail-and-ecommerce/), SmartRoutes: first-attempt failure rates of roughly 3–12% by country (US 2.8%, UK 6.3%, Ireland 11.9%); model uses 8%
 - [Making sense of the ever so expensive last mile](https://www.logisticsinsider.in/making-sense-of-the-ever-so-expensive-last-mile/), Logistics Insider: manual routes ~20–25% more miles (V1's 20% assumption)
 - [How Much to Charge for Delivery Per Mile](https://web.archive.org/web/20260311165856/https://www.upperinc.com/blog/how-much-to-charge-per-mile-for-delivery-business/), Upper (archived copy): $0.56/mile vehicle cost, $30/hour loaded driver cost
 - [UPS Accelerates Use of Routing Optimization Software](https://app.3blmedia.com/news/ups-accelerates-use-routing-optimization-software-reduce-100-million-miles-driven), UPS via 3BL: ~120-stop route; ORION saves ~100M miles/year
