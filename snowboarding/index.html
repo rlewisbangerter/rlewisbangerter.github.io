@@ -46,38 +46,74 @@ h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(44px, 9vw
 .lede { max-width: 60ch; color: var(--fg); }
 .lede .muted { color: var(--muted); }
 .top { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 26px; }
-.hint { font-family: var(--f-hand); font-size: 21px; color: var(--kraft); display: flex; gap: 10px; align-items: center; }
-.hint svg { width: 34px; height: 34px; stroke: var(--kraft); fill: none; stroke-width: 1.6; stroke-linecap: round; }
+.tidy { font-family: var(--f-hand); font-size: 21px; line-height: 1; color: var(--ink); background: var(--kraft); border: 0; padding: 7px 16px 8px; border-radius: 3px; cursor: pointer;
+  transform: rotate(-1.5deg); box-shadow: 0 6px 14px rgba(0,0,0,.35); transition: transform .2s, background .2s, opacity .2s; }
+.tidy:hover { transform: rotate(0deg) translateY(-2px); background: var(--hivis); }
+.tidy[aria-disabled="true"] { opacity: .45; cursor: default; transform: rotate(-1.5deg); background: var(--kraft); }
 
-/* ---------- the desk ---------- */
-.desk-wrap { position: relative; perspective: 1400px; }
-.desk {
-  position: relative; aspect-ratio: 16 / 10; border-radius: 10px; overflow: visible;
+/* ---------- the workshop ---------- */
+.shop { position: relative; perspective: 1400px; }
+/* pegboard wall behind the bench */
+.wall { position: relative; height: clamp(120px, 15vw, 180px); border-radius: 6px 6px 0 0; overflow: hidden;
   background:
-    radial-gradient(ellipse 60% 55% at 46% 38%, rgba(255, 214, 150, .20), transparent 70%),
-    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%),
-    repeating-linear-gradient(91.5deg, rgba(0,0,0,.0) 0 7px, rgba(0,0,0,.10) 7px 9px, rgba(255,255,255,.025) 9px 15px, rgba(0,0,0,.06) 15px 22px),
-    repeating-linear-gradient(88.7deg, rgba(0,0,0,.0) 0 31px, rgba(0,0,0,.13) 31px 33px, rgba(0,0,0,0) 33px 70px),
-    linear-gradient(180deg, #3a2a1d, #2b1f16 60%, #251a12);
-  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 -14px 0 #1b130d inset, 0 30px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.6);
-}
-.desk::before { /* lamp glow pooled on the wood */
-  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
-  background: radial-gradient(circle at var(--lx, 46%) var(--ly, 36%), rgba(255, 226, 170, .10), transparent 40%);
-  transition: background .2s; }
-.desk-legs { height: 26px; margin: 0 4%; background: linear-gradient(90deg, #1b130d 0 6%, transparent 6% 94%, #1b130d 94%); border-radius: 0 0 4px 4px; opacity: .9; }
+    radial-gradient(ellipse 55% 120% at 50% -10%, rgba(255, 240, 205, .22), transparent 70%),
+    radial-gradient(circle at 50% 50%, #0f0b08 0 2.3px, rgba(0,0,0,.35) 2.6px, transparent 3.2px) 0 0 / 24px 24px,
+    linear-gradient(180deg, #4b3b2b, #3d3024 70%, #33281e);
+  box-shadow: inset 0 -18px 24px rgba(0,0,0,.45); }
+.shoplight { position: absolute; top: 8px; left: 50%; width: 44%; height: 9px; transform: translateX(-50%); border-radius: 5px;
+  background: linear-gradient(#f4efe2, #cfc8b6); box-shadow: 0 0 18px 4px rgba(255, 240, 205, .45), 0 0 60px 10px rgba(255, 240, 205, .18); }
+.shoplight::before, .shoplight::after { content: ""; position: absolute; top: -8px; width: 2px; height: 8px; background: #222; }
+.shoplight::before { left: 12%; } .shoplight::after { right: 12%; }
+.tools { position: absolute; inset: 0; pointer-events: none; }
+.tools svg { position: absolute; top: 26px; height: auto; filter: drop-shadow(3px 5px 3px rgba(0,0,0,.5)); }
+.tools .hook { stroke: #9aa1aa; stroke-width: 2; fill: none; }
+.stencil { position: absolute; right: 2.5%; bottom: 16%; font-family: var(--f-stencil); font-size: clamp(18px, 2.6vw, 34px); color: rgba(240,160,58,.55); letter-spacing: .06em; transform: rotate(-2deg); line-height: 1; }
+.stencil small { display: block; font-family: var(--f-mono); font-size: .32em; letter-spacing: .3em; color: rgba(232,226,214,.45); margin-top: 6px; }
 
-/* masking tape title on the desk */
+/* the bench top: worn butcher block */
+.desk {
+  position: relative; aspect-ratio: 16 / 10; overflow: visible; touch-action: pan-y;
+  background:
+    radial-gradient(circle at 17% 84%, transparent 27px, rgba(30,14,4,.38) 28px 31px, transparent 33px),
+    radial-gradient(circle at 19% 86%, transparent 22px, rgba(30,14,4,.18) 23px 24px, transparent 25px),
+    radial-gradient(circle at 83% 17%, rgba(236,226,196,.16) 0 4px, transparent 5px),
+    radial-gradient(circle at 86% 19%, rgba(236,226,196,.13) 0 2.5px, transparent 3.5px),
+    radial-gradient(circle at 81% 21%, rgba(236,226,196,.11) 0 2px, transparent 3px),
+    radial-gradient(ellipse 18% 10% at 62% 60%, rgba(20,10,4,.28), transparent 70%),
+    repeating-linear-gradient(31deg, transparent 0 160px, rgba(255,240,220,.05) 160px 161px, transparent 161px 233px),
+    repeating-linear-gradient(-58deg, transparent 0 210px, rgba(0,0,0,.18) 210px 211px, transparent 211px 290px),
+    repeating-linear-gradient(90deg, rgba(0,0,0,0) 0 3px, rgba(0,0,0,.07) 3px 4px, rgba(255,255,255,.02) 4px 9px),
+    linear-gradient(180deg, rgba(10,7,5,.30), rgba(10,7,5,.48)),
+    repeating-linear-gradient(90deg, #7a5433 0 64px, #6a472a 64px 66px, #82603c 66px 132px, #5e3f25 132px 134px, #725031 134px 205px, #5a3b22 205px 207px, #7d593a 207px 268px, #5c3d24 268px 270px);
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 12px 26px rgba(0,0,0,.25) inset, 0 0 0 1px rgba(0,0,0,.6);
+}
+.desk::before { /* shop light pooled on the bench, follows the cursor a little */
+  content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: radial-gradient(circle at var(--lx, 46%) var(--ly, 30%), rgba(255, 236, 196, .13), transparent 42%),
+              radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0,0,0,.5) 100%); }
+/* front edge of the bench with a tape measure along it */
+.bench-front { position: relative; height: 30px; background: linear-gradient(180deg, #3a2716, #24180e); box-shadow: 0 26px 50px rgba(0,0,0,.55); }
+.ruler { position: absolute; left: 12%; right: 3%; top: 7px; height: 15px; border-radius: 1px;
+  background:
+    repeating-linear-gradient(90deg, #1a1612 0 1.5px, transparent 1.5px 60px) 0 0 / 100% 100% no-repeat,
+    repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 12px) 0 0 / 100% 55% no-repeat,
+    repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 6px) 0 0 / 100% 30% no-repeat,
+    linear-gradient(#e9c33e, #d6ab26);
+  box-shadow: 0 1px 2px rgba(0,0,0,.5); opacity: .9; }
+.legs { height: 34px; margin: 0 3%; background: linear-gradient(90deg, #1b130d 0 5%, transparent 5% 95%, #1b130d 95%); }
+.legs::before { content: ""; display: block; height: 6px; margin: 16px 5% 0; background: #1b130d; opacity: .7; }
+
+/* little shop props on the bench (decoration only) */
+.prop { position: absolute; z-index: 1; pointer-events: none; height: auto; filter: drop-shadow(2px 5px 4px rgba(0,0,0,.55)); }
+.vise { position: absolute; left: -1.2%; bottom: -26px; width: clamp(70px, 9%, 110px); z-index: 1; pointer-events: none; filter: drop-shadow(4px 8px 6px rgba(0,0,0,.6)); }
+
+/* masking tape label on the bench */
 .tape {
-  position: absolute; left: 3%; bottom: 3.5%; z-index: 1; padding: 6px 22px 5px; transform: rotate(-2deg);
+  position: absolute; right: 3%; bottom: 3%; z-index: 1; padding: 6px 22px 5px; transform: rotate(-2deg);
   background: rgba(233, 222, 196, .86); color: #2b2a26; font-family: var(--f-hand); font-size: clamp(16px, 2vw, 24px); line-height: 1;
   clip-path: polygon(2% 0, 98% 4%, 100% 50%, 98% 96%, 1% 100%, 0 52%);
   box-shadow: 0 2px 6px rgba(0,0,0,.3); pointer-events: none; }
 .tape b { font-weight: 700; }
-.sticky {
-  position: absolute; left: 31.5%; bottom: 2.5%; z-index: 1; width: clamp(104px, 11.5%, 140px); aspect-ratio: 1; padding: 10px 12px;
-  background: linear-gradient(170deg, #f6d36b, #e9bf4f); color: #2b2416; font-family: var(--f-hand); font-size: clamp(15px, 1.7vw, 20px); line-height: 1.1;
-  transform: rotate(3.5deg); box-shadow: 0 10px 16px rgba(0,0,0,.4); pointer-events: none; }
 
 /* each piece of gear */
 .item {
@@ -85,8 +121,9 @@ h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(44px, 9vw
   position: absolute; left: var(--l); top: var(--t); width: var(--w);
   padding: 0; margin: 0; border: 0; background: none; cursor: pointer; color: inherit; z-index: 2;
   transform-style: preserve-3d;
-  transform: rotate(var(--r)) translate3d(var(--x), calc(var(--y) - var(--lift) * 14px), 0) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
+  transform: rotate(var(--r)) rotate(var(--rz, 0deg)) translate3d(var(--x), calc(var(--y) - var(--lift) * 14px), 0) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
   transition: transform .45s cubic-bezier(.2,.8,.2,1);
+  cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
   -webkit-tap-highlight-color: transparent;
   animation: settle .9s cubic-bezier(.2,.9,.25,1.15) both; animation-delay: calc(var(--i) * 70ms);
 }
@@ -94,7 +131,12 @@ h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(44px, 9vw
 .item img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none;
   filter: drop-shadow(0 calc(4px + var(--lift) * 18px) calc(4px + var(--lift) * 16px) rgba(0,0,0,calc(.55 - var(--lift) * .15)));
   transition: filter .45s; }
-.item.hot { --lift: 1; --s: 1.06; z-index: 6; transition: transform .14s ease-out; }
+.item.hot { --lift: 1; --s: 1.06; z-index: 400 !important; transition: transform .14s ease-out; }
+.item.dragging { --lift: 1.6; --s: 1.09; --rx: 0deg !important; --ry: 0deg !important; --x: 0px !important; --y: 0px !important; z-index: 500 !important; cursor: grabbing; transition: transform .12s ease-out; }
+.item.armed { --s: 1.04; --lift: .6; }
+.item.dragging .tag, .item.armed .tag { background: var(--hivis); }
+.desk.tidying .item { transition: transform .45s cubic-bezier(.2,.8,.2,1), left .7s cubic-bezier(.3,1.25,.4,1), top .7s cubic-bezier(.3,1.25,.4,1); }
+body.grabbing, body.grabbing * { cursor: grabbing !important; }
 .item:focus-visible { outline: none; --lift: 1; --s: 1.06; z-index: 6; }
 .item:focus-visible .tag { background: var(--hivis); }
 .item.flying { visibility: hidden; }
@@ -183,7 +225,12 @@ footer { border-top: 1px solid var(--rule); margin-top: 56px; padding: 32px 16px
   .tag { font-size: 14px; padding: 2px 8px 2px 14px; }
   .tag i { display: none; }
   .tape { display: none; }
-  .sticky { display: none; }
+  .prop.wide-only, .vise { display: none; }
+  .wall { height: 110px; }
+  .tools .hide-s { display: none; }
+  .stencil { font-size: 17px; bottom: 12%; }
+  .stencil small { display: none; }
+  .ruler { left: 4%; }
   .stage { min-height: 240px; padding: 34px 18px 40px; }
   .stage img { max-height: 38vh; }
   .specs li { grid-template-columns: 1fr; gap: 0; }
@@ -213,17 +260,46 @@ footer { border-top: 1px solid var(--rule); margin-top: 56px; padding: 32px 16px
     <div>
       <p class="eyebrow">off the clock · snowboarding</p>
       <h1>The gear desk</h1>
-      <p class="lede">Everything I ride with, unpacked and laid out on the bench. <span class="muted">Hover to pick something up, click to inspect it.</span></p>
+      <p class="lede">Everything I ride with, unpacked on the tune bench. <span class="muted">Drag things around, hover to pick something up, click to inspect it.</span></p>
     </div>
-    <p class="hint" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M6 30 C14 30 24 26 30 12"/><path d="M24 13 L30 11 L32 17"/></svg>try the board</p>
+    <button type="button" class="tidy" id="tidy" aria-disabled="true" title="Put everything back where it started">↺ tidy the bench</button>
   </div>
 
-  <div class="desk-wrap">
-    <div class="desk" id="desk" role="group" aria-label="Snowboard gear on a desk. Each item is a button that opens its details.">
-      <div class="tape"><b>GEAR DESK</b> · season kit</div>
-      <div class="sticky">Step On boots + bindings = no straps, no sitting down in the snow.</div>
+  <div class="shop">
+    <div class="wall" aria-hidden="true">
+      <div class="shoplight"></div>
+      <div class="tools">
+        <!-- hammer -->
+        <svg style="left:5%;width:clamp(34px,4.5%,52px);transform:rotate(-4deg)" viewBox="0 0 40 110"><path class="hook" d="M20 -4 V6"/><rect x="4" y="4" width="32" height="13" rx="2" fill="#7d858f"/><rect x="28" y="4" width="8" height="13" fill="#5f666f"/><rect x="16" y="16" width="8" height="90" rx="3" fill="#a0522d"/><rect x="16" y="70" width="8" height="36" rx="3" fill="#2a2a2a"/></svg>
+        <!-- adjustable wrench -->
+        <svg style="left:12%;width:clamp(24px,3%,36px);transform:rotate(3deg)" viewBox="0 0 30 120"><path class="hook" d="M15 -4 V6"/><path d="M5 8 h20 v10 h-6 v8 h6 v8 h-20 z" fill="#8d95a1"/><rect x="10" y="32" width="10" height="84" rx="5" fill="#8d95a1"/><circle cx="15" cy="106" r="3" fill="#3d3024"/></svg>
+        <!-- screwdriver -->
+        <svg style="left:17.5%;width:clamp(14px,1.8%,22px);transform:rotate(-2deg)" viewBox="0 0 16 120"><path class="hook" d="M8 -4 V6"/><rect x="2" y="4" width="12" height="44" rx="5" fill="#d0623e"/><rect x="2" y="16" width="12" height="4" fill="#1a1d22" opacity=".4"/><rect x="6.5" y="48" width="3" height="62" fill="#b9c0c8"/><rect x="5.5" y="108" width="5" height="4" fill="#b9c0c8"/></svg>
+        <!-- big plastic scraper -->
+        <svg class="hide-s" style="left:22%;width:clamp(50px,7%,86px);transform:rotate(5deg)" viewBox="0 0 90 70"><path class="hook" d="M45 -4 V8"/><rect x="2" y="6" width="86" height="56" rx="4" fill="rgba(80,170,230,.55)" stroke="rgba(160,215,245,.7)"/><circle cx="45" cy="13" r="3.5" fill="#3d3024"/></svg>
+        <!-- wax iron -->
+        <svg class="hide-s" style="left:31%;width:clamp(60px,8%,96px);top:44px" viewBox="0 0 100 60"><path class="hook" d="M30 -26 V16"/><path d="M6 44 Q8 20 34 16 H92 V44 Z" fill="#c9cdd2"/><path d="M6 44 H94 V52 H6 Z" fill="#6f7780"/><path d="M40 16 Q48 2 70 4 Q84 6 84 16" fill="none" stroke="#1a1d22" stroke-width="7" stroke-linecap="round"/><circle cx="24" cy="32" r="4" fill="#f0a03a"/><path d="M94 30 q8 2 6 14" stroke="#1a1d22" stroke-width="2" fill="none"/></svg>
+        <!-- edge tuner -->
+        <svg class="hide-s" style="left:47%;width:clamp(30px,4%,48px);transform:rotate(-3deg)" viewBox="0 0 40 90"><path class="hook" d="M20 -4 V6"/><path d="M4 6 h32 v24 l-16 0 v54 h-10 v-54 h-6 z" fill="#f0a03a"/><rect x="10" y="10" width="20" height="14" fill="#1a1d22" opacity=".35"/></svg>
+        <!-- pliers -->
+        <svg style="left:54%;width:clamp(26px,3.2%,40px);transform:rotate(4deg)" viewBox="0 0 34 120"><path class="hook" d="M17 -4 V6"/><path d="M13 6 l-6 34 l6 4 l4 -18 z M21 6 l6 34 l-6 4 l-4 -18 z" fill="#8d95a1"/><circle cx="17" cy="44" r="4" fill="#5f666f"/><path d="M13 46 l-8 70 h7 l6 -66 z M21 46 l8 70 h-7 l-6 -66 z" fill="#2f6e9e"/></svg>
+      </div>
+      <div class="stencil">TUNE BENCH<small>est. on a board since I was a kid</small></div>
     </div>
-    <div class="desk-legs" aria-hidden="true"></div>
+    <div class="desk" id="desk" role="group" aria-label="Snowboard gear on a workbench. Each item can be dragged, and clicking it opens its details.">
+      <svg class="vise" viewBox="0 0 120 110" aria-hidden="true"><rect x="10" y="44" width="100" height="40" rx="4" fill="#4c5560"/><rect x="0" y="20" width="44" height="30" rx="3" fill="#6b7580"/><rect x="76" y="20" width="44" height="30" rx="3" fill="#6b7580"/><rect x="4" y="16" width="36" height="6" fill="#9aa1aa"/><rect x="80" y="16" width="36" height="6" fill="#9aa1aa"/><rect x="40" y="56" width="40" height="8" fill="#2a2f35"/><rect x="-6" y="88" width="132" height="6" rx="3" fill="#9aa1aa"/><circle cx="-4" cy="91" r="6" fill="#d0623e"/><circle cx="124" cy="91" r="6" fill="#d0623e"/></svg>
+      <!-- screwdriver lying on the bench -->
+      <svg class="prop wide-only" style="left:88.5%;top:33%;width:10%;transform:rotate(68deg)" viewBox="0 0 120 16" aria-hidden="true"><rect x="0" y="2" width="42" height="12" rx="5" fill="#f0a03a"/><rect x="10" y="2" width="4" height="12" fill="#1a1d22" opacity=".3"/><rect x="42" y="6.5" width="70" height="3" fill="#b9c0c8"/><rect x="110" y="5" width="6" height="6" fill="#b9c0c8"/></svg>
+      <!-- spare Step On screws + washers -->
+      <svg class="prop" style="left:63%;top:31%;width:4.2%" viewBox="0 0 60 50" aria-hidden="true"><g fill="#a7aeb6"><circle cx="10" cy="12" r="6"/><circle cx="34" cy="8" r="6"/><circle cx="48" cy="30" r="6"/></g><g fill="#5f666f"><path d="M7 11h6v2H7z"/><path d="M31 7h6v2h-6z"/><path d="M45 29h6v2h-6z"/></g><g fill="none" stroke="#c1c7ce" stroke-width="3"><circle cx="20" cy="38" r="6"/><circle cx="36" cy="44" r="4.5"/></g></svg>
+      <!-- wax bar + crumbs -->
+      <svg class="prop wide-only" style="left:31%;top:79%;width:9%;transform:rotate(-8deg)" viewBox="0 0 110 50" aria-hidden="true"><rect x="2" y="6" width="70" height="38" rx="5" fill="#d9c49a"/><rect x="2" y="6" width="70" height="10" rx="5" fill="#e8d7b0"/><text x="37" y="34" text-anchor="middle" font-family="Caveat, cursive" font-size="17" fill="#6b5432">wax</text><g fill="#d9c49a" opacity=".8"><circle cx="84" cy="30" r="3"/><circle cx="96" cy="22" r="2"/><circle cx="92" cy="40" r="2.5"/></g></svg>
+      <!-- hex keys -->
+      <svg class="prop wide-only" style="left:90%;top:9%;width:6%;transform:rotate(-12deg)" viewBox="0 0 70 60" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="5"><path d="M6 10 H56 V24" stroke="#4c5560"/><path d="M10 26 H50 V36" stroke="#6b7580"/><path d="M14 42 H44 V50" stroke="#8d95a1"/></g></svg>
+      <div class="tape"><b>TUNE BENCH</b> · season kit</div>
+    </div>
+    <div class="bench-front" aria-hidden="true"><div class="ruler"></div></div>
+    <div class="legs" aria-hidden="true"></div>
   </div>
 
   <section class="manifest" id="manifest" aria-labelledby="mh">
@@ -336,11 +412,122 @@ desk.insertAdjacentHTML("beforeend", GEAR.map((g, i) => `
   </button>`).join(""));
 const items = [...desk.querySelectorAll(".item")];
 
-// ---- hover: the piece lifts off the desk and tilts toward the cursor
+// ---- drag things around the bench (positions are remembered in this browser)
+const mobile = matchMedia("(max-width: 720px)");
+const mode = () => mobile.matches ? "m" : "d";
+const posVars = () => mobile.matches ? ["--ml", "--mt", "--mw"] : ["--l", "--t", "--w"];
+const STORE = "gearDesk:v1";
+let moved = { d: {}, m: {} };
+try { moved = Object.assign(moved, JSON.parse(localStorage.getItem(STORE) || "{}")); } catch (e) {}
+const save = () => { try { localStorage.setItem(STORE, JSON.stringify(moved)); } catch (e) {} };
+const tidyBtn = document.getElementById("tidy");
+let zTop = 10;
+function applyMoved() {
+  items.forEach(el => {
+    const g = GEAR[+el.dataset.i];
+    for (const [m, lv, tv, dl, dt] of [["d", "--l", "--t", g.l, g.t], ["m", "--ml", "--mt", g.ml, g.mt]]) {
+      const p = moved[m][g.id];
+      el.style.setProperty(lv, (p ? p[0] : dl) + "%");
+      el.style.setProperty(tv, (p ? p[1] : dt) + "%");
+    }
+  });
+  tidyBtn.setAttribute("aria-disabled", Object.keys(moved[mode()]).length ? "false" : "true");
+}
+applyMoved();
+mobile.addEventListener("change", applyMoved);
+
+function current(el) {
+  const g = GEAR[+el.dataset.i], [lv, tv, wv] = posVars();
+  return [parseFloat(el.style.getPropertyValue(lv)), parseFloat(el.style.getPropertyValue(tv)), mobile.matches ? g.mw : g.w];
+}
+
+let drag = null, suppressClick = false;
+function beginDrag(el, x, y) {
+  const [l, t, w] = current(el), r = desk.getBoundingClientRect();
+  drag = { el, x0: x, y0: y, l0: l, t0: t, w, r, lx: x, lt: performance.now(), rz: 0, active: false };
+}
+function moveDrag(x, y) {
+  if (!drag) return;
+  const { el, r } = drag;
+  if (!drag.active) {
+    if (Math.hypot(x - drag.x0, y - drag.y0) < 5) return;
+    drag.active = true;
+    el.classList.remove("hot", "armed"); el.classList.add("dragging");
+    ["--rx", "--ry", "--x", "--y"].forEach(v => el.style.removeProperty(v));
+    el.style.zIndex = ++zTop;
+    document.body.classList.add("grabbing");
+  }
+  const hRatio = el.offsetHeight / r.height * 100;
+  let l = drag.l0 + (x - drag.x0) / r.width * 100, t = drag.t0 + (y - drag.y0) / r.height * 100;
+  l = Math.min(Math.max(l, -drag.w * .25), 100 - drag.w * .75);
+  t = Math.min(Math.max(t, -hRatio * .2), 100 - hRatio * .6);
+  const [lv, tv] = posVars();
+  el.style.setProperty(lv, l.toFixed(2) + "%"); el.style.setProperty(tv, t.toFixed(2) + "%");
+  // swing a little in the direction it's being pulled
+  const now = performance.now(), vx = (x - drag.lx) / Math.max(8, now - drag.lt);
+  drag.rz = drag.rz * .7 + Math.max(-14, Math.min(14, vx * 9)) * .3;
+  if (!reduce) el.style.setProperty("--rz", drag.rz.toFixed(2) + "deg");
+  drag.lx = x; drag.lt = now;
+}
+function endDrag() {
+  if (!drag) return;
+  const { el, active } = drag;
+  el.classList.remove("dragging", "armed");
+  document.body.classList.remove("grabbing");
+  el.style.removeProperty("--rz");
+  if (active) {
+    const [l, t] = current(el);
+    moved[mode()][GEAR[+el.dataset.i].id] = [+l.toFixed(2), +t.toFixed(2)];
+    save(); tidyBtn.setAttribute("aria-disabled", "false");
+    suppressClick = true; setTimeout(() => { suppressClick = false; }, 60);
+    if (!reduce) el.querySelector("img").animate([{ translate: "0 -10px" }, { translate: "0 2px" }, { translate: "0 0" }], { duration: 360, easing: "ease-out" });
+  }
+  drag = null;
+}
+
+// mouse / pen: press and pull
+items.forEach(el => {
+  el.addEventListener("pointerdown", e => {
+    if (e.pointerType === "touch" || e.button !== 0) return;
+    beginDrag(el, e.clientX, e.clientY);
+    el.setPointerCapture(e.pointerId);
+  });
+  el.addEventListener("pointermove", e => { if (drag && drag.el === el && e.pointerType !== "touch") moveDrag(e.clientX, e.clientY); });
+  el.addEventListener("pointerup", e => { if (e.pointerType !== "touch") endDrag(); });
+  el.addEventListener("pointercancel", e => { if (e.pointerType !== "touch") endDrag(); });
+});
+// touch: hold for a moment to pick it up (so a normal swipe still scrolls the page)
+items.forEach(el => {
+  let timer = null, sx = 0, sy = 0;
+  el.addEventListener("touchstart", e => {
+    const t = e.touches[0]; sx = t.clientX; sy = t.clientY;
+    clearTimeout(timer);
+    timer = setTimeout(() => { beginDrag(el, sx, sy); drag.armed = true; el.classList.add("armed"); if (navigator.vibrate) navigator.vibrate(12); }, 220);
+  }, { passive: true });
+  el.addEventListener("touchmove", e => {
+    const t = e.touches[0];
+    if (drag && drag.el === el && drag.armed) { e.preventDefault(); moveDrag(t.clientX, t.clientY); }
+    else if (Math.hypot(t.clientX - sx, t.clientY - sy) > 8) clearTimeout(timer);
+  }, { passive: false });
+  const done = () => { clearTimeout(timer); if (drag && drag.el === el) endDrag(); };
+  el.addEventListener("touchend", done); el.addEventListener("touchcancel", done);
+  el.addEventListener("contextmenu", e => e.preventDefault());
+});
+
+tidyBtn.addEventListener("click", () => {
+  if (tidyBtn.getAttribute("aria-disabled") === "true") return;
+  moved[mode()] = {}; save();
+  desk.classList.add("tidying");
+  items.forEach(el => el.style.removeProperty("z-index"));
+  applyMoved();
+  setTimeout(() => desk.classList.remove("tidying"), 800);
+});
+
+// ---- hover: the piece lifts off the bench and tilts toward the cursor
 items.forEach(el => {
   if (reduce) return;
   el.addEventListener("pointermove", e => {
-    if (e.pointerType !== "mouse") return;
+    if (e.pointerType !== "mouse" || drag) return;
     const b = el.getBoundingClientRect();
     const dx = ((e.clientX - b.left) / b.width - .5) * 2, dy = ((e.clientY - b.top) / b.height - .5) * 2;
     el.classList.add("hot");
@@ -350,13 +537,15 @@ items.forEach(el => {
     el.style.setProperty("--y", (dy * 7).toFixed(1) + "px");
   });
   el.addEventListener("pointerleave", () => {
+    if (drag && drag.el === el) return;
+    const was = el.classList.contains("hot");
     el.classList.remove("hot");
     ["--rx", "--ry", "--x", "--y"].forEach(v => el.style.removeProperty(v));
     // a little wobble as it settles back down
-    el.animate([{ rotate: "0deg" }, { rotate: "-1.6deg" }, { rotate: "1deg" }, { rotate: "0deg" }], { duration: 520, easing: "ease-out" });
+    if (was) el.animate([{ rotate: "0deg" }, { rotate: "-1.6deg" }, { rotate: "1deg" }, { rotate: "0deg" }], { duration: 520, easing: "ease-out" });
   });
 });
-// the lamp glow follows the pointer around the desk
+// the shop light follows the pointer around the bench
 desk.addEventListener("pointermove", e => {
   const b = desk.getBoundingClientRect();
   desk.style.setProperty("--lx", ((e.clientX - b.left) / b.width * 100).toFixed(1) + "%");
@@ -465,7 +654,7 @@ async function closeItem() {
   busy = false;
 }
 
-desk.addEventListener("click", e => { const it = e.target.closest(".item"); if (it) openItem(+it.dataset.i, it); });
+desk.addEventListener("click", e => { const it = e.target.closest(".item"); if (!it || suppressClick) return; openItem(+it.dataset.i, it); });
 box.addEventListener("click", e => {
   if (e.target.closest("[data-close]")) return closeItem();
   const st = e.target.closest("[data-step]"); if (st) return swapTo(cur + +st.dataset.step);
