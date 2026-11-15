@@ -46,112 +46,137 @@ h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(44px, 9vw
 .lede { max-width: 60ch; color: var(--fg); }
 .lede .muted { color: var(--muted); }
 .top { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 26px; }
-.tidy { font-family: var(--f-hand); font-size: 21px; line-height: 1; color: var(--ink); background: var(--kraft); border: 0; padding: 7px 16px 8px; border-radius: 3px; cursor: pointer;
-  transform: rotate(-1.5deg); box-shadow: 0 6px 14px rgba(0,0,0,.35); transition: transform .2s, background .2s, opacity .2s; }
-.tidy:hover { transform: rotate(0deg) translateY(-2px); background: var(--hivis); }
-.tidy[aria-disabled="true"] { opacity: .45; cursor: default; transform: rotate(-1.5deg); background: var(--kraft); }
+/* ---------- the workshop: a big bench you pan around (drag the background) ---------- */
+.view { position: relative; height: calc(100svh - 56px); min-height: 520px; overflow: hidden; background: #0b0d10;
+  cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; outline: none; }
+.view.panning { cursor: grabbing; }
+.view::after { /* vignette, like looking through a lens */
+  content: ""; position: absolute; inset: 0; pointer-events: none; z-index: 5;
+  background: radial-gradient(ellipse 75% 70% at 50% 50%, transparent 55%, rgba(6,7,9,.55) 85%, rgba(6,7,9,.85) 100%);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04); }
+.world { position: absolute; left: 0; top: 0; width: 2400px; height: 1560px; transform-origin: 0 0; will-change: transform; perspective: 1600px; }
 
-/* ---------- the workshop ---------- */
-.shop { position: relative; perspective: 1400px; }
-/* pegboard wall behind the bench */
-.wall { position: relative; height: clamp(120px, 15vw, 180px); border-radius: 6px 6px 0 0; overflow: hidden;
+/* pegboard wall */
+.wall { position: absolute; left: 0; top: 0; width: 2400px; height: 380px;
   background:
-    radial-gradient(ellipse 55% 120% at 50% -10%, rgba(255, 240, 205, .22), transparent 70%),
-    radial-gradient(circle at 50% 50%, #0f0b08 0 2.3px, rgba(0,0,0,.35) 2.6px, transparent 3.2px) 0 0 / 24px 24px,
-    linear-gradient(180deg, #4b3b2b, #3d3024 70%, #33281e);
-  box-shadow: inset 0 -18px 24px rgba(0,0,0,.45); }
-.shoplight { position: absolute; top: 8px; left: 50%; width: 44%; height: 9px; transform: translateX(-50%); border-radius: 5px;
-  background: linear-gradient(#f4efe2, #cfc8b6); box-shadow: 0 0 18px 4px rgba(255, 240, 205, .45), 0 0 60px 10px rgba(255, 240, 205, .18); }
-.shoplight::before, .shoplight::after { content: ""; position: absolute; top: -8px; width: 2px; height: 8px; background: #222; }
+    radial-gradient(ellipse 22% 120% at 30% -10%, rgba(255, 240, 205, .22), transparent 70%),
+    radial-gradient(ellipse 22% 120% at 70% -10%, rgba(255, 240, 205, .22), transparent 70%),
+    radial-gradient(circle at 50% 50%, #0f0b08 0 3px, rgba(0,0,0,.35) 3.4px, transparent 4px) 0 0 / 30px 30px,
+    linear-gradient(180deg, #4b3b2b, #3d3024 70%, #2f251c);
+  box-shadow: inset 0 -30px 40px rgba(0,0,0,.5); }
+.shoplight { position: absolute; top: 14px; width: 560px; height: 12px; border-radius: 6px;
+  background: linear-gradient(#f4efe2, #cfc8b6); box-shadow: 0 0 22px 5px rgba(255, 240, 205, .45), 0 0 80px 16px rgba(255, 240, 205, .16); }
+.shoplight::before, .shoplight::after { content: ""; position: absolute; top: -14px; width: 3px; height: 14px; background: #222; }
 .shoplight::before { left: 12%; } .shoplight::after { right: 12%; }
-.tools { position: absolute; inset: 0; pointer-events: none; }
-.tools svg { position: absolute; top: 26px; height: auto; filter: drop-shadow(3px 5px 3px rgba(0,0,0,.5)); }
-.tools .hook { stroke: #9aa1aa; stroke-width: 2; fill: none; }
-.stencil { position: absolute; right: 2.5%; bottom: 16%; font-family: var(--f-stencil); font-size: clamp(18px, 2.6vw, 34px); color: rgba(240,160,58,.55); letter-spacing: .06em; transform: rotate(-2deg); line-height: 1; }
-.stencil small { display: block; font-family: var(--f-mono); font-size: .32em; letter-spacing: .3em; color: rgba(232,226,214,.45); margin-top: 6px; }
+.hang { position: absolute; top: 40px; height: auto; filter: drop-shadow(4px 7px 4px rgba(0,0,0,.5)); }
+.hang .hook { stroke: #9aa1aa; stroke-width: 2; fill: none; }
+.stencil { position: absolute; left: 1540px; top: 210px; font-family: var(--f-stencil); font-size: 74px; color: rgba(240,160,58,.55); letter-spacing: .06em; transform: rotate(-2deg); line-height: 1; }
+.stencil small { display: block; font-family: var(--f-mono); font-size: 15px; letter-spacing: .32em; color: rgba(232,226,214,.45); margin-top: 10px; }
+.pin { position: absolute; background: var(--label); padding: 10px 10px 36px; box-shadow: 0 12px 20px rgba(0,0,0,.5); }
+.pin img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.pin span { position: absolute; left: 0; right: 0; bottom: 6px; text-align: center; font-family: var(--f-hand); font-size: 22px; color: var(--ink); }
+.pin::before { content: ""; position: absolute; top: -8px; left: 50%; width: 16px; height: 16px; margin-left: -8px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #ff8a6b, #c0452f); box-shadow: 0 3px 4px rgba(0,0,0,.5); }
 
 /* the bench top: worn butcher block */
-.desk {
-  position: relative; aspect-ratio: 16 / 10; overflow: visible; touch-action: pan-y;
+.bench { position: absolute; left: 0; top: 380px; width: 2400px; height: 1120px;
   background:
-    radial-gradient(circle at 17% 84%, transparent 27px, rgba(30,14,4,.38) 28px 31px, transparent 33px),
-    radial-gradient(circle at 19% 86%, transparent 22px, rgba(30,14,4,.18) 23px 24px, transparent 25px),
-    radial-gradient(circle at 83% 17%, rgba(236,226,196,.16) 0 4px, transparent 5px),
-    radial-gradient(circle at 86% 19%, rgba(236,226,196,.13) 0 2.5px, transparent 3.5px),
-    radial-gradient(circle at 81% 21%, rgba(236,226,196,.11) 0 2px, transparent 3px),
-    radial-gradient(ellipse 18% 10% at 62% 60%, rgba(20,10,4,.28), transparent 70%),
+    radial-gradient(circle at 240px 980px, transparent 40px, rgba(30,14,4,.38) 41px 45px, transparent 47px),
+    radial-gradient(circle at 252px 990px, transparent 33px, rgba(30,14,4,.18) 34px 35px, transparent 36px),
+    radial-gradient(circle at 1980px 120px, rgba(236,226,196,.16) 0 6px, transparent 7px),
+    radial-gradient(circle at 2010px 140px, rgba(236,226,196,.13) 0 4px, transparent 5px),
+    radial-gradient(circle at 1950px 150px, rgba(236,226,196,.11) 0 3px, transparent 4px),
+    radial-gradient(ellipse 260px 120px at 1520px 620px, rgba(20,10,4,.28), transparent 70%),
     repeating-linear-gradient(31deg, transparent 0 160px, rgba(255,240,220,.05) 160px 161px, transparent 161px 233px),
     repeating-linear-gradient(-58deg, transparent 0 210px, rgba(0,0,0,.18) 210px 211px, transparent 211px 290px),
     repeating-linear-gradient(90deg, rgba(0,0,0,0) 0 3px, rgba(0,0,0,.07) 3px 4px, rgba(255,255,255,.02) 4px 9px),
-    linear-gradient(180deg, rgba(10,7,5,.30), rgba(10,7,5,.48)),
+    radial-gradient(ellipse 900px 600px at var(--lx, 1200px) var(--ly, 500px), rgba(255, 236, 196, .10), transparent 70%),
+    linear-gradient(180deg, rgba(10,7,5,.22), rgba(10,7,5,.45)),
     repeating-linear-gradient(90deg, #7a5433 0 64px, #6a472a 64px 66px, #82603c 66px 132px, #5e3f25 132px 134px, #725031 134px 205px, #5a3b22 205px 207px, #7d593a 207px 268px, #5c3d24 268px 270px);
-  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 12px 26px rgba(0,0,0,.25) inset, 0 0 0 1px rgba(0,0,0,.6);
-}
-.desk::before { /* shop light pooled on the bench, follows the cursor a little */
-  content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: radial-gradient(circle at var(--lx, 46%) var(--ly, 30%), rgba(255, 236, 196, .13), transparent 42%),
-              radial-gradient(ellipse at 50% 45%, transparent 55%, rgba(0,0,0,.5) 100%); }
-/* front edge of the bench with a tape measure along it */
-.bench-front { position: relative; height: 30px; background: linear-gradient(180deg, #3a2716, #24180e); box-shadow: 0 26px 50px rgba(0,0,0,.55); }
-.ruler { position: absolute; left: 12%; right: 3%; top: 7px; height: 15px; border-radius: 1px;
+  box-shadow: inset 0 18px 30px rgba(0,0,0,.35); }
+.front { position: absolute; left: 0; top: 1500px; width: 2400px; height: 60px; background: linear-gradient(180deg, #3a2716, #1d140c); }
+.ruler { position: absolute; left: 300px; right: 80px; top: 14px; height: 24px;
   background:
-    repeating-linear-gradient(90deg, #1a1612 0 1.5px, transparent 1.5px 60px) 0 0 / 100% 100% no-repeat,
-    repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 12px) 0 0 / 100% 55% no-repeat,
-    repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 6px) 0 0 / 100% 30% no-repeat,
+    repeating-linear-gradient(90deg, #1a1612 0 2px, transparent 2px 100px) 0 0 / 100% 100% no-repeat,
+    repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 20px) 0 0 / 100% 55% no-repeat,
+    repeating-linear-gradient(90deg, #1a1612 0 1px, transparent 1px 10px) 0 0 / 100% 30% no-repeat,
     linear-gradient(#e9c33e, #d6ab26);
   box-shadow: 0 1px 2px rgba(0,0,0,.5); opacity: .9; }
-.legs { height: 34px; margin: 0 3%; background: linear-gradient(90deg, #1b130d 0 5%, transparent 5% 95%, #1b130d 95%); }
-.legs::before { content: ""; display: block; height: 6px; margin: 16px 5% 0; background: #1b130d; opacity: .7; }
-
-/* little shop props on the bench (decoration only) */
-.prop { position: absolute; z-index: 1; pointer-events: none; height: auto; filter: drop-shadow(2px 5px 4px rgba(0,0,0,.55)); }
-.vise { position: absolute; left: -1.2%; bottom: -26px; width: clamp(70px, 9%, 110px); z-index: 1; pointer-events: none; filter: drop-shadow(4px 8px 6px rgba(0,0,0,.6)); }
-
-/* masking tape label on the bench */
-.tape {
-  position: absolute; right: 3%; bottom: 3%; z-index: 1; padding: 6px 22px 5px; transform: rotate(-2deg);
-  background: rgba(233, 222, 196, .86); color: #2b2a26; font-family: var(--f-hand); font-size: clamp(16px, 2vw, 24px); line-height: 1;
-  clip-path: polygon(2% 0, 98% 4%, 100% 50%, 98% 96%, 1% 100%, 0 52%);
-  box-shadow: 0 2px 6px rgba(0,0,0,.3); pointer-events: none; }
+.prop { position: absolute; z-index: 1; pointer-events: none; height: auto; filter: drop-shadow(3px 7px 5px rgba(0,0,0,.55)); }
+.tape { position: absolute; z-index: 1; padding: 9px 30px 8px; transform: rotate(-2deg);
+  background: rgba(233, 222, 196, .86); color: #2b2a26; font-family: var(--f-hand); font-size: 32px; line-height: 1;
+  clip-path: polygon(2% 0, 98% 4%, 100% 50%, 98% 96%, 1% 100%, 0 52%); box-shadow: 0 2px 6px rgba(0,0,0,.3); pointer-events: none; }
 .tape b { font-weight: 700; }
+.note { /* handwritten note on the bench */ }
+.sticky { position: absolute; z-index: 1; width: 200px; padding: 16px 18px 20px; pointer-events: none;
+  background: linear-gradient(170deg, #f6d36b, #e9bf4f); color: #2b2416; font-family: var(--f-hand); font-size: 27px; line-height: 1.08;
+  transform: rotate(3.5deg); box-shadow: 0 12px 18px rgba(0,0,0,.45); }
 
-/* each piece of gear */
+/* overlays on top of the canvas */
+.overlay { position: absolute; z-index: 8; pointer-events: none; }
+.titlecard { left: max(16px, env(safe-area-inset-left, 0px)); top: 16px; max-width: min(460px, calc(100% - 32px));
+  background: rgba(18,22,28,.82); backdrop-filter: blur(6px); border: 1px solid var(--rule); border-top: 3px solid var(--kraft); border-radius: 4px; padding: 14px 18px 16px; pointer-events: auto; }
+.titlecard h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(34px, 5vw, 56px); line-height: .92; text-transform: uppercase; margin: 2px 0 8px; letter-spacing: .01em; }
+.titlecard p { font-size: 12.5px; color: var(--muted); line-height: 1.5; }
+.titlecard p b { color: var(--fg); font-weight: 400; }
+.titlecard .eyebrow { font-size: 19px; }
+.titlecard .x { all: unset; position: absolute; right: 8px; top: 6px; color: var(--muted); cursor: pointer; font-size: 14px; padding: 4px 6px; }
+.titlecard.min h1 { font-size: 26px; margin: 0; } .titlecard.min p, .titlecard.min .eyebrow { display: none; }
+.controls { right: max(14px, env(safe-area-inset-right, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); display: flex; gap: 6px; pointer-events: auto; }
+.controls button { font-family: var(--f-mono); font-size: 13px; color: var(--fg); background: rgba(18,22,28,.85); backdrop-filter: blur(6px); border: 1px solid var(--rule); border-radius: 4px; padding: 8px 11px; cursor: pointer; min-width: 38px; }
+.controls button:hover { border-color: var(--kraft); }
+.controls button[aria-disabled="true"] { opacity: .4; cursor: default; }
+.controls .tidy { font-family: var(--f-hand); font-size: 19px; line-height: 1; background: var(--kraft); color: var(--ink); border: 0; }
+.controls .tidy:hover { background: var(--hivis); }
+.controls .tidy[aria-disabled="true"]:hover { background: var(--kraft); }
+.map { left: max(14px, env(safe-area-inset-left, 0px)); bottom: max(14px, env(safe-area-inset-bottom, 0px)); width: 150px; height: 98px; pointer-events: auto; cursor: pointer;
+  background: rgba(18,22,28,.85); border: 1px solid var(--rule); border-radius: 4px; overflow: hidden; }
+.map i { position: absolute; background: rgba(201,166,113,.55); border-radius: 1px; }
+.map .vp { position: absolute; border: 1.5px solid var(--hivis); border-radius: 2px; box-shadow: 0 0 0 999px rgba(0,0,0,.25); }
+.scrollcue { left: 50%; bottom: 16px; transform: translateX(-50%); font-family: var(--f-hand); font-size: 19px; color: var(--kraft); text-decoration: none; pointer-events: auto; white-space: nowrap; }
+.hintbubble { left: 50%; top: 50%; transform: translate(-50%, -50%); background: rgba(18,22,28,.88); border: 1px solid var(--kraft); border-radius: 30px; padding: 10px 20px; font-family: var(--f-hand); font-size: 23px; color: var(--fg); display: flex; gap: 12px; align-items: center; white-space: nowrap; transition: opacity .5s; }
+.hintbubble svg { width: 34px; height: 34px; stroke: var(--kraft); fill: none; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; animation: nudge 1.6s ease-in-out infinite; }
+@keyframes nudge { 50% { transform: translateX(10px); } }
+.hintbubble.gone { opacity: 0; }
+
+main { max-width: 1120px; margin: 0 auto; padding: 0 max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px)); }
+.eyebrow { font-family: var(--f-hand); font-size: 22px; color: var(--hivis); margin: 0; }
+
+/* each piece of gear (positions are in bench pixels) */
 .item {
   --x: 0px; --y: 0px; --rx: 0deg; --ry: 0deg; --lift: 0; --s: 1;
-  position: absolute; left: var(--l); top: var(--t); width: var(--w);
-  padding: 0; margin: 0; border: 0; background: none; cursor: pointer; color: inherit; z-index: 2;
+  position: absolute; left: calc(var(--px) * 1px); top: calc(var(--py) * 1px); width: calc(var(--pw) * 1px);
+  padding: 0; margin: 0; border: 0; background: none; color: inherit; z-index: 2;
   transform-style: preserve-3d;
-  transform: rotate(var(--r)) rotate(var(--rz, 0deg)) translate3d(var(--x), calc(var(--y) - var(--lift) * 14px), 0) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
+  transform: rotate(var(--r)) rotate(var(--rz, 0deg)) translate3d(var(--x), calc(var(--y) - var(--lift) * 22px), 0) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
   transition: transform .45s cubic-bezier(.2,.8,.2,1);
-  cursor: grab; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
-  -webkit-tap-highlight-color: transparent;
+  cursor: pointer; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent;
   animation: settle .9s cubic-bezier(.2,.9,.25,1.15) both; animation-delay: calc(var(--i) * 70ms);
 }
-@keyframes settle { from { opacity: 0; translate: 0 -40px; } to { opacity: 1; translate: 0 0; } }
+@keyframes settle { from { opacity: 0; translate: 0 -60px; } to { opacity: 1; translate: 0 0; } }
 .item img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none;
-  filter: drop-shadow(0 calc(4px + var(--lift) * 18px) calc(4px + var(--lift) * 16px) rgba(0,0,0,calc(.55 - var(--lift) * .15)));
+  filter: drop-shadow(0 calc(6px + var(--lift) * 26px) calc(6px + var(--lift) * 22px) rgba(0,0,0,calc(.55 - var(--lift) * .15)));
   transition: filter .45s; }
 .item.hot { --lift: 1; --s: 1.06; z-index: 400 !important; transition: transform .14s ease-out; }
 .item.dragging { --lift: 1.6; --s: 1.09; --rx: 0deg !important; --ry: 0deg !important; --x: 0px !important; --y: 0px !important; z-index: 500 !important; cursor: grabbing; transition: transform .12s ease-out; }
 .item.armed { --s: 1.04; --lift: .6; }
 .item.dragging .tag, .item.armed .tag { background: var(--hivis); }
-.desk.tidying .item { transition: transform .45s cubic-bezier(.2,.8,.2,1), left .7s cubic-bezier(.3,1.25,.4,1), top .7s cubic-bezier(.3,1.25,.4,1); }
+.world.tidying .item { transition: transform .45s cubic-bezier(.2,.8,.2,1), left .7s cubic-bezier(.3,1.25,.4,1), top .7s cubic-bezier(.3,1.25,.4,1); }
 body.grabbing, body.grabbing * { cursor: grabbing !important; }
-.item:focus-visible { outline: none; --lift: 1; --s: 1.06; z-index: 6; }
+.item:focus-visible { outline: none; --lift: 1; --s: 1.06; z-index: 400; }
 .item:focus-visible .tag { background: var(--hivis); }
 .item.flying { visibility: hidden; }
 
 /* kraft hang tag tied to each item */
 .tag {
   position: absolute; left: var(--tagx, 6%); top: var(--tagy, 92%); z-index: 3;
-  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
-  background: var(--kraft); color: var(--ink); padding: 3px 10px 3px 16px; border-radius: 2px 6px 6px 2px;
-  font-family: var(--f-hand); font-size: clamp(14px, 1.45vw, 19px); line-height: 1.15;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
+  background: var(--kraft); color: var(--ink); padding: 4px 14px 4px 22px; border-radius: 2px 8px 8px 2px;
+  font-family: var(--f-hand); font-size: 25px; line-height: 1.15;
   transform: rotate(var(--tagr, -4deg)) translateZ(10px);
-  clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+  clip-path: polygon(13px 0, 100% 0, 100% 100%, 13px 100%, 0 50%);
   box-shadow: 0 3px 6px rgba(0,0,0,.35); transition: background .2s; }
-.tag::before { content: ""; position: absolute; left: 7px; top: 50%; width: 5px; height: 5px; margin-top: -2.5px; border-radius: 50%; background: #2b1f16; }
-.tag i { font-style: normal; font-family: var(--f-mono); font-size: .62em; letter-spacing: .12em; opacity: .7; }
+.tag::before { content: ""; position: absolute; left: 9px; top: 50%; width: 7px; height: 7px; margin-top: -3.5px; border-radius: 50%; background: #2b1f16; }
+.tag i { font-style: normal; font-family: var(--f-mono); font-size: .58em; letter-spacing: .12em; opacity: .7; }
 .item.hot .tag { background: var(--hivis); }
 
 /* ---------- inspect view ---------- */
@@ -218,19 +243,14 @@ body.grabbing, body.grabbing * { cursor: grabbing !important; }
 
 footer { border-top: 1px solid var(--rule); margin-top: 56px; padding: 32px 16px 40px; text-align: center; color: var(--muted); font-size: 11.5px; letter-spacing: .06em; }
 
-/* ---------- small screens: a taller desk, items rearranged ---------- */
+/* ---------- small screens ---------- */
 @media (max-width: 720px) {
-  .desk { aspect-ratio: 3 / 5.2; }
-  .item { left: var(--ml); top: var(--mt); width: var(--mw); }
-  .tag { font-size: 14px; padding: 2px 8px 2px 14px; }
-  .tag i { display: none; }
-  .tape { display: none; }
-  .prop.wide-only, .vise { display: none; }
-  .wall { height: 110px; }
-  .tools .hide-s { display: none; }
-  .stencil { font-size: 17px; bottom: 12%; }
-  .stencil small { display: none; }
-  .ruler { left: 4%; }
+  .view { height: calc(100svh - 56px); min-height: 460px; }
+  .titlecard { padding: 10px 14px 12px; }
+  .titlecard h1 { font-size: 32px; }
+  .titlecard p { font-size: 11.5px; }
+  .map { display: none; }
+  .scrollcue { left: 16px; transform: none; bottom: 18px; }
   .stage { min-height: 240px; padding: 34px 18px 40px; }
   .stage img { max-height: 38vh; }
   .specs li { grid-template-columns: 1fr; gap: 0; }
@@ -239,7 +259,7 @@ footer { border-top: 1px solid var(--rule); margin-top: 56px; padding: 32px 16px
 }
 @media (prefers-reduced-motion: reduce) {
   .item, .item img { transition: none; animation: none; }
-  .scrim { animation: none; }
+  .scrim, .hintbubble svg { animation: none; }
 }
 </style>
 </head>
@@ -255,54 +275,68 @@ footer { border-top: 1px solid var(--rule); margin-top: 56px; padding: 32px 16px
   </div>
 </header>
 
-<main>
-  <div class="top">
-    <div>
-      <p class="eyebrow">off the clock · snowboarding</p>
-      <h1>The gear desk</h1>
-      <p class="lede">Everything I ride with, unpacked on the tune bench. <span class="muted">Drag things around, hover to pick something up, click to inspect it.</span></p>
-    </div>
-    <button type="button" class="tidy" id="tidy" aria-disabled="true" title="Put everything back where it started">↺ tidy the bench</button>
-  </div>
-
-  <div class="shop">
+<section class="view" id="view" tabindex="0" aria-label="Workbench. Drag the background to look around; drag a piece of gear to move it; click a piece to inspect it.">
+  <div class="world" id="world">
     <div class="wall" aria-hidden="true">
-      <div class="shoplight"></div>
-      <div class="tools">
-        <!-- hammer -->
-        <svg style="left:5%;width:clamp(34px,4.5%,52px);transform:rotate(-4deg)" viewBox="0 0 40 110"><path class="hook" d="M20 -4 V6"/><rect x="4" y="4" width="32" height="13" rx="2" fill="#7d858f"/><rect x="28" y="4" width="8" height="13" fill="#5f666f"/><rect x="16" y="16" width="8" height="90" rx="3" fill="#a0522d"/><rect x="16" y="70" width="8" height="36" rx="3" fill="#2a2a2a"/></svg>
-        <!-- adjustable wrench -->
-        <svg style="left:12%;width:clamp(24px,3%,36px);transform:rotate(3deg)" viewBox="0 0 30 120"><path class="hook" d="M15 -4 V6"/><path d="M5 8 h20 v10 h-6 v8 h6 v8 h-20 z" fill="#8d95a1"/><rect x="10" y="32" width="10" height="84" rx="5" fill="#8d95a1"/><circle cx="15" cy="106" r="3" fill="#3d3024"/></svg>
-        <!-- screwdriver -->
-        <svg style="left:17.5%;width:clamp(14px,1.8%,22px);transform:rotate(-2deg)" viewBox="0 0 16 120"><path class="hook" d="M8 -4 V6"/><rect x="2" y="4" width="12" height="44" rx="5" fill="#d0623e"/><rect x="2" y="16" width="12" height="4" fill="#1a1d22" opacity=".4"/><rect x="6.5" y="48" width="3" height="62" fill="#b9c0c8"/><rect x="5.5" y="108" width="5" height="4" fill="#b9c0c8"/></svg>
-        <!-- big plastic scraper -->
-        <svg class="hide-s" style="left:22%;width:clamp(50px,7%,86px);transform:rotate(5deg)" viewBox="0 0 90 70"><path class="hook" d="M45 -4 V8"/><rect x="2" y="6" width="86" height="56" rx="4" fill="rgba(80,170,230,.55)" stroke="rgba(160,215,245,.7)"/><circle cx="45" cy="13" r="3.5" fill="#3d3024"/></svg>
-        <!-- wax iron -->
-        <svg class="hide-s" style="left:31%;width:clamp(60px,8%,96px);top:44px" viewBox="0 0 100 60"><path class="hook" d="M30 -26 V16"/><path d="M6 44 Q8 20 34 16 H92 V44 Z" fill="#c9cdd2"/><path d="M6 44 H94 V52 H6 Z" fill="#6f7780"/><path d="M40 16 Q48 2 70 4 Q84 6 84 16" fill="none" stroke="#1a1d22" stroke-width="7" stroke-linecap="round"/><circle cx="24" cy="32" r="4" fill="#f0a03a"/><path d="M94 30 q8 2 6 14" stroke="#1a1d22" stroke-width="2" fill="none"/></svg>
-        <!-- edge tuner -->
-        <svg class="hide-s" style="left:47%;width:clamp(30px,4%,48px);transform:rotate(-3deg)" viewBox="0 0 40 90"><path class="hook" d="M20 -4 V6"/><path d="M4 6 h32 v24 l-16 0 v54 h-10 v-54 h-6 z" fill="#f0a03a"/><rect x="10" y="10" width="20" height="14" fill="#1a1d22" opacity=".35"/></svg>
-        <!-- pliers -->
-        <svg style="left:54%;width:clamp(26px,3.2%,40px);transform:rotate(4deg)" viewBox="0 0 34 120"><path class="hook" d="M17 -4 V6"/><path d="M13 6 l-6 34 l6 4 l4 -18 z M21 6 l6 34 l-6 4 l-4 -18 z" fill="#8d95a1"/><circle cx="17" cy="44" r="4" fill="#5f666f"/><path d="M13 46 l-8 70 h7 l6 -66 z M21 46 l8 70 h-7 l-6 -66 z" fill="#2f6e9e"/></svg>
-      </div>
-      <div class="stencil">TUNE BENCH<small>est. on a board since I was a kid</small></div>
+      <div class="shoplight" style="left:300px"></div>
+      <div class="shoplight" style="left:1420px"></div>
+      <!-- hammer -->
+      <svg class="hang" style="left:120px;width:64px;transform:rotate(-4deg)" viewBox="0 0 40 110"><path class="hook" d="M20 -4 V6"/><rect x="4" y="4" width="32" height="13" rx="2" fill="#7d858f"/><rect x="28" y="4" width="8" height="13" fill="#5f666f"/><rect x="16" y="16" width="8" height="90" rx="3" fill="#a0522d"/><rect x="16" y="70" width="8" height="36" rx="3" fill="#2a2a2a"/></svg>
+      <!-- adjustable wrench -->
+      <svg class="hang" style="left:230px;width:46px;transform:rotate(3deg)" viewBox="0 0 30 120"><path class="hook" d="M15 -4 V6"/><path d="M5 8 h20 v10 h-6 v8 h6 v8 h-20 z" fill="#8d95a1"/><rect x="10" y="32" width="10" height="84" rx="5" fill="#8d95a1"/><circle cx="15" cy="106" r="3" fill="#3d3024"/></svg>
+      <!-- screwdriver -->
+      <svg class="hang" style="left:310px;width:26px;transform:rotate(-2deg)" viewBox="0 0 16 120"><path class="hook" d="M8 -4 V6"/><rect x="2" y="4" width="12" height="44" rx="5" fill="#d0623e"/><rect x="2" y="16" width="12" height="4" fill="#1a1d22" opacity=".4"/><rect x="6.5" y="48" width="3" height="62" fill="#b9c0c8"/><rect x="5.5" y="108" width="5" height="4" fill="#b9c0c8"/></svg>
+      <!-- plastic wax scraper -->
+      <svg class="hang" style="left:380px;width:130px;transform:rotate(5deg)" viewBox="0 0 90 70"><path class="hook" d="M45 -4 V8"/><rect x="2" y="6" width="86" height="56" rx="4" fill="rgba(80,170,230,.55)" stroke="rgba(160,215,245,.7)"/><circle cx="45" cy="13" r="3.5" fill="#3d3024"/></svg>
+      <!-- wax iron -->
+      <svg class="hang" style="left:560px;width:150px;top:84px" viewBox="0 0 100 60"><path class="hook" d="M30 -26 V16"/><path d="M6 44 Q8 20 34 16 H92 V44 Z" fill="#c9cdd2"/><path d="M6 44 H94 V52 H6 Z" fill="#6f7780"/><path d="M40 16 Q48 2 70 4 Q84 6 84 16" fill="none" stroke="#1a1d22" stroke-width="7" stroke-linecap="round"/><circle cx="24" cy="32" r="4" fill="#f0a03a"/><path d="M94 30 q8 2 6 14" stroke="#1a1d22" stroke-width="2" fill="none"/></svg>
+      <!-- edge tuner -->
+      <svg class="hang" style="left:770px;width:64px;transform:rotate(-3deg)" viewBox="0 0 40 90"><path class="hook" d="M20 -4 V6"/><path d="M4 6 h32 v24 l-16 0 v54 h-10 v-54 h-6 z" fill="#f0a03a"/><rect x="10" y="10" width="20" height="14" fill="#1a1d22" opacity=".35"/></svg>
+      <!-- pliers -->
+      <svg class="hang" style="left:870px;width:52px;transform:rotate(4deg)" viewBox="0 0 34 120"><path class="hook" d="M17 -4 V6"/><path d="M13 6 l-6 34 l6 4 l4 -18 z M21 6 l6 34 l-6 4 l-4 -18 z" fill="#8d95a1"/><circle cx="17" cy="44" r="4" fill="#5f666f"/><path d="M13 46 l-8 70 h7 l6 -66 z M21 46 l8 70 h-7 l-6 -66 z" fill="#2f6e9e"/></svg>
+      <!-- photos pinned to the pegboard -->
+      <figure class="pin" style="left:1010px;top:66px;width:170px;transform:rotate(-4deg);margin:0"><img src="../photos/snow-angels.jpg" alt="" loading="lazy"><span>powder day</span></figure>
+      <figure class="pin" style="left:1215px;top:80px;width:170px;transform:rotate(3deg);margin:0"><img src="../photos/snow-powder.jpg" alt="" loading="lazy"><span>deep in the trees</span></figure>
+      <figure class="pin" style="left:1420px;top:62px;width:170px;transform:rotate(-2deg);margin:0"><img src="../photos/snow-first-board.jpg" alt="" loading="lazy"><span>where it started</span></figure>
+      <div class="stencil" style="left:1690px;top:120px">TUNE BENCH<small>on a board since I was a kid</small></div>
+      <!-- spare scraper + file on the right -->
+      <svg class="hang" style="left:2210px;width:120px;transform:rotate(-6deg)" viewBox="0 0 90 70"><path class="hook" d="M45 -4 V8"/><rect x="2" y="6" width="86" height="56" rx="4" fill="rgba(240,160,58,.55)" stroke="rgba(250,200,140,.7)"/><circle cx="45" cy="13" r="3.5" fill="#3d3024"/></svg>
     </div>
-    <div class="desk" id="desk" role="group" aria-label="Snowboard gear on a workbench. Each item can be dragged, and clicking it opens its details.">
-      <svg class="vise" viewBox="0 0 120 110" aria-hidden="true"><rect x="10" y="44" width="100" height="40" rx="4" fill="#4c5560"/><rect x="0" y="20" width="44" height="30" rx="3" fill="#6b7580"/><rect x="76" y="20" width="44" height="30" rx="3" fill="#6b7580"/><rect x="4" y="16" width="36" height="6" fill="#9aa1aa"/><rect x="80" y="16" width="36" height="6" fill="#9aa1aa"/><rect x="40" y="56" width="40" height="8" fill="#2a2f35"/><rect x="-6" y="88" width="132" height="6" rx="3" fill="#9aa1aa"/><circle cx="-4" cy="91" r="6" fill="#d0623e"/><circle cx="124" cy="91" r="6" fill="#d0623e"/></svg>
-      <!-- screwdriver lying on the bench -->
-      <svg class="prop wide-only" style="left:88.5%;top:33%;width:10%;transform:rotate(68deg)" viewBox="0 0 120 16" aria-hidden="true"><rect x="0" y="2" width="42" height="12" rx="5" fill="#f0a03a"/><rect x="10" y="2" width="4" height="12" fill="#1a1d22" opacity=".3"/><rect x="42" y="6.5" width="70" height="3" fill="#b9c0c8"/><rect x="110" y="5" width="6" height="6" fill="#b9c0c8"/></svg>
-      <!-- spare Step On screws + washers -->
-      <svg class="prop" style="left:63%;top:31%;width:4.2%" viewBox="0 0 60 50" aria-hidden="true"><g fill="#a7aeb6"><circle cx="10" cy="12" r="6"/><circle cx="34" cy="8" r="6"/><circle cx="48" cy="30" r="6"/></g><g fill="#5f666f"><path d="M7 11h6v2H7z"/><path d="M31 7h6v2h-6z"/><path d="M45 29h6v2h-6z"/></g><g fill="none" stroke="#c1c7ce" stroke-width="3"><circle cx="20" cy="38" r="6"/><circle cx="36" cy="44" r="4.5"/></g></svg>
-      <!-- wax bar + crumbs -->
-      <svg class="prop wide-only" style="left:31%;top:79%;width:9%;transform:rotate(-8deg)" viewBox="0 0 110 50" aria-hidden="true"><rect x="2" y="6" width="70" height="38" rx="5" fill="#d9c49a"/><rect x="2" y="6" width="70" height="10" rx="5" fill="#e8d7b0"/><text x="37" y="34" text-anchor="middle" font-family="Caveat, cursive" font-size="17" fill="#6b5432">wax</text><g fill="#d9c49a" opacity=".8"><circle cx="84" cy="30" r="3"/><circle cx="96" cy="22" r="2"/><circle cx="92" cy="40" r="2.5"/></g></svg>
-      <!-- hex keys -->
-      <svg class="prop wide-only" style="left:90%;top:9%;width:6%;transform:rotate(-12deg)" viewBox="0 0 70 60" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="5"><path d="M6 10 H56 V24" stroke="#4c5560"/><path d="M10 26 H50 V36" stroke="#6b7580"/><path d="M14 42 H44 V50" stroke="#8d95a1"/></g></svg>
-      <div class="tape"><b>TUNE BENCH</b> · season kit</div>
-    </div>
-    <div class="bench-front" aria-hidden="true"><div class="ruler"></div></div>
-    <div class="legs" aria-hidden="true"></div>
+
+    <div class="bench" id="bench" aria-hidden="true"></div>
+    <div class="front" aria-hidden="true"><div class="ruler"></div></div>
+
+    <!-- bench props (decoration only) -->
+    <svg class="prop" style="left:40px;top:1360px;width:210px;z-index:3" viewBox="0 0 120 110" aria-hidden="true"><rect x="10" y="44" width="100" height="40" rx="4" fill="#4c5560"/><rect x="0" y="20" width="44" height="30" rx="3" fill="#6b7580"/><rect x="76" y="20" width="44" height="30" rx="3" fill="#6b7580"/><rect x="4" y="16" width="36" height="6" fill="#9aa1aa"/><rect x="80" y="16" width="36" height="6" fill="#9aa1aa"/><rect x="40" y="56" width="40" height="8" fill="#2a2f35"/><rect x="-6" y="88" width="132" height="6" rx="3" fill="#9aa1aa"/><circle cx="-4" cy="91" r="6" fill="#d0623e"/><circle cx="124" cy="91" r="6" fill="#d0623e"/></svg>
+    <svg class="prop" style="left:2060px;top:720px;width:230px;transform:rotate(68deg)" viewBox="0 0 120 16" aria-hidden="true"><rect x="0" y="2" width="42" height="12" rx="5" fill="#f0a03a"/><rect x="10" y="2" width="4" height="12" fill="#1a1d22" opacity=".3"/><rect x="42" y="6.5" width="70" height="3" fill="#b9c0c8"/><rect x="110" y="5" width="6" height="6" fill="#b9c0c8"/></svg>
+    <svg class="prop" style="left:1560px;top:770px;width:90px" viewBox="0 0 60 50" aria-hidden="true"><g fill="#a7aeb6"><circle cx="10" cy="12" r="6"/><circle cx="34" cy="8" r="6"/><circle cx="48" cy="30" r="6"/></g><g fill="#5f666f"><path d="M7 11h6v2H7z"/><path d="M31 7h6v2h-6z"/><path d="M45 29h6v2h-6z"/></g><g fill="none" stroke="#c1c7ce" stroke-width="3"><circle cx="20" cy="38" r="6"/><circle cx="36" cy="44" r="4.5"/></g></svg>
+    <svg class="prop" style="left:1580px;top:1330px;width:190px;transform:rotate(-8deg)" viewBox="0 0 110 50" aria-hidden="true"><rect x="2" y="6" width="70" height="38" rx="5" fill="#d9c49a"/><rect x="2" y="6" width="70" height="10" rx="5" fill="#e8d7b0"/><text x="37" y="34" text-anchor="middle" font-family="Caveat, cursive" font-size="17" fill="#6b5432">wax</text><g fill="#d9c49a" opacity=".8"><circle cx="84" cy="30" r="3"/><circle cx="96" cy="22" r="2"/><circle cx="92" cy="40" r="2.5"/></g></svg>
+    <svg class="prop" style="left:2120px;top:470px;width:130px;transform:rotate(-12deg)" viewBox="0 0 70 60" aria-hidden="true"><g fill="none" stroke-linecap="round" stroke-width="5"><path d="M6 10 H56 V24" stroke="#4c5560"/><path d="M10 26 H50 V36" stroke="#6b7580"/><path d="M14 42 H44 V50" stroke="#8d95a1"/></g></svg>
+    <!-- coffee, seen from above -->
+    <svg class="prop" style="left:2140px;top:1080px;width:150px" viewBox="0 0 100 80" aria-hidden="true"><path d="M74 30 a14 14 0 0 1 0 22" stroke="#e8e2d6" stroke-width="7" fill="none"/><circle cx="40" cy="40" r="34" fill="#e8e2d6"/><circle cx="40" cy="40" r="27" fill="#3b2414"/><ellipse cx="32" cy="32" rx="9" ry="5" fill="rgba(255,255,255,.12)"/></svg>
+    <div class="sticky" style="left:600px;top:1250px">drag the bench to look around · grab any gear to move it</div>
+    <div class="tape" style="left:1880px;top:1410px"><b>TUNE BENCH</b> · season kit</div>
   </div>
 
-  <section class="manifest" id="manifest" aria-labelledby="mh">
+  <div class="overlay titlecard" id="titlecard">
+    <button type="button" class="x" id="tcToggle" aria-label="Minimize title">–</button>
+    <p class="eyebrow">off the clock · snowboarding</p>
+    <h1>The gear desk</h1>
+    <p><b>Everything I ride with, laid out on the tune bench.</b> Drag the background to look around, drag gear to move it, click anything to inspect it.</p>
+  </div>
+  <div class="overlay hintbubble" id="hint" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M14 8 v16 M14 18 c0-3 6-3 6 0 v4 M20 18 c0-3 6-3 6 0 v4 M26 20 c0-3 6-3 6 0 v8 c0 6-4 10-10 10 h-2 c-4 0-6-2-8-5 l-6-9 c-1-2 2-4 4-2 l4 4"/></svg>drag to look around</div>
+  <div class="overlay map" id="map" aria-label="Bench map: click to jump there" role="button" tabindex="0"></div>
+  <a class="overlay scrollcue" href="#manifest">manifest ↓</a>
+  <div class="overlay controls">
+    <button type="button" id="zoomOut" aria-label="Zoom out">−</button>
+    <button type="button" id="zoomIn" aria-label="Zoom in">+</button>
+    <button type="button" id="recenter" aria-label="Back to the start view">⌖</button>
+    <button type="button" class="tidy" id="tidy" aria-disabled="true" title="Put everything back where it started">↺ tidy</button>
+  </div>
+</section>
+
+<main>
+  <section class="manifest" id="manifest" style="margin-top:48px" aria-labelledby="mh">
     <p class="eyebrow">packing list</p>
     <h2 id="mh">Manifest</h2>
     <table class="mtable">
@@ -325,8 +359,8 @@ footer { border-top: 1px solid var(--rule); margin-top: 56px; padding: 32px 16px
 /* =============================================================
    YOUR GEAR — edit this list.
    img: a transparent PNG in the gear folder.
-   Desk position (percent of the desk): l = left, t = top, w = width, r = rotation.
-   Phone layout uses ml / mt / mw instead.
+   Where it sits on the bench, in bench pixels (the bench is 2400 x 1560):
+   x / y = top-left corner, w = width, r = rotation in degrees.
    size / color: leave "" if you'd rather not say; note: your own one-liner (optional).
    ============================================================= */
 const GEAR = [
@@ -338,7 +372,7 @@ const GEAR = [
     specs: [["Shape", "Directional twin"], ["Profile", "Hybrid camber (camber + rocker)"], ["Terrain", "All-mountain, park, powder"]],
     pairs: ["bindings"], note: "",
     url: "https://www.evo.com/products/239757-salomon-assassin-snowboard-2024",
-    l: 7, t: 6, w: 56, r: -3, ml: 5, mt: 2.5, mw: 90, tagx: "62%", tagy: "78%", tagr: "3deg" },
+    x: 560, y: 430, w: 980, r: -3, tagx: "60%", tagy: "76%", tagr: "3deg" },
 
   { id: "bindings", cat: "Bindings", brand: "Burton", name: "Step On® Re:Flex", year: "",
     img: "gear/bindings.png", alt: "Burton Step On Re:Flex binding in gray and white",
@@ -347,7 +381,7 @@ const GEAR = [
     specs: [["Connection", "3 points: 2 toe hooks, 1 heel cleat"], ["Mounting", "Re:Flex; fits 4x4, The Channel and 3D (with disc)"], ["Cushioning", "Re:Flex FullBED, full underfoot"], ["Hi-back", "Canted, FLAD forward-lean adjust"], ["Size M fits", "Men's boots 8.5–10.5"], ["Works with", "Step On boots only"]],
     pairs: ["boots", "board"], note: "",
     url: "https://www.burton.com/en-us/products/mens-burton-step-on-re-flex-snowboard-bindings-172831",
-    l: 69, t: 5, w: 19, r: 8, ml: 55, mt: 14, mw: 40, tagx: "40%", tagy: "88%", tagr: "-6deg" },
+    x: 1660, y: 410, w: 330, r: 8, tagx: "40%", tagy: "88%", tagr: "-6deg" },
 
   { id: "boots", cat: "Boots", brand: "Burton", name: "Ruler Step On®", year: "",
     img: "gear/boots.png", alt: "Burton Ruler Step On snowboard boot in Gray Cloud",
@@ -356,7 +390,7 @@ const GEAR = [
     specs: [["Flex", "Medium"], ["Lacing", "Sequence BOA®, 2 lace paths, 1 dial"], ["Liner", "Imprint™ 2, heat-moldable, 3M Thinsulate"], ["Outsole", "Step On®, recycled-content rubber"], ["Works with", "Step On bindings only"]],
     pairs: ["bindings"], note: "",
     url: "https://www.rei.com/product/239409/burton-ruler-step-on-snowboard-boots-mens-20242025",
-    l: 67, t: 45, w: 19, r: -5, ml: 48, mt: 63, mw: 38, tagx: "-6%", tagy: "86%", tagr: "4deg" },
+    x: 1700, y: 860, w: 320, r: -5, tagx: "-6%", tagy: "86%", tagr: "4deg" },
 
   { id: "jacket", cat: "Shell jacket", brand: "Arc'teryx", name: "Beta SV Jacket", year: "",
     img: "gear/jacket.png", alt: "Arc'teryx Beta SV jacket in black",
@@ -365,7 +399,7 @@ const GEAR = [
     specs: [["Fabric", "100d 3L GORE-TEX PRO ePE"], ["Weight", "480 g"], ["Hood", "Helmet-compatible StormHood"], ["Venting", "Pit zips, two-way front zip"], ["Pockets", "Chest, 2 hand, inner chest, inner dump"], ["Fit", "Regular"]],
     pairs: ["pants"], note: "",
     url: "https://arcteryx.com/us/en/shop/mens/beta-sv-jacket-1003",
-    l: 4, t: 33, w: 24, r: -6, ml: 3, mt: 16, mw: 48, tagx: "58%", tagy: "90%", tagr: "-3deg" },
+    x: 390, y: 700, w: 420, r: -6, tagx: "58%", tagy: "90%", tagr: "-3deg" },
 
   { id: "pants", cat: "Snow pants", brand: "Snowverb · YXSS", name: "Freestyle Mountain Cargo Pants", year: "",
     img: "gear/pants.png", alt: "Snowverb freestyle cargo snow pants in a tan ginger color",
@@ -374,7 +408,7 @@ const GEAR = [
     specs: [["Waterproof / breathable", "10K / 10K, fully taped seams"], ["Pockets", "2 hand, 2 cargo, 1 back zip"], ["Venting", "Inner thigh vents"], ["Fit", "Elastic drawstring waist, adjustable hem, boot gaiters"]],
     pairs: ["jacket"], note: "",
     url: "https://www.snowverb.com/products/mens-freestyle-mountain-cargo-snow-pants",
-    l: 29, t: 35, w: 15, r: 4, ml: 6, mt: 51, mw: 33, tagx: "10%", tagy: "94%", tagr: "5deg" },
+    x: 880, y: 720, w: 265, r: 4, tagx: "10%", tagy: "94%", tagr: "5deg" },
 
   { id: "helmet", cat: "Helmet", brand: "Anon", name: "Logan WaveCel®", year: "",
     img: "gear/helmet.png", alt: "Anon Logan WaveCel helmet in black",
@@ -383,7 +417,7 @@ const GEAR = [
     specs: [["Protection", "WaveCel liner + in-mold shell with EPS"], ["Fit", "360° BOA® dial"], ["Buckle", "Fidlock® magnetic, works with gloves on"], ["Venting", "10 passive vents"], ["Weight", "424 g"]],
     pairs: ["goggles"], note: "",
     url: "https://www.burton.com/en-us/products/anon-logan-wavecel-ski-snowboard-helmet-2273416-o",
-    l: 46, t: 32, w: 17, r: -4, ml: 56, mt: 39, mw: 37, tagx: "30%", tagy: "92%", tagr: "-5deg" },
+    x: 1200, y: 720, w: 300, r: -4, tagx: "30%", tagy: "92%", tagr: "-5deg" },
 
   { id: "goggles", cat: "Goggles", brand: "Anon", name: "M6 + MFI® Face Mask", year: "",
     img: "gear/goggles.png", alt: "Anon M6 goggles with a dark polarized lens",
@@ -392,7 +426,7 @@ const GEAR = [
     specs: [["Lens", "Perceive Sunny Polarized Onyx (10% VLT)"], ["Bonus lens", "Perceive Variable Violet (34% VLT)"], ["Lens change", "Magna-Tech®, N52 magnets"], ["Face mask", "MFI® magnetic face mask included"], ["Fit", "Large, helmet compatible"]],
     pairs: ["helmet"], note: "",
     url: "https://www.burton.com/en-us/products/anon-m6-goggles-polarized-perceive-lens-mfi-face-mask-305581",
-    l: 43, t: 68, w: 23, r: 3, ml: 5, mt: 85, mw: 46, tagx: "70%", tagy: "70%", tagr: "6deg" }
+    x: 1110, y: 1120, w: 420, r: 3, tagx: "70%", tagy: "70%", tagr: "6deg" },
 ];
 
 /* ============================================================= */
@@ -402,155 +436,297 @@ const pad = i => String(i + 1).padStart(2, "0");
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
 
-// ---- lay the gear out on the desk
-const desk = document.getElementById("desk");
-desk.insertAdjacentHTML("beforeend", GEAR.map((g, i) => `
+// ---- lay the gear out on the bench
+const view = document.getElementById("view"), world = document.getElementById("world"), bench = document.getElementById("bench");
+const WW = 2400, WH = 1560;
+world.insertAdjacentHTML("beforeend", GEAR.map((g, i) => `
   <button type="button" class="item" data-i="${i}" aria-label="${esc(g.brand + " " + g.name)}: inspect"
-    style="--i:${i};--l:${g.l}%;--t:${g.t}%;--w:${g.w}%;--r:${g.r}deg;--ml:${g.ml}%;--mt:${g.mt}%;--mw:${g.mw}%;--tagx:${g.tagx};--tagy:${g.tagy};--tagr:${g.tagr}">
+    style="--i:${i};--px:${g.x};--py:${g.y};--pw:${g.w};--r:${g.r}deg;--tagx:${g.tagx};--tagy:${g.tagy};--tagr:${g.tagr}">
     <img src="${esc(g.img)}" alt="${esc(g.alt)}" draggable="false">
     <span class="tag" aria-hidden="true"><i>${pad(i)}</i>${esc(g.cat)}</span>
   </button>`).join(""));
-const items = [...desk.querySelectorAll(".item")];
+const items = [...world.querySelectorAll(".item")];
 
-// ---- drag things around the bench (positions are remembered in this browser)
-const mobile = matchMedia("(max-width: 720px)");
-const mode = () => mobile.matches ? "m" : "d";
-const posVars = () => mobile.matches ? ["--ml", "--mt", "--mw"] : ["--l", "--t", "--w"];
-const STORE = "gearDesk:v1";
-let moved = { d: {}, m: {} };
-try { moved = Object.assign(moved, JSON.parse(localStorage.getItem(STORE) || "{}")); } catch (e) {}
+// ---- remembered positions (only in this browser)
+const STORE = "gearDesk:v2";
+let moved = {};
+try { moved = JSON.parse(localStorage.getItem(STORE) || "{}") || {}; } catch (e) {}
 const save = () => { try { localStorage.setItem(STORE, JSON.stringify(moved)); } catch (e) {} };
 const tidyBtn = document.getElementById("tidy");
-let zTop = 10;
-function applyMoved() {
+const posOf = el => [parseFloat(el.style.getPropertyValue("--px")), parseFloat(el.style.getPropertyValue("--py"))];
+function placeAll() {
   items.forEach(el => {
-    const g = GEAR[+el.dataset.i];
-    for (const [m, lv, tv, dl, dt] of [["d", "--l", "--t", g.l, g.t], ["m", "--ml", "--mt", g.ml, g.mt]]) {
-      const p = moved[m][g.id];
-      el.style.setProperty(lv, (p ? p[0] : dl) + "%");
-      el.style.setProperty(tv, (p ? p[1] : dt) + "%");
+    const g = GEAR[+el.dataset.i], p = moved[g.id];
+    el.style.setProperty("--px", p ? p[0] : g.x);
+    el.style.setProperty("--py", p ? p[1] : g.y);
+  });
+  tidyBtn.setAttribute("aria-disabled", Object.keys(moved).length ? "false" : "true");
+}
+placeAll();
+
+// ---- camera: pan + zoom over the big bench
+const cam = { tx: 0, ty: 0, s: 1 };
+const VW = () => view.clientWidth, VH = () => view.clientHeight;
+const minS = () => Math.max(.22, Math.min(VW() / WW, VH() / WH));
+const maxS = 1.4;
+const START = { x: 1180, y: 880 };
+const startScale = () => Math.min(1, Math.max(minS(), VW() / 2000, VW() < 700 ? .38 : .5));
+function bounds(s = cam.s) {
+  const w = WW * s, h = WH * s, m = 40;
+  const bx = w + 2 * m <= VW() ? [(VW() - w) / 2, (VW() - w) / 2] : [VW() - w - m, m];
+  const by = h + 2 * m <= VH() ? [(VH() - h) / 2, (VH() - h) / 2] : [VH() - h - m, m];
+  return { x0: bx[0], x1: bx[1], y0: by[0], y1: by[1] };
+}
+const clamp = (v, a, b) => Math.min(Math.max(v, a), b);
+function band(v, a, b) { return v < a ? a - (a - v) * .3 : v > b ? b + (v - b) * .3 : v; } // rubber band past the edges
+function render() {
+  world.style.transform = `translate3d(${cam.tx.toFixed(2)}px, ${cam.ty.toFixed(2)}px, 0) scale(${cam.s.toFixed(4)})`;
+  drawMap();
+}
+function lookAt(x, y, s) { cam.s = s; cam.tx = VW() / 2 - x * s; cam.ty = VH() / 2 - y * s; const b = bounds(); cam.tx = clamp(cam.tx, b.x0, b.x1); cam.ty = clamp(cam.ty, b.y0, b.y1); }
+let anim = null;
+function animateTo(target, ms = 450) {
+  cancelAnimationFrame(anim); stopGlide();
+  if (reduce) { Object.assign(cam, target); render(); return; }
+  const from = { ...cam }, t0 = performance.now();
+  const step = now => {
+    const k = Math.min(1, (now - t0) / ms), e = 1 - Math.pow(1 - k, 3);
+    cam.tx = from.tx + (target.tx - from.tx) * e; cam.ty = from.ty + (target.ty - from.ty) * e; cam.s = from.s + (target.s - from.s) * e;
+    render(); if (k < 1) anim = requestAnimationFrame(step);
+  };
+  anim = requestAnimationFrame(step);
+}
+function zoomAt(ns, cx, cy, smooth) {
+  ns = clamp(ns, minS(), maxS);
+  const t = { s: ns, tx: cx - (cx - cam.tx) * ns / cam.s, ty: cy - (cy - cam.ty) * ns / cam.s };
+  const b = bounds(ns); t.tx = clamp(t.tx, b.x0, b.x1); t.ty = clamp(t.ty, b.y0, b.y1);
+  if (smooth) animateTo(t, 260); else { Object.assign(cam, t); render(); }
+}
+function home(smooth) {
+  const s = startScale(), t = { s, tx: VW() / 2 - START.x * s, ty: VH() / 2 - START.y * s };
+  const b = bounds(s); t.tx = clamp(t.tx, b.x0, b.x1); t.ty = clamp(t.ty, b.y0, b.y1);
+  if (smooth) animateTo(t); else { Object.assign(cam, t); render(); }
+}
+
+// inertia after letting go
+let glide = null, vx = 0, vy = 0;
+function stopGlide() { cancelAnimationFrame(glide); glide = null; }
+function startGlide() {
+  stopGlide();
+  const tick = () => {
+    const b = bounds();
+    cam.tx += vx; cam.ty += vy; vx *= .93; vy *= .93;
+    let out = false;
+    if (cam.tx < b.x0 || cam.tx > b.x1) { cam.tx += (clamp(cam.tx, b.x0, b.x1) - cam.tx) * .2; vx *= .5; out = true; }
+    if (cam.ty < b.y0 || cam.ty > b.y1) { cam.ty += (clamp(cam.ty, b.y0, b.y1) - cam.ty) * .2; vy *= .5; out = true; }
+    render();
+    if (Math.abs(vx) > .05 || Math.abs(vy) > .05 || (out && (Math.abs(clamp(cam.tx, b.x0, b.x1) - cam.tx) > .3 || Math.abs(clamp(cam.ty, b.y0, b.y1) - cam.ty) > .3))) glide = requestAnimationFrame(tick);
+    else { cam.tx = clamp(cam.tx, b.x0, b.x1); cam.ty = clamp(cam.ty, b.y0, b.y1); render(); glide = null; }
+  };
+  if (reduce) { vx = vy = 0; }
+  glide = requestAnimationFrame(tick);
+}
+
+// ---- minimap
+const mapEl = document.getElementById("map"), MS = 150 / WW;
+mapEl.innerHTML = `<div class="vp" id="mapvp"></div>` + `<i style="left:0;top:0;width:150px;height:${380 * MS}px;background:rgba(232,226,214,.08)"></i>` + items.map((_, i) => `<i data-m="${i}"></i>`).join("");
+const mapVp = document.getElementById("mapvp"), mapDots = [...mapEl.querySelectorAll("[data-m]")];
+function drawMap() {
+  mapVp.style.left = (-cam.tx / cam.s * MS) + "px"; mapVp.style.top = (-cam.ty / cam.s * MS) + "px";
+  mapVp.style.width = (VW() / cam.s * MS) + "px"; mapVp.style.height = (VH() / cam.s * MS) + "px";
+}
+function drawMapItems() {
+  items.forEach((el, i) => { const [x, y] = posOf(el), g = GEAR[i]; Object.assign(mapDots[i].style, { left: x * MS + "px", top: y * MS + "px", width: Math.max(3, g.w * MS) + "px", height: Math.max(3, el.offsetHeight * MS || g.w * MS) + "px" }); });
+}
+const mapJump = e => { const b = mapEl.getBoundingClientRect(); const s = cam.s; const t = { s, tx: VW() / 2 - (e.clientX - b.left) / MS * s, ty: VH() / 2 - (e.clientY - b.top) / MS * s }; const bd = bounds(); t.tx = clamp(t.tx, bd.x0, bd.x1); t.ty = clamp(t.ty, bd.y0, bd.y1); animateTo(t, 380); };
+mapEl.addEventListener("click", mapJump);
+mapEl.addEventListener("pointerdown", e => e.stopPropagation());
+
+// ---- gestures: drag background = pan, drag gear = move it, two fingers = pinch zoom
+const hint = document.getElementById("hint");
+const hideHint = () => hint.classList.add("gone");
+setTimeout(hideHint, 6000);
+let g = null;                 // the current one-pointer gesture
+const pts = new Map();        // active pointers, for pinch
+let pinch = null, suppressClick = false, zTop = 10;
+const toWorld = (cx, cy) => { const r = view.getBoundingClientRect(); return [(cx - r.left - cam.tx) / cam.s, (cy - r.top - cam.ty) / cam.s]; };
+function quietClick() { suppressClick = true; setTimeout(() => { suppressClick = false; }, 80); }
+
+view.addEventListener("pointerdown", e => {
+  if (e.button !== 0 || e.target.closest(".overlay")) return;
+  cancelAnimationFrame(anim); stopGlide();
+  pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pts.size === 2) { // start pinching; drop any one-finger gesture
+    if (g && g.item) g.item.classList.remove("armed", "dragging");
+    clearTimeout(g && g.timer); g = null;
+    const [a, b] = [...pts.values()];
+    pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: cam.s };
+    return;
+  }
+  const item = e.target.closest(".item");
+  g = { id: e.pointerId, x0: e.clientX, y0: e.clientY, lx: e.clientX, ly: e.clientY, lt: performance.now(), tx0: cam.tx, ty0: cam.ty, mode: item ? "press" : "pan", item, moved: false, touch: e.pointerType === "touch" };
+  if (!item) { view.setPointerCapture(e.pointerId); view.classList.add("panning"); }
+  else if (g.touch) { // hold a moment to pick gear up with a finger; a quick swipe pans instead
+    g.timer = setTimeout(() => { if (g && g.mode === "press") { g.mode = "armed"; item.classList.add("armed"); if (navigator.vibrate) navigator.vibrate(12); } }, 260);
+  }
+});
+view.addEventListener("pointermove", e => {
+  // the light follows the pointer
+  const [wx, wy] = toWorld(e.clientX, e.clientY);
+  bench.style.setProperty("--lx", wx.toFixed(0) + "px"); bench.style.setProperty("--ly", (wy - 380).toFixed(0) + "px");
+  if (pts.has(e.pointerId)) pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+  if (pinch && pts.size === 2) {
+    const [a, b] = [...pts.values()], r = view.getBoundingClientRect();
+    zoomAt(pinch.s * Math.hypot(a.x - b.x, a.y - b.y) / pinch.d, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
+    return;
+  }
+  if (!g || g.id !== e.pointerId) return;
+  const dx = e.clientX - g.x0, dy = e.clientY - g.y0, dist = Math.hypot(dx, dy);
+  if (g.mode === "press") {
+    if (g.touch ? dist > 8 : dist > 4) {
+      clearTimeout(g.timer);
+      if (g.touch) { g.mode = "pan"; g.x0 = e.clientX; g.y0 = e.clientY; g.tx0 = cam.tx; g.ty0 = cam.ty; view.setPointerCapture(e.pointerId); view.classList.add("panning"); }
+      else startItemDrag(e);
     }
-  });
-  tidyBtn.setAttribute("aria-disabled", Object.keys(moved[mode()]).length ? "false" : "true");
-}
-applyMoved();
-mobile.addEventListener("change", applyMoved);
-
-function current(el) {
-  const g = GEAR[+el.dataset.i], [lv, tv, wv] = posVars();
-  return [parseFloat(el.style.getPropertyValue(lv)), parseFloat(el.style.getPropertyValue(tv)), mobile.matches ? g.mw : g.w];
-}
-
-let drag = null, suppressClick = false;
-function beginDrag(el, x, y) {
-  const [l, t, w] = current(el), r = desk.getBoundingClientRect();
-  drag = { el, x0: x, y0: y, l0: l, t0: t, w, r, lx: x, lt: performance.now(), rz: 0, active: false };
-}
-function moveDrag(x, y) {
-  if (!drag) return;
-  const { el, r } = drag;
-  if (!drag.active) {
-    if (Math.hypot(x - drag.x0, y - drag.y0) < 5) return;
-    drag.active = true;
-    el.classList.remove("hot", "armed"); el.classList.add("dragging");
-    ["--rx", "--ry", "--x", "--y"].forEach(v => el.style.removeProperty(v));
-    el.style.zIndex = ++zTop;
-    document.body.classList.add("grabbing");
+    return;
   }
-  const hRatio = el.offsetHeight / r.height * 100;
-  let l = drag.l0 + (x - drag.x0) / r.width * 100, t = drag.t0 + (y - drag.y0) / r.height * 100;
-  l = Math.min(Math.max(l, -drag.w * .25), 100 - drag.w * .75);
-  t = Math.min(Math.max(t, -hRatio * .2), 100 - hRatio * .6);
-  const [lv, tv] = posVars();
-  el.style.setProperty(lv, l.toFixed(2) + "%"); el.style.setProperty(tv, t.toFixed(2) + "%");
-  // swing a little in the direction it's being pulled
-  const now = performance.now(), vx = (x - drag.lx) / Math.max(8, now - drag.lt);
-  drag.rz = drag.rz * .7 + Math.max(-14, Math.min(14, vx * 9)) * .3;
-  if (!reduce) el.style.setProperty("--rz", drag.rz.toFixed(2) + "deg");
-  drag.lx = x; drag.lt = now;
+  if (g.mode === "armed" && dist > 2) { startItemDrag(e); return; }
+  if (g.mode === "pan") {
+    if (dist > 3) { g.moved = true; hideHint(); }
+    const b = bounds();
+    cam.tx = band(g.tx0 + dx, b.x0, b.x1); cam.ty = band(g.ty0 + dy, b.y0, b.y1);
+    trackVel(e); render();
+  } else if (g.mode === "item") moveItem(e);
+});
+function trackVel(e) {
+  const now = performance.now(), dt = Math.max(8, now - g.lt);
+  g.vx = (e.clientX - g.lx) / dt * 16; g.vy = (e.clientY - g.ly) / dt * 16;
+  g.lx = e.clientX; g.ly = e.clientY; g.lt = now;
 }
-function endDrag() {
-  if (!drag) return;
-  const { el, active } = drag;
-  el.classList.remove("dragging", "armed");
-  document.body.classList.remove("grabbing");
-  el.style.removeProperty("--rz");
-  if (active) {
-    const [l, t] = current(el);
-    moved[mode()][GEAR[+el.dataset.i].id] = [+l.toFixed(2), +t.toFixed(2)];
+function startItemDrag(e) {
+  const el = g.item;
+  clearTimeout(g.timer);
+  g.mode = "item"; g.moved = true; hideHint();
+  const [px, py] = posOf(el);
+  g.px0 = px; g.py0 = py; g.x0 = e.clientX; g.y0 = e.clientY; g.rz = 0;
+  view.setPointerCapture(e.pointerId);
+  el.classList.remove("hot", "armed"); el.classList.add("dragging");
+  ["--rx", "--ry", "--x", "--y"].forEach(v => el.style.removeProperty(v));
+  el.style.zIndex = ++zTop;
+  document.body.classList.add("grabbing");
+}
+function moveItem(e) {
+  const el = g.item, i = +el.dataset.i, w = GEAR[i].w, h = el.offsetHeight;
+  const x = clamp(g.px0 + (e.clientX - g.x0) / cam.s, -w * .25, WW - w * .75);
+  const y = clamp(g.py0 + (e.clientY - g.y0) / cam.s, 300, WH - h * .55);
+  el.style.setProperty("--px", x.toFixed(1)); el.style.setProperty("--py", y.toFixed(1));
+  const now = performance.now(), v = (e.clientX - g.lx) / Math.max(8, now - g.lt);
+  g.rz = g.rz * .7 + clamp(v * 9, -14, 14) * .3;
+  if (!reduce) el.style.setProperty("--rz", g.rz.toFixed(2) + "deg");
+  g.lx = e.clientX; g.lt = now;
+  // nudge the camera when dragging near the edge of the window
+  const r = view.getBoundingClientRect(), edge = 50;
+  const ex = e.clientX - r.left < edge ? 6 : r.right - e.clientX < edge ? -6 : 0, ey = e.clientY - r.top < edge ? 6 : r.bottom - e.clientY < edge ? -6 : 0;
+  if (ex || ey) { const b = bounds(); cam.tx = clamp(cam.tx + ex, b.x0, b.x1); cam.ty = clamp(cam.ty + ey, b.y0, b.y1); render(); }
+  drawMapItems();
+}
+function endGesture(e) {
+  pts.delete(e.pointerId);
+  if (pinch) { if (pts.size < 2) pinch = null; return; }
+  if (!g || g.id !== e.pointerId) return;
+  clearTimeout(g.timer);
+  view.classList.remove("panning");
+  if (g.mode === "pan") {
+    if (g.moved) { quietClick(); vx = g.vx || 0; vy = g.vy || 0; if (performance.now() - g.lt > 90) vx = vy = 0; startGlide(); }
+    else startGlide(); // springs back if it was pulled past an edge
+  } else if (g.mode === "item") {
+    const el = g.item;
+    el.classList.remove("dragging"); el.style.removeProperty("--rz");
+    document.body.classList.remove("grabbing");
+    const [x, y] = posOf(el);
+    moved[GEAR[+el.dataset.i].id] = [Math.round(x), Math.round(y)];
     save(); tidyBtn.setAttribute("aria-disabled", "false");
-    suppressClick = true; setTimeout(() => { suppressClick = false; }, 60);
-    if (!reduce) el.querySelector("img").animate([{ translate: "0 -10px" }, { translate: "0 2px" }, { translate: "0 0" }], { duration: 360, easing: "ease-out" });
-  }
-  drag = null;
+    quietClick();
+    if (!reduce) el.querySelector("img").animate([{ translate: "0 -14px" }, { translate: "0 3px" }, { translate: "0 0" }], { duration: 360, easing: "ease-out" });
+  } else if (g.mode === "armed") g.item.classList.remove("armed");
+  g = null;
 }
+view.addEventListener("pointerup", endGesture);
+view.addEventListener("pointercancel", endGesture);
+view.addEventListener("contextmenu", e => { if (e.target.closest(".item")) e.preventDefault(); });
 
-// mouse / pen: press and pull
-items.forEach(el => {
-  el.addEventListener("pointerdown", e => {
-    if (e.pointerType === "touch" || e.button !== 0) return;
-    beginDrag(el, e.clientX, e.clientY);
-    el.setPointerCapture(e.pointerId);
-  });
-  el.addEventListener("pointermove", e => { if (drag && drag.el === el && e.pointerType !== "touch") moveDrag(e.clientX, e.clientY); });
-  el.addEventListener("pointerup", e => { if (e.pointerType !== "touch") endDrag(); });
-  el.addEventListener("pointercancel", e => { if (e.pointerType !== "touch") endDrag(); });
-});
-// touch: hold for a moment to pick it up (so a normal swipe still scrolls the page)
-items.forEach(el => {
-  let timer = null, sx = 0, sy = 0;
-  el.addEventListener("touchstart", e => {
-    const t = e.touches[0]; sx = t.clientX; sy = t.clientY;
-    clearTimeout(timer);
-    timer = setTimeout(() => { beginDrag(el, sx, sy); drag.armed = true; el.classList.add("armed"); if (navigator.vibrate) navigator.vibrate(12); }, 220);
-  }, { passive: true });
-  el.addEventListener("touchmove", e => {
-    const t = e.touches[0];
-    if (drag && drag.el === el && drag.armed) { e.preventDefault(); moveDrag(t.clientX, t.clientY); }
-    else if (Math.hypot(t.clientX - sx, t.clientY - sy) > 8) clearTimeout(timer);
-  }, { passive: false });
-  const done = () => { clearTimeout(timer); if (drag && drag.el === el) endDrag(); };
-  el.addEventListener("touchend", done); el.addEventListener("touchcancel", done);
-  el.addEventListener("contextmenu", e => e.preventDefault());
+// trackpad: two-finger swipe pans sideways, pinch (ctrl + wheel) zooms; a plain vertical wheel still scrolls the page
+view.addEventListener("wheel", e => {
+  const r = view.getBoundingClientRect();
+  if (e.ctrlKey || e.metaKey) { e.preventDefault(); stopGlide(); zoomAt(cam.s * Math.exp(-e.deltaY * .01), e.clientX - r.left, e.clientY - r.top); hideHint(); return; }
+  const dx = e.shiftKey ? e.deltaY : e.deltaX;
+  if (Math.abs(dx) > Math.abs(e.deltaY) * .6 || e.shiftKey) {
+    e.preventDefault(); stopGlide();
+    const b = bounds(); cam.tx = clamp(cam.tx - dx, b.x0, b.x1); render(); hideHint();
+  }
+}, { passive: false });
+
+// keyboard: arrows pan, +/- zoom (when the bench has focus)
+view.addEventListener("keydown", e => {
+  if (e.target !== view) return;
+  const k = { ArrowLeft: [60, 0], ArrowRight: [-60, 0], ArrowUp: [0, 60], ArrowDown: [0, -60] }[e.key];
+  if (k) { e.preventDefault(); const b = bounds(); animateTo({ s: cam.s, tx: clamp(cam.tx + k[0], b.x0, b.x1), ty: clamp(cam.ty + k[1], b.y0, b.y1) }, 180); }
+  else if (e.key === "+" || e.key === "=") zoomAt(cam.s * 1.25, VW() / 2, VH() / 2, true);
+  else if (e.key === "-") zoomAt(cam.s / 1.25, VW() / 2, VH() / 2, true);
 });
 
+document.getElementById("zoomIn").addEventListener("click", () => zoomAt(cam.s * 1.25, VW() / 2, VH() / 2, true));
+document.getElementById("zoomOut").addEventListener("click", () => zoomAt(cam.s / 1.25, VW() / 2, VH() / 2, true));
+document.getElementById("recenter").addEventListener("click", () => home(true));
 tidyBtn.addEventListener("click", () => {
   if (tidyBtn.getAttribute("aria-disabled") === "true") return;
-  moved[mode()] = {}; save();
-  desk.classList.add("tidying");
+  moved = {}; save();
+  world.classList.add("tidying");
   items.forEach(el => el.style.removeProperty("z-index"));
-  applyMoved();
-  setTimeout(() => desk.classList.remove("tidying"), 800);
+  placeAll(); home(true);
+  setTimeout(() => { world.classList.remove("tidying"); drawMapItems(); }, 800);
 });
+const tc = document.getElementById("titlecard");
+document.getElementById("tcToggle").addEventListener("click", () => { const m = tc.classList.toggle("min"); document.getElementById("tcToggle").textContent = m ? "+" : "–"; });
 
 // ---- hover: the piece lifts off the bench and tilts toward the cursor
 items.forEach(el => {
   if (reduce) return;
   el.addEventListener("pointermove", e => {
-    if (e.pointerType !== "mouse" || drag) return;
+    if (e.pointerType !== "mouse" || (g && g.mode !== "press")) return;
     const b = el.getBoundingClientRect();
     const dx = ((e.clientX - b.left) / b.width - .5) * 2, dy = ((e.clientY - b.top) / b.height - .5) * 2;
     el.classList.add("hot");
     el.style.setProperty("--rx", (-dy * 14).toFixed(2) + "deg");
     el.style.setProperty("--ry", (dx * 16).toFixed(2) + "deg");
-    el.style.setProperty("--x", (dx * 7).toFixed(1) + "px");
-    el.style.setProperty("--y", (dy * 7).toFixed(1) + "px");
+    el.style.setProperty("--x", (dx * 10).toFixed(1) + "px");
+    el.style.setProperty("--y", (dy * 10).toFixed(1) + "px");
   });
   el.addEventListener("pointerleave", () => {
-    if (drag && drag.el === el) return;
+    if (g && g.item === el) return;
     const was = el.classList.contains("hot");
     el.classList.remove("hot");
     ["--rx", "--ry", "--x", "--y"].forEach(v => el.style.removeProperty(v));
-    // a little wobble as it settles back down
     if (was) el.animate([{ rotate: "0deg" }, { rotate: "-1.6deg" }, { rotate: "1deg" }, { rotate: "0deg" }], { duration: 520, easing: "ease-out" });
   });
 });
-// the shop light follows the pointer around the bench
-desk.addEventListener("pointermove", e => {
-  const b = desk.getBoundingClientRect();
-  desk.style.setProperty("--lx", ((e.clientX - b.left) / b.width * 100).toFixed(1) + "%");
-  desk.style.setProperty("--ly", ((e.clientY - b.top) / b.height * 100).toFixed(1) + "%");
-});
+
+// the bench never scrolls natively (focus would shift it); keep a focused piece in view by moving the camera instead
+view.addEventListener("scroll", () => { view.scrollLeft = 0; view.scrollTop = 0; });
+items.forEach(el => el.addEventListener("focus", () => {
+  view.scrollLeft = 0; view.scrollTop = 0;
+  if (g) return;
+  const r = el.getBoundingClientRect(), v = view.getBoundingClientRect();
+  if (r.left < v.left + 20 || r.right > v.right - 20 || r.top < v.top + 20 || r.bottom > v.bottom - 20) {
+    const [x, y] = posOf(el), b = bounds();
+    animateTo({ s: cam.s, tx: clamp(VW() / 2 - (x + GEAR[+el.dataset.i].w / 2) * cam.s, b.x0, b.x1), ty: clamp(VH() / 2 - (y + el.offsetHeight / 2) * cam.s, b.y0, b.y1) }, 380);
+  }
+}));
+
+home(false);
+requestAnimationFrame(drawMapItems);
+window.addEventListener("load", drawMapItems);
+let rz; window.addEventListener("resize", () => { clearTimeout(rz); rz = setTimeout(() => { const b = bounds(); cam.s = clamp(cam.s, minS(), maxS); cam.tx = clamp(cam.tx, b.x0, b.x1); cam.ty = clamp(cam.ty, b.y0, b.y1); render(); }, 80); });
 
 // ---- inspect view
 const box = document.getElementById("inspect"), panel = document.getElementById("panel");
@@ -654,7 +830,7 @@ async function closeItem() {
   busy = false;
 }
 
-desk.addEventListener("click", e => { const it = e.target.closest(".item"); if (!it || suppressClick) return; openItem(+it.dataset.i, it); });
+world.addEventListener("click", e => { const it = e.target.closest(".item"); if (!it || suppressClick) return; openItem(+it.dataset.i, it); });
 box.addEventListener("click", e => {
   if (e.target.closest("[data-close]")) return closeItem();
   const st = e.target.closest("[data-step]"); if (st) return swapTo(cur + +st.dataset.step);
@@ -681,8 +857,12 @@ document.getElementById("mrows").innerHTML = GEAR.map((g, i) => `<tr data-i="${i
 document.getElementById("mtotal").textContent = money(GEAR.reduce((s, g) => s + g.price, 0));
 document.getElementById("mrows").addEventListener("click", e => {
   const tr = e.target.closest("tr[data-i]"); if (!tr) return;
-  const i = +tr.dataset.i;
-  openItem(i, tr.querySelector("button"));
+  const i = +tr.dataset.i, el = items[i], [x, y] = posOf(el);
+  // go back up to the bench, swing the camera over to that piece, then pick it up
+  window.scrollTo({ top: 0, behavior: reduce ? "auto" : "smooth" });
+  const s = Math.max(cam.s, startScale()), b = bounds(s);
+  animateTo({ s, tx: clamp(VW() / 2 - (x + GEAR[i].w / 2) * s, b.x0, b.x1), ty: clamp(VH() / 2 - (y + el.offsetHeight / 2) * s, b.y0, b.y1) }, 500);
+  setTimeout(() => openItem(i, tr.querySelector("button")), reduce ? 50 : 650);
 });
 </script>
 </body>
