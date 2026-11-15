@@ -35,12 +35,12 @@ Each sourced input is also labeled next to its cell on the workbook's Inputs she
 - [Why Your Final Mile Is Bleeding Money](https://fleetenable.com/?p=14093), FleetEnable: $17.78 per failed delivery
 - [Last-mile is the expensive mile](https://atlasagility.duckdns.org/insights/ind-courier-3pl), ATLAS: 5–10% first-attempt failure rate (model uses 8%)
 - [Making sense of the ever so expensive last mile](https://www.logisticsinsider.in/making-sense-of-the-ever-so-expensive-last-mile/), Logistics Insider: manual routes ~20–25% more miles (V1's 20% assumption)
-- [How Much to Charge for Delivery Per Mile](https://www.upperinc.com/blog/delivery/how-much-to-charge-per-mile-for-delivery-business/), Upper: $0.56/mile vehicle cost, $30/hour loaded driver cost
+- [How Much to Charge for Delivery Per Mile](https://web.archive.org/web/20260311165856/https://www.upperinc.com/blog/how-much-to-charge-per-mile-for-delivery-business/), Upper (archived copy): $0.56/mile vehicle cost, $30/hour loaded driver cost
 - [UPS Accelerates Use of Routing Optimization Software](https://app.3blmedia.com/news/ups-accelerates-use-routing-optimization-software-reduce-100-million-miles-driven), UPS via 3BL: ~120-stop route; ORION saves ~100M miles/year
 - [UPS ORION: Optimizing Delivery Routes](https://www.informs.org/Impact/O.R.-Analytics-Success-Stories/Optimizing-Delivery-Routes), INFORMS
 - [Regionalize and Scale: Amazon's Fulfillment Network Design](https://pubsonline.informs.org/doi/abs/10.1287/inte.2025.0295), INFORMS Journal on Applied Analytics
 - [Evaluating the Locker Alliance pilot](https://iora.nus.edu.sg/?p=2357), NUS IORA: 11 parcels/hour to lockers vs. 5/hour to homes
-- [Influence of self-pickup incentives on last-mile deliveries](https://trid.trb.org/View/2681454), Research in Transportation Economics (TRID)
+- [Influence of self-pickup incentives on last-mile deliveries](https://doi.org/10.1016/j.retrec.2026.101746), Research in Transportation Economics
 - [Do it right the first time: Vehicle routing with home delivery attempt predictors](https://academicnewsletter.sufe.edu.cn/info/404098), Lim et al. (SUFE summary): failure-aware sequencing cuts failed attempts ~10%
 
 **V2–V3 model inputs & method**
