@@ -1,0 +1,500 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="icon" href="../favicon.svg" type="image/svg+xml">
+<link rel="icon" href="../favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="../apple-touch-icon.png">
+<meta name="theme-color" content="#12161c">
+<title>The Gear Desk · Reuben Bangerter</title>
+<meta name="description" content="Everything I ride with, laid out on the desk: board, Step On boots and bindings, shell, pants, helmet and goggles.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&display=swap">
+<style>
+/* Same loading-dock look as the main site. This page: a workbench under a lamp with the gear laid out on it. */
+:root {
+  --night: #12161c; --night-2: #1a1f27; --fg: #e8e2d6; --muted: #8d95a1;
+  --kraft: #c9a671; --label: #f2eee6; --ink: #1a1d22; --hivis: #f0a03a;
+  --rule: rgba(232, 226, 214, 0.12);
+  --f-stencil: "Saira Stencil One", "Impact", sans-serif;
+  --f-display: "Big Shoulders Display", "Arial Narrow", sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+  --f-hand: "Caveat", "Comic Sans MS", cursive;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body { background: var(--night); color: var(--fg); font-family: var(--f-mono); font-size: 14px; line-height: 1.65; margin: 0; }
+body::after { content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 90; opacity: .06;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
+a { color: var(--kraft); }
+:focus-visible { outline: 2px dashed var(--hivis); outline-offset: 3px; }
+p { margin: 0; }
+
+header.nav { position: sticky; top: 0; z-index: 20; background: color-mix(in srgb, var(--night) 88%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); }
+.nav-in { max-width: 1120px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px max(16px, env(safe-area-inset-right, 0px)) 12px max(16px, env(safe-area-inset-left, 0px)); }
+.brand { font-family: var(--f-stencil); font-size: 20px; letter-spacing: .04em; text-decoration: none; color: var(--kraft); }
+.nav ul { list-style: none; display: flex; gap: 18px; margin: 0; padding: 0; font-family: var(--f-hand); font-size: 20px; }
+.nav ul a { text-decoration: none; color: var(--muted); }
+.nav ul a:hover { color: var(--fg); }
+
+main { max-width: 1120px; margin: 0 auto; padding: 36px max(16px, env(safe-area-inset-right, 0px)) 24px max(16px, env(safe-area-inset-left, 0px)); }
+.eyebrow { font-family: var(--f-hand); font-size: 22px; color: var(--hivis); margin: 0; }
+h1 { font-family: var(--f-display); font-weight: 800; font-size: clamp(44px, 9vw, 84px); line-height: .92; text-transform: uppercase; margin: 4px 0 12px; letter-spacing: .01em; }
+.lede { max-width: 60ch; color: var(--fg); }
+.lede .muted { color: var(--muted); }
+.top { display: flex; justify-content: space-between; align-items: end; gap: 24px; flex-wrap: wrap; margin-bottom: 26px; }
+.hint { font-family: var(--f-hand); font-size: 21px; color: var(--kraft); display: flex; gap: 10px; align-items: center; }
+.hint svg { width: 34px; height: 34px; stroke: var(--kraft); fill: none; stroke-width: 1.6; stroke-linecap: round; }
+
+/* ---------- the desk ---------- */
+.desk-wrap { position: relative; perspective: 1400px; }
+.desk {
+  position: relative; aspect-ratio: 16 / 10; border-radius: 10px; overflow: visible;
+  background:
+    radial-gradient(ellipse 60% 55% at 46% 38%, rgba(255, 214, 150, .20), transparent 70%),
+    radial-gradient(ellipse at 50% 50%, transparent 55%, rgba(0,0,0,.55) 100%),
+    repeating-linear-gradient(91.5deg, rgba(0,0,0,.0) 0 7px, rgba(0,0,0,.10) 7px 9px, rgba(255,255,255,.025) 9px 15px, rgba(0,0,0,.06) 15px 22px),
+    repeating-linear-gradient(88.7deg, rgba(0,0,0,.0) 0 31px, rgba(0,0,0,.13) 31px 33px, rgba(0,0,0,0) 33px 70px),
+    linear-gradient(180deg, #3a2a1d, #2b1f16 60%, #251a12);
+  box-shadow: 0 1px 0 rgba(255,255,255,.08) inset, 0 -14px 0 #1b130d inset, 0 30px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(0,0,0,.6);
+}
+.desk::before { /* lamp glow pooled on the wood */
+  content: ""; position: absolute; inset: 0; border-radius: inherit; pointer-events: none;
+  background: radial-gradient(circle at var(--lx, 46%) var(--ly, 36%), rgba(255, 226, 170, .10), transparent 40%);
+  transition: background .2s; }
+.desk-legs { height: 26px; margin: 0 4%; background: linear-gradient(90deg, #1b130d 0 6%, transparent 6% 94%, #1b130d 94%); border-radius: 0 0 4px 4px; opacity: .9; }
+
+/* masking tape title on the desk */
+.tape {
+  position: absolute; left: 3%; bottom: 3.5%; z-index: 1; padding: 6px 22px 5px; transform: rotate(-2deg);
+  background: rgba(233, 222, 196, .86); color: #2b2a26; font-family: var(--f-hand); font-size: clamp(16px, 2vw, 24px); line-height: 1;
+  clip-path: polygon(2% 0, 98% 4%, 100% 50%, 98% 96%, 1% 100%, 0 52%);
+  box-shadow: 0 2px 6px rgba(0,0,0,.3); pointer-events: none; }
+.tape b { font-weight: 700; }
+.sticky {
+  position: absolute; left: 31.5%; bottom: 2.5%; z-index: 1; width: clamp(104px, 11.5%, 140px); aspect-ratio: 1; padding: 10px 12px;
+  background: linear-gradient(170deg, #f6d36b, #e9bf4f); color: #2b2416; font-family: var(--f-hand); font-size: clamp(15px, 1.7vw, 20px); line-height: 1.1;
+  transform: rotate(3.5deg); box-shadow: 0 10px 16px rgba(0,0,0,.4); pointer-events: none; }
+
+/* each piece of gear */
+.item {
+  --x: 0px; --y: 0px; --rx: 0deg; --ry: 0deg; --lift: 0; --s: 1;
+  position: absolute; left: var(--l); top: var(--t); width: var(--w);
+  padding: 0; margin: 0; border: 0; background: none; cursor: pointer; color: inherit; z-index: 2;
+  transform-style: preserve-3d;
+  transform: rotate(var(--r)) translate3d(var(--x), calc(var(--y) - var(--lift) * 14px), 0) rotateX(var(--rx)) rotateY(var(--ry)) scale(var(--s));
+  transition: transform .45s cubic-bezier(.2,.8,.2,1);
+  -webkit-tap-highlight-color: transparent;
+  animation: settle .9s cubic-bezier(.2,.9,.25,1.15) both; animation-delay: calc(var(--i) * 70ms);
+}
+@keyframes settle { from { opacity: 0; translate: 0 -40px; } to { opacity: 1; translate: 0 0; } }
+.item img { display: block; width: 100%; height: auto; pointer-events: none; user-select: none;
+  filter: drop-shadow(0 calc(4px + var(--lift) * 18px) calc(4px + var(--lift) * 16px) rgba(0,0,0,calc(.55 - var(--lift) * .15)));
+  transition: filter .45s; }
+.item.hot { --lift: 1; --s: 1.06; z-index: 6; transition: transform .14s ease-out; }
+.item:focus-visible { outline: none; --lift: 1; --s: 1.06; z-index: 6; }
+.item:focus-visible .tag { background: var(--hivis); }
+.item.flying { visibility: hidden; }
+
+/* kraft hang tag tied to each item */
+.tag {
+  position: absolute; left: var(--tagx, 6%); top: var(--tagy, 92%); z-index: 3;
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  background: var(--kraft); color: var(--ink); padding: 3px 10px 3px 16px; border-radius: 2px 6px 6px 2px;
+  font-family: var(--f-hand); font-size: clamp(14px, 1.45vw, 19px); line-height: 1.15;
+  transform: rotate(var(--tagr, -4deg)) translateZ(10px);
+  clip-path: polygon(10px 0, 100% 0, 100% 100%, 10px 100%, 0 50%);
+  box-shadow: 0 3px 6px rgba(0,0,0,.35); transition: background .2s; }
+.tag::before { content: ""; position: absolute; left: 7px; top: 50%; width: 5px; height: 5px; margin-top: -2.5px; border-radius: 50%; background: #2b1f16; }
+.tag i { font-style: normal; font-family: var(--f-mono); font-size: .62em; letter-spacing: .12em; opacity: .7; }
+.item.hot .tag { background: var(--hivis); }
+
+/* ---------- inspect view ---------- */
+.inspect { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: max(14px, env(safe-area-inset-top, 0px)) max(14px, env(safe-area-inset-right, 0px)) max(14px, env(safe-area-inset-bottom, 0px)) max(14px, env(safe-area-inset-left, 0px)); }
+.inspect[hidden] { display: none; }
+.scrim { position: absolute; inset: 0; background: rgba(8, 10, 13, .82); backdrop-filter: blur(3px); animation: fade .3s both; }
+.inspect.closing .scrim { animation: fade .28s reverse both; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+.panel { position: relative; width: min(1040px, 100%); max-height: 100%; overflow: auto; display: grid; grid-template-columns: 1fr; gap: 0;
+  background: var(--night-2); border: 1px solid var(--rule); border-top: 3px solid var(--kraft); border-radius: 4px; box-shadow: 0 30px 80px rgba(0,0,0,.6); }
+@media (min-width: 860px) { .panel { grid-template-columns: 1.15fr 1fr; } }
+.stage { position: relative; display: grid; place-items: center; min-height: 300px; padding: 40px 28px 50px;
+  background: radial-gradient(ellipse 70% 60% at 50% 42%, rgba(255, 214, 150, .16), transparent 70%), #151a21; }
+.stage img { display: block; max-width: 100%; max-height: min(56vh, 520px); width: auto; height: auto; object-fit: contain; filter: drop-shadow(0 22px 26px rgba(0,0,0,.6)); }
+.stage.wide img { max-height: none; width: 100%; }
+.stage .alt-views { display: flex; flex-direction: column; gap: 18px; width: 100%; }
+.stage .num { position: absolute; left: 18px; top: 12px; font-family: var(--f-stencil); font-size: 46px; color: rgba(201,166,113,.22); line-height: 1; }
+.stage .cap { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font-family: var(--f-hand); font-size: 18px; color: var(--muted); }
+.flyer { position: fixed; z-index: 70; pointer-events: none; margin: 0; transform-origin: 0 0; filter: drop-shadow(0 22px 26px rgba(0,0,0,.6)); }
+
+.sheet { background: var(--label); color: var(--ink); padding: 24px 24px 22px; position: relative; }
+.sheet .hd { display: flex; justify-content: space-between; gap: 12px; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; border-bottom: 2px solid var(--ink); padding-bottom: 8px; }
+.sheet .brandname { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: #5d636c; margin-top: 14px; }
+.sheet h2 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 4.2vw, 42px); line-height: .95; text-transform: uppercase; margin: 4px 0 10px; letter-spacing: .01em; }
+.sheet .blurb { font-size: 13.5px; line-height: 1.6; margin-bottom: 14px; }
+.facts { display: grid; grid-template-columns: repeat(3, 1fr); border: 1.5px solid var(--ink); margin-bottom: 14px; }
+.facts div { padding: 6px 9px; border-right: 1.5px solid var(--ink); min-width: 0; }
+.facts div:last-child { border-right: 0; }
+.facts span { display: block; font-size: 9px; letter-spacing: .16em; text-transform: uppercase; color: #5d636c; }
+.facts b { display: block; font-family: var(--f-display); font-weight: 800; font-size: 20px; line-height: 1.1; overflow-wrap: anywhere; }
+.specs { list-style: none; margin: 0 0 14px; padding: 0; display: grid; gap: 5px; font-size: 12.5px; line-height: 1.45; }
+.specs li { display: grid; grid-template-columns: 112px 1fr; gap: 10px; border-bottom: 1px dashed #c8c2b6; padding-bottom: 5px; }
+.specs li span { font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #5d636c; padding-top: 2px; }
+.note { font-family: var(--f-hand); font-size: 21px; line-height: 1.15; color: #3a2f22; margin: 0 0 12px; }
+.sheet .foot { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 4px; }
+.sheet .foot a { color: var(--ink); font-size: 12px; letter-spacing: .08em; }
+.pairs { font-size: 12px; margin: 0 0 12px; }
+.pairs button { font: inherit; background: none; border: 1px solid var(--ink); border-radius: 12px; padding: 1px 9px; margin: 2px 4px 2px 0; cursor: pointer; color: var(--ink); }
+.pairs button:hover { background: var(--ink); color: var(--label); }
+.barcode { height: 30px; width: 150px; }
+.ctrl { position: absolute; z-index: 3; background: var(--night-2); color: var(--fg); border: 1px solid var(--rule); font-family: var(--f-mono); font-size: 12px; padding: 7px 11px; cursor: pointer; border-radius: 3px; }
+.ctrl:hover { border-color: var(--kraft); }
+.ctrl.x { top: 10px; right: 10px; }
+@media (min-width: 860px) { .ctrl.x { right: auto; left: calc(53.49% - 118px); } }
+.ctrl.prev { left: 10px; bottom: 10px; } .ctrl.next { left: 60px; bottom: 10px; }
+
+/* ---------- manifest ---------- */
+.manifest { margin-top: 56px; }
+.manifest h2 { font-family: var(--f-display); font-weight: 800; font-size: clamp(30px, 5vw, 44px); text-transform: uppercase; margin: 4px 0 18px; line-height: 1; }
+.mtable { width: 100%; border-collapse: collapse; font-size: 13px; }
+.mtable th { text-align: left; font-weight: 400; font-size: 10.5px; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); border-bottom: 1px solid var(--rule); padding: 8px 10px; }
+.mtable td { border-bottom: 1px dashed var(--rule); padding: 10px; vertical-align: top; }
+.mtable tbody tr { cursor: pointer; }
+.mtable tbody tr:hover td { background: rgba(201,166,113,.06); }
+.mtable td.n { font-family: var(--f-stencil); color: var(--kraft); width: 46px; }
+.mtable td.r, .mtable th.r { text-align: right; white-space: nowrap; }
+.mtable td .b { color: var(--muted); font-size: 11px; letter-spacing: .1em; text-transform: uppercase; display: block; }
+.mtable button { all: unset; cursor: pointer; font-family: var(--f-display); font-weight: 800; font-size: 19px; letter-spacing: .02em; }
+.mtable button:focus-visible { outline: 2px dashed var(--hivis); outline-offset: 2px; }
+.mtable tfoot td { border-bottom: 0; padding-top: 14px; font-family: var(--f-display); font-weight: 800; font-size: 20px; }
+.mtable tfoot td.l { font-family: var(--f-hand); font-weight: 500; font-size: 20px; color: var(--kraft); }
+.fine { color: var(--muted); font-size: 11.5px; margin-top: 14px; max-width: 70ch; }
+@media (max-width: 640px) { .mtable .hide-s { display: none; } }
+
+footer { border-top: 1px solid var(--rule); margin-top: 56px; padding: 32px 16px 40px; text-align: center; color: var(--muted); font-size: 11.5px; letter-spacing: .06em; }
+
+/* ---------- small screens: a taller desk, items rearranged ---------- */
+@media (max-width: 720px) {
+  .desk { aspect-ratio: 3 / 5.2; }
+  .item { left: var(--ml); top: var(--mt); width: var(--mw); }
+  .tag { font-size: 14px; padding: 2px 8px 2px 14px; }
+  .tag i { display: none; }
+  .tape { display: none; }
+  .sticky { display: none; }
+  .stage { min-height: 240px; padding: 34px 18px 40px; }
+  .stage img { max-height: 38vh; }
+  .specs li { grid-template-columns: 1fr; gap: 0; }
+  .ctrl.prev, .ctrl.next { top: 10px; bottom: auto; left: auto; }
+  .ctrl.prev { right: 160px; } .ctrl.next { right: 118px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .item, .item img { transition: none; animation: none; }
+  .scrim { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-in">
+    <a class="brand" href="../">R·B</a>
+    <nav aria-label="Page"><ul>
+      <li><a href="#manifest">Manifest</a></li>
+      <li><a href="../">← Site</a></li>
+    </ul></nav>
+  </div>
+</header>
+
+<main>
+  <div class="top">
+    <div>
+      <p class="eyebrow">off the clock · snowboarding</p>
+      <h1>The gear desk</h1>
+      <p class="lede">Everything I ride with, unpacked and laid out on the bench. <span class="muted">Hover to pick something up, click to inspect it.</span></p>
+    </div>
+    <p class="hint" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M6 30 C14 30 24 26 30 12"/><path d="M24 13 L30 11 L32 17"/></svg>try the board</p>
+  </div>
+
+  <div class="desk-wrap">
+    <div class="desk" id="desk" role="group" aria-label="Snowboard gear on a desk. Each item is a button that opens its details.">
+      <div class="tape"><b>GEAR DESK</b> · season kit</div>
+      <div class="sticky">Step On boots + bindings = no straps, no sitting down in the snow.</div>
+    </div>
+    <div class="desk-legs" aria-hidden="true"></div>
+  </div>
+
+  <section class="manifest" id="manifest" aria-labelledby="mh">
+    <p class="eyebrow">packing list</p>
+    <h2 id="mh">Manifest</h2>
+    <table class="mtable">
+      <thead><tr><th>No.</th><th>Item</th><th class="hide-s">Size / color</th><th class="r">Retail</th></tr></thead>
+      <tbody id="mrows"></tbody>
+      <tfoot><tr><td></td><td class="l">declared value of the whole kit</td><td class="hide-s"></td><td class="r" id="mtotal"></td></tr></tfoot>
+    </table>
+    <p class="fine">Retail prices are the listed prices from the product pages linked on each item, not what I paid. Product photos belong to the brands and retailers they come from.</p>
+  </section>
+</main>
+
+<footer>Reuben Bangerter · <a href="../">reubenbangerter.org</a></footer>
+
+<div class="inspect" id="inspect" hidden>
+  <div class="scrim" data-close></div>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="i-title" id="panel"></div>
+</div>
+
+<script>
+/* =============================================================
+   YOUR GEAR — edit this list.
+   img: a transparent PNG in the gear folder.
+   Desk position (percent of the desk): l = left, t = top, w = width, r = rotation.
+   Phone layout uses ml / mt / mw instead.
+   size / color: leave "" if you'd rather not say; note: your own one-liner (optional).
+   ============================================================= */
+const GEAR = [
+  { id: "board", cat: "Snowboard", brand: "Salomon", name: "Assassin", year: "2024",
+    img: "gear/board.png", alt: "Salomon Assassin snowboard, base side with the large Salomon wordmark",
+    views: [{ src: "gear/board.png", cap: "base" }, { src: "gear/board-alt.png", cap: "topsheet" }],
+    size: "", color: "", price: 284.98,
+    blurb: "A directional twin that's built to ride anything: a mix of Salomon's pow and freestyle boards, so it's playful in the park and still holds up when it snows.",
+    specs: [["Shape", "Directional twin"], ["Profile", "Hybrid camber (camber + rocker)"], ["Terrain", "All-mountain, park, powder"]],
+    pairs: ["bindings"], note: "",
+    url: "https://www.evo.com/products/239757-salomon-assassin-snowboard-2024",
+    l: 7, t: 6, w: 56, r: -3, ml: 5, mt: 2.5, mw: 90, tagx: "62%", tagy: "78%", tagr: "3deg" },
+
+  { id: "bindings", cat: "Bindings", brand: "Burton", name: "Step On® Re:Flex", year: "",
+    img: "gear/bindings.png", alt: "Burton Step On Re:Flex binding in gray and white",
+    size: "M", color: "Gray / White", price: 299.95,
+    blurb: "Strapless Step On bindings: two hooks at the toe and one at the heel lock the boot in, and a lever on the heel lets it out.",
+    specs: [["Connection", "3 points: 2 toe hooks, 1 heel cleat"], ["Mounting", "Re:Flex; fits 4x4, The Channel and 3D (with disc)"], ["Cushioning", "Re:Flex FullBED, full underfoot"], ["Hi-back", "Canted, FLAD forward-lean adjust"], ["Size M fits", "Men's boots 8.5–10.5"], ["Works with", "Step On boots only"]],
+    pairs: ["boots", "board"], note: "",
+    url: "https://www.burton.com/en-us/products/mens-burton-step-on-re-flex-snowboard-bindings-172831",
+    l: 69, t: 5, w: 19, r: 8, ml: 55, mt: 14, mw: 40, tagx: "40%", tagy: "88%", tagr: "-6deg" },
+
+  { id: "boots", cat: "Boots", brand: "Burton", name: "Ruler Step On®", year: "",
+    img: "gear/boots.png", alt: "Burton Ruler Step On snowboard boot in Gray Cloud",
+    size: "10.5", color: "Gray Cloud", price: 349.95,
+    blurb: "Medium-flex all-mountain boots with a single BOA dial and the Step On sole, so getting in is one step and a click.",
+    specs: [["Flex", "Medium"], ["Lacing", "Sequence BOA®, 2 lace paths, 1 dial"], ["Liner", "Imprint™ 2, heat-moldable, 3M Thinsulate"], ["Outsole", "Step On®, recycled-content rubber"], ["Works with", "Step On bindings only"]],
+    pairs: ["bindings"], note: "",
+    url: "https://www.rei.com/product/239409/burton-ruler-step-on-snowboard-boots-mens-20242025",
+    l: 67, t: 45, w: 19, r: -5, ml: 48, mt: 63, mw: 38, tagx: "-6%", tagy: "86%", tagr: "4deg" },
+
+  { id: "jacket", cat: "Shell jacket", brand: "Arc'teryx", name: "Beta SV Jacket", year: "",
+    img: "gear/jacket.png", alt: "Arc'teryx Beta SV jacket in black",
+    size: "", color: "", price: 800.00,
+    blurb: "A three-layer GORE-TEX PRO shell built for snow, wind and heavy rain. The hood fits over a helmet, and pit zips dump heat on the hike.",
+    specs: [["Fabric", "100d 3L GORE-TEX PRO ePE"], ["Weight", "480 g"], ["Hood", "Helmet-compatible StormHood"], ["Venting", "Pit zips, two-way front zip"], ["Pockets", "Chest, 2 hand, inner chest, inner dump"], ["Fit", "Regular"]],
+    pairs: ["pants"], note: "",
+    url: "https://arcteryx.com/us/en/shop/mens/beta-sv-jacket-1003",
+    l: 4, t: 33, w: 24, r: -6, ml: 3, mt: 16, mw: 48, tagx: "58%", tagy: "90%", tagr: "-3deg" },
+
+  { id: "pants", cat: "Snow pants", brand: "Snowverb · YXSS", name: "Freestyle Mountain Cargo Pants", year: "",
+    img: "gear/pants.png", alt: "Snowverb freestyle cargo snow pants in a tan ginger color",
+    size: "", color: "", price: 199.99,
+    blurb: "Baggy freestyle cargos with real storage: two big cargo pockets, thigh vents and boot gaiters to keep the snow out.",
+    specs: [["Waterproof / breathable", "10K / 10K, fully taped seams"], ["Pockets", "2 hand, 2 cargo, 1 back zip"], ["Venting", "Inner thigh vents"], ["Fit", "Elastic drawstring waist, adjustable hem, boot gaiters"]],
+    pairs: ["jacket"], note: "",
+    url: "https://www.snowverb.com/products/mens-freestyle-mountain-cargo-snow-pants",
+    l: 29, t: 35, w: 15, r: 4, ml: 6, mt: 51, mw: 33, tagx: "10%", tagy: "94%", tagr: "5deg" },
+
+  { id: "helmet", cat: "Helmet", brand: "Anon", name: "Logan WaveCel®", year: "",
+    img: "gear/helmet.png", alt: "Anon Logan WaveCel helmet in black",
+    size: "", color: "", price: 264.95,
+    blurb: "A low-profile helmet with a WaveCel liner, a collapsible cell structure meant to soak up both direct and rotational impact.",
+    specs: [["Protection", "WaveCel liner + in-mold shell with EPS"], ["Fit", "360° BOA® dial"], ["Buckle", "Fidlock® magnetic, works with gloves on"], ["Venting", "10 passive vents"], ["Weight", "424 g"]],
+    pairs: ["goggles"], note: "",
+    url: "https://www.burton.com/en-us/products/anon-logan-wavecel-ski-snowboard-helmet-2273416-o",
+    l: 46, t: 32, w: 17, r: -4, ml: 56, mt: 39, mw: 37, tagx: "30%", tagy: "92%", tagr: "-5deg" },
+
+  { id: "goggles", cat: "Goggles", brand: "Anon", name: "M6 + MFI® Face Mask", year: "",
+    img: "gear/goggles.png", alt: "Anon M6 goggles with a dark polarized lens",
+    size: "", color: "", price: 379.95,
+    blurb: "Big cylindrical goggles with magnetic lenses that swap in seconds, plus a face mask that clips straight onto the frame.",
+    specs: [["Lens", "Perceive Sunny Polarized Onyx (10% VLT)"], ["Bonus lens", "Perceive Variable Violet (34% VLT)"], ["Lens change", "Magna-Tech®, N52 magnets"], ["Face mask", "MFI® magnetic face mask included"], ["Fit", "Large, helmet compatible"]],
+    pairs: ["helmet"], note: "",
+    url: "https://www.burton.com/en-us/products/anon-m6-goggles-polarized-perceive-lens-mfi-face-mask-305581",
+    l: 43, t: 68, w: 23, r: 3, ml: 5, mt: 85, mw: 46, tagx: "70%", tagy: "70%", tagr: "6deg" }
+];
+
+/* ============================================================= */
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const money = n => "$" + n.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const pad = i => String(i + 1).padStart(2, "0");
+const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+const fine = matchMedia("(hover: hover) and (pointer: fine)").matches;
+
+// ---- lay the gear out on the desk
+const desk = document.getElementById("desk");
+desk.insertAdjacentHTML("beforeend", GEAR.map((g, i) => `
+  <button type="button" class="item" data-i="${i}" aria-label="${esc(g.brand + " " + g.name)}: inspect"
+    style="--i:${i};--l:${g.l}%;--t:${g.t}%;--w:${g.w}%;--r:${g.r}deg;--ml:${g.ml}%;--mt:${g.mt}%;--mw:${g.mw}%;--tagx:${g.tagx};--tagy:${g.tagy};--tagr:${g.tagr}">
+    <img src="${esc(g.img)}" alt="${esc(g.alt)}" draggable="false">
+    <span class="tag" aria-hidden="true"><i>${pad(i)}</i>${esc(g.cat)}</span>
+  </button>`).join(""));
+const items = [...desk.querySelectorAll(".item")];
+
+// ---- hover: the piece lifts off the desk and tilts toward the cursor
+items.forEach(el => {
+  if (reduce) return;
+  el.addEventListener("pointermove", e => {
+    if (e.pointerType !== "mouse") return;
+    const b = el.getBoundingClientRect();
+    const dx = ((e.clientX - b.left) / b.width - .5) * 2, dy = ((e.clientY - b.top) / b.height - .5) * 2;
+    el.classList.add("hot");
+    el.style.setProperty("--rx", (-dy * 14).toFixed(2) + "deg");
+    el.style.setProperty("--ry", (dx * 16).toFixed(2) + "deg");
+    el.style.setProperty("--x", (dx * 7).toFixed(1) + "px");
+    el.style.setProperty("--y", (dy * 7).toFixed(1) + "px");
+  });
+  el.addEventListener("pointerleave", () => {
+    el.classList.remove("hot");
+    ["--rx", "--ry", "--x", "--y"].forEach(v => el.style.removeProperty(v));
+    // a little wobble as it settles back down
+    el.animate([{ rotate: "0deg" }, { rotate: "-1.6deg" }, { rotate: "1deg" }, { rotate: "0deg" }], { duration: 520, easing: "ease-out" });
+  });
+});
+// the lamp glow follows the pointer around the desk
+desk.addEventListener("pointermove", e => {
+  const b = desk.getBoundingClientRect();
+  desk.style.setProperty("--lx", ((e.clientX - b.left) / b.width * 100).toFixed(1) + "%");
+  desk.style.setProperty("--ly", ((e.clientY - b.top) / b.height * 100).toFixed(1) + "%");
+});
+
+// ---- inspect view
+const box = document.getElementById("inspect"), panel = document.getElementById("panel");
+let cur = -1, opener = null, busy = false;
+
+function barcode(seed) {
+  let h = 2166136261; for (const c of seed) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); }
+  let x = 0, bars = "";
+  while (x < 146) { h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0; const w = 1 + (h % 3), gap = 1 + ((h >>> 3) % 3); bars += `<rect x="${x}" y="0" width="${w}" height="30"/>`; x += w + gap; }
+  return `<svg class="barcode" viewBox="0 0 150 30" aria-hidden="true" fill="#1a1d22">${bars}</svg>`;
+}
+
+function sheetHTML(i) {
+  const g = GEAR[i];
+  const views = g.views && g.views.length > 1
+    ? `<div class="alt-views">${g.views.map(v => `<figure style="margin:0;text-align:center"><img src="${esc(v.src)}" alt="${esc(g.brand + " " + g.name + ", " + v.cap)}"></figure>`).join("")}</div>`
+    : `<img src="${esc(g.img)}" alt="${esc(g.alt)}">`;
+  const facts = [["Size", g.size || "—"], ["Color", g.color || "—"], ["Retail", money(g.price)]];
+  const pairs = (g.pairs || []).map(id => GEAR.findIndex(x => x.id === id)).filter(k => k >= 0);
+  return `
+    <div class="stage${g.views ? " wide" : ""}" id="stage">
+      <span class="num" aria-hidden="true">${pad(i)}</span>
+      ${views}
+      <span class="cap">${esc(g.cat.toLowerCase())}${g.year ? " · " + esc(g.year) : ""}</span>
+    </div>
+    <div class="sheet">
+      <div class="hd"><span>Item ${pad(i)} / ${pad(GEAR.length - 1)}</span><span>${esc(g.cat)}</span></div>
+      <p class="brandname">${esc(g.brand)}</p>
+      <h2 id="i-title">${esc(g.name)}</h2>
+      <p class="blurb">${esc(g.blurb)}</p>
+      ${g.note ? `<p class="note">“${esc(g.note)}”</p>` : ""}
+      <div class="facts">${facts.map(([k, v]) => `<div><span>${k}</span><b>${esc(v)}</b></div>`).join("")}</div>
+      <ul class="specs">${g.specs.map(([k, v]) => `<li><span>${esc(k)}</span>${esc(v)}</li>`).join("")}</ul>
+      ${pairs.length ? `<p class="pairs">Goes with: ${pairs.map(k => `<button type="button" data-go="${k}">${esc(GEAR[k].cat.toLowerCase())}</button>`).join("")}</p>` : ""}
+      <div class="foot">${barcode(g.id + g.name)}<a href="${esc(g.url)}" target="_blank" rel="noopener">product page ↗</a></div>
+    </div>
+    <button type="button" class="ctrl x" data-close aria-label="Put it back on the desk">✕ put back</button>
+    <button type="button" class="ctrl prev" data-step="-1" aria-label="Previous item">←</button>
+    <button type="button" class="ctrl next" data-step="1" aria-label="Next item">→</button>`;
+}
+
+// FLIP: fly the picture from its spot on the desk into the inspect view
+function fly(fromEl, toEl, back) {
+  if (reduce || !fromEl || !toEl) return Promise.resolve();
+  const a = fromEl.getBoundingClientRect(), b = toEl.getBoundingClientRect();
+  if (!a.width || !b.width) return Promise.resolve();
+  const img = document.createElement("img");
+  img.src = toEl.currentSrc || toEl.src; img.className = "flyer"; img.alt = "";
+  const [s, e] = back ? [b, a] : [a, b];
+  Object.assign(img.style, { left: e.left + "px", top: e.top + "px", width: e.width + "px", height: e.height + "px" });
+  document.body.appendChild(img);
+  const rot = parseFloat(getComputedStyle(fromEl.closest(".item")).getPropertyValue("--r")) || 0;
+  const k = [
+    { transform: `translate(${s.left - e.left}px, ${s.top - e.top}px) scale(${s.width / e.width}, ${s.height / e.height}) rotate(${back ? 0 : rot}deg)` },
+    { transform: `translate(0,0) scale(1,1) rotate(${back ? rot : 0}deg)` }
+  ];
+  return img.animate(k, { duration: back ? 380 : 520, easing: "cubic-bezier(.2,.8,.2,1)" }).finished.then(() => img.remove());
+}
+
+async function openItem(i, from) {
+  if (busy) return;
+  busy = true;
+  opener = from || document.activeElement;
+  cur = i;
+  panel.innerHTML = sheetHTML(i);
+  box.hidden = false; box.classList.remove("closing");
+  document.body.style.overflow = "hidden";
+  const deskImg = items[i].querySelector("img"), target = panel.querySelector(".stage img");
+  items[i].classList.remove("hot");
+  if (target) target.style.visibility = "hidden";
+  items[i].classList.add("flying");
+  await (target && !target.complete ? new Promise(r => { target.onload = target.onerror = r; }) : null);
+  await fly(deskImg, target, false);
+  if (target) target.style.visibility = "";
+  panel.querySelector("[data-close]").focus({ preventScroll: true });
+  busy = false;
+}
+
+function swapTo(i) {
+  items[cur].classList.remove("flying");
+  cur = (i + GEAR.length) % GEAR.length;
+  panel.innerHTML = sheetHTML(cur);
+  items[cur].classList.add("flying");
+  panel.scrollTop = 0;
+  if (!reduce) panel.querySelector("#stage").animate([{ opacity: 0, transform: "translateX(18px)" }, { opacity: 1, transform: "none" }], { duration: 260, easing: "ease-out" });
+  panel.querySelector("[data-close]").focus({ preventScroll: true });
+}
+
+async function closeItem() {
+  if (busy || box.hidden) return;
+  busy = true;
+  const target = panel.querySelector(".stage img"), deskImg = items[cur].querySelector("img");
+  box.classList.add("closing");
+  panel.style.visibility = "hidden";
+  await fly(deskImg, target, true);
+  items[cur].classList.remove("flying");
+  box.hidden = true; panel.style.visibility = ""; panel.innerHTML = "";
+  document.body.style.overflow = "";
+  const back = opener && document.contains(opener) ? opener : items[cur];
+  back.focus({ preventScroll: true });
+  busy = false;
+}
+
+desk.addEventListener("click", e => { const it = e.target.closest(".item"); if (it) openItem(+it.dataset.i, it); });
+box.addEventListener("click", e => {
+  if (e.target.closest("[data-close]")) return closeItem();
+  const st = e.target.closest("[data-step]"); if (st) return swapTo(cur + +st.dataset.step);
+  const go = e.target.closest("[data-go]"); if (go) return swapTo(+go.dataset.go);
+});
+document.addEventListener("keydown", e => {
+  if (box.hidden) return;
+  if (e.key === "Escape") { e.preventDefault(); closeItem(); }
+  else if (e.key === "ArrowRight") swapTo(cur + 1);
+  else if (e.key === "ArrowLeft") swapTo(cur - 1);
+  else if (e.key === "Tab") { // keep focus inside the panel
+    const f = [...panel.querySelectorAll("button, a[href]")]; if (!f.length) return;
+    if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
+    else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
+  }
+});
+
+// ---- manifest
+document.getElementById("mrows").innerHTML = GEAR.map((g, i) => `<tr data-i="${i}">
+  <td class="n">${pad(i)}</td>
+  <td><span class="b">${esc(g.brand)} · ${esc(g.cat)}</span><button type="button" data-open="${i}">${esc(g.name)}</button></td>
+  <td class="hide-s">${esc([g.size, g.color].filter(Boolean).join(" · ") || "—")}</td>
+  <td class="r">${money(g.price)}</td></tr>`).join("");
+document.getElementById("mtotal").textContent = money(GEAR.reduce((s, g) => s + g.price, 0));
+document.getElementById("mrows").addEventListener("click", e => {
+  const tr = e.target.closest("tr[data-i]"); if (!tr) return;
+  const i = +tr.dataset.i;
+  openItem(i, tr.querySelector("button"));
+});
+</script>
+</body>
+</html>

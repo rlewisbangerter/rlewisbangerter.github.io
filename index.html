@@ -257,6 +257,7 @@ p { margin: 0; }
 .status.done { background: var(--kraft); }
 .golink { display: inline-block; margin-top: 16px; font-family: var(--f-hand); font-size: 20px; color: var(--kraft); }
 .golink.todo { color: var(--muted); text-decoration: none; }
+.drawer-link { margin-top: 8px; font-size: 19px; }
 
 /* ---------- inventory (misc) ---------- */
 .shelf { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 18px; }
@@ -696,7 +697,8 @@ const SITE = {
      To add a photo: put the file in the "photos" folder next to index.html,
      then add { src: "photos/your-file.jpg", caption: "short caption" } to that hobby's list. */
   hobbies: [
-    { icon: "snowboard", label: "Snowboarding", blurb: "On a board since I was a kid. Powder days are the best days.", photos: [
+    { icon: "snowboard", label: "Snowboarding", blurb: "On a board since I was a kid. Powder days are the best days.",
+      link: "snowboarding/", linkText: "open the gear desk →", photos: [
       { src: "photos/snow-angels.jpg", caption: "powder day" },
       { src: "photos/snow-powder.jpg", caption: "deep in the trees" },
       { src: "photos/snow-first-board.jpg", caption: "where it started" } ] },
@@ -1485,7 +1487,7 @@ function initMap() {
     card.className = "card" + (d.lived ? " home" : d.want ? " want" : "");
     card.innerHTML = `<button type="button" class="x" aria-label="Close">✕</button>
       <div class="k">${d.lived ? "Home port" : d.want ? "Next port · want to go" : "Port of call"} · ${esc(d.where)}</div>
-      <h4>${esc(d.name)}</h4>${d.note ? `<p>${esc(d.note)}</p>` : ""}
+      <h4>${esc(d.name)}</h4>${d.note ? `<p>${esc(d.note)}</p>` : ""}${/snowboard/i.test(d.note || "") ? `<a class="golink" style="margin-top:4px" href="snowboarding/">see my gear →</a>` : ""}
       ${galleryHTML(d.photos || [], d.name)}`;
     card.hidden = false;
     placeCard();
@@ -1545,7 +1547,7 @@ function toggleHobby(i) {
     ? h.photos.map((p, k) => `<button type="button" class="pic" data-k="${k}" aria-label="Enlarge: ${esc(p.caption || h.label)}"><img src="${esc(p.src)}" alt="${esc(p.caption || h.label)}" loading="lazy"><span>${esc(p.caption || "")}</span></button>`).join("")
     : [1, 2, 3].map(() => `<div class="pic placeholder"><div class="empty">${esc(h.label)} photo coming soon</div><span>&nbsp;</span></div>`).join("");
   drawer.innerHTML = `<div class="drawer" role="region" aria-labelledby="drawer-title">
-      <div class="drawer-hd"><div><h3 id="drawer-title">${esc(h.label)}</h3><p>${esc(h.blurb)}</p></div>
+      <div class="drawer-hd"><div><h3 id="drawer-title">${esc(h.label)}</h3><p>${esc(h.blurb)}</p>${h.link ? `<a class="golink drawer-link" href="${esc(h.link)}">${esc(h.linkText || "see more →")}</a>` : ""}</div>
       <button type="button" class="x" data-close>Close box ✕</button></div>
       <div class="pics">${pics}</div></div>`;
   drawer.hidden = false;
