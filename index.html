@@ -337,7 +337,7 @@ p { margin: 0; }
 .card .thumbs img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
 .card .thumbs span { position: absolute; inset: 0; display: grid; place-items: center; background: rgba(26,29,34,.6); color: var(--label); font-weight: 600; }
 .chart .pin .hit { fill: transparent; }
-.card .x { position: absolute; right: 6px; top: 6px; width: 36px; height: 36px; display: grid; place-items: center; background: rgba(26,29,34,.08); border: 0; border-radius: 8px; font-size: 16px; line-height: 1; cursor: pointer; color: var(--ink); }
+.card .x { position: absolute; z-index: 2; right: 6px; top: 6px; width: 36px; height: 36px; display: grid; place-items: center; background: rgba(26,29,34,.08); border: 0; border-radius: 8px; font-size: 16px; line-height: 1; cursor: pointer; color: var(--ink); }
 .card .x:hover { background: rgba(26,29,34,.18); }
 .card .k { padding-right: 40px; }
 @media (max-width: 600px) { .card { position: static; width: auto; box-shadow: none; } .card .cover img { aspect-ratio: 16/9; } .maphint { display: none; } }
