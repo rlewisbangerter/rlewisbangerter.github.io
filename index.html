@@ -14,7 +14,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Saira+Stencil+One&family=Big+Shoulders+Display:wght@600;800&family=IBM+Plex+Mono:ital,wght@0,400;0,600;1,400&family=Caveat:wght@500;700&display=swap">
 <style>
-/* Layout: a loading dock at night. Dark floor, kraft-paper stamps on conveyor rails at both edges,
+/* Layout: a loading dock at night. Dark floor, kraft-paper stamps,
    every experience shown as the paperwork it would ship with (label, work order, ID, manifest). */
 :root {
   --night: #12161c;      /* warehouse floor */
@@ -54,24 +54,6 @@ a { color: inherit; }
 .skip { position: absolute; left: -999px; }
 .skip:focus { left: 16px; top: 16px; background: var(--hivis); color: var(--ink); padding: 6px 10px; z-index: 60; }
 
-/* ---------- side conveyor belts carrying interest packages ---------- */
-.rail { position: fixed; top: 0; bottom: 0; width: 84px; overflow: hidden; z-index: 5; display: none; pointer-events: none; }
-.rail.l { left: 0; } .rail.r { right: 0; }
-.rail::before, .rail::after { content: ""; position: absolute; top: 0; bottom: 0; width: 1px; background: var(--rule); z-index: 1; }
-.rail::before { left: 10px; } .rail::after { right: 10px; }
-.track { position: absolute; left: 11px; right: 11px; top: 0; display: flex; flex-direction: column; align-items: center; gap: 46px; padding: 30px 0;
-  background: repeating-linear-gradient(180deg, transparent 0 22px, rgba(232,226,214,.05) 22px 23px); animation: belt 120s linear infinite; will-change: transform; }
-.rail.r .track { animation-direction: reverse; }
-@keyframes belt { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -33.3333%, 0); } }
-.pkg { display: grid; justify-items: center; gap: 7px; transform: rotate(var(--t, 0deg)); }
-.pkg svg { width: var(--w, 46px); height: auto; overflow: visible; }
-.pkg .face-top { fill: rgba(201,166,113,.16); }
-.pkg .face-l { fill: rgba(201,166,113,.09); }
-.pkg .face-r { fill: rgba(201,166,113,.04); }
-.pkg .edge { fill: none; stroke: var(--kraft); stroke-width: 1.4; stroke-linejoin: round; opacity: .75; }
-.pkg .btape { stroke: var(--kraft); stroke-width: 3; opacity: .35; stroke-linecap: butt; }
-.pkg .ico { fill: none; stroke: var(--kraft); stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; opacity: .85; }
-.pkg span { font-family: var(--f-mono); font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); white-space: nowrap; }
 .brandrow { display: flex; align-items: center; gap: 12px; }
 .introchip { display: inline-flex; align-items: center; gap: 5px; height: 26px; padding: 0 9px 0 7px; border: 1px solid var(--rule); border-radius: 13px; background: none; color: var(--muted); font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: color .2s, border-color .2s; }
 .introchip svg { width: 11px; height: 11px; fill: var(--hivis); }
@@ -87,7 +69,6 @@ a { color: inherit; }
 @keyframes fly { from { transform: translate3d(-80px, 0, 0); } to { transform: translate3d(calc(100vw + 20px), 0, 0); } }
 @keyframes flyR { from { transform: translate3d(calc(100vw + 20px), 0, 0); } to { transform: translate3d(-80px, 0, 0); } }
 @keyframes blink { 50% { opacity: 0; } }
-@media (min-width: 1100px) { .rail { display: block; } }
 
 /* ---------- nav ---------- */
 header.nav { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: color-mix(in srgb, var(--night) 88%, transparent); backdrop-filter: blur(6px); border-bottom: 1px solid var(--rule); }
@@ -656,8 +637,6 @@ try { var h = location.hash.slice(1);
 </div>
 
 <a class="skip" href="#main">Skip to content</a>
-<div class="rail l" aria-hidden="true"><div class="track" id="railL"></div></div>
-<div class="rail r" aria-hidden="true"><div class="track" id="railR"></div></div>
 <div id="skyway" aria-hidden="true"></div>
 
 <header class="nav">
@@ -794,11 +773,6 @@ const SITE = {
     { name: "Google AI Professional Certificate", by: "Google", date: "", url: "" }
   ],
   /* First-visit intro — the photos that fly past, in order (6–16 works best). */
-  /* Packages on the side conveyor belts: [icon, label]. Keep labels short (about 8 letters). */
-  interests: [
-    ["snowboard", "Snow"], ["soccer", "Soccer"], ["pan", "Cooking"], ["chart", "Data"], ["whisk", "Baking"], ["truck", "Shipping"],
-    ["plane", "Travel"], ["barcode", "Excel"], ["camera", "Photos"], ["globe", "Supply"], ["box", "Power BI"], ["forklift", "Logistics"]
-  ],
   /* First-visit intro — chapters in order. show: "me" | "work" | "projects" | "travel" | "hobbies".
      wall = the giant word that turns behind that chapter (short words look best). */
   introStory: {
@@ -1817,26 +1791,6 @@ function setNav(v) {
   document.querySelectorAll(".nav ul a").forEach(a => a.dataset.v === v ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
 }
 function chrome() {
-  // conveyor belts: one package per interest, three copies so the loop is seamless
-  const pkg = ([ic, label], i, k) => {
-    const r = n => { const x = Math.sin((i + 1) * 91.7 + k * 13.1 + n * 7.3) * 9999; return x - Math.floor(x); };
-    const w = 40 + Math.round(r(1) * 10), t = ((r(3) - .5) * 4).toFixed(1);
-    return `<div class="pkg" style="--w:${w}px;--t:${t}deg"><svg viewBox="0 0 60 56" aria-hidden="true">
-      <polygon class="face-top" points="30,4 56,16 30,28 4,16"/><polygon class="face-l" points="4,16 30,28 30,52 4,40"/><polygon class="face-r" points="30,28 56,16 56,40 30,52"/>
-      <line class="btape" x1="17" y1="10" x2="43" y2="22"/>
-      <g class="ico" transform="matrix(.4,.185,0,.4,4.2,15)">${ICONS[ic] || ICONS.box}</g>
-      <path class="edge" d="M30 4 L56 16 L56 40 L30 52 L4 40 L4 16 Z M4 16 L30 28 L56 16 M30 28 L30 52"/></svg><span>${esc(label)}</span></div>`;
-  };
-  const list = SITE.interests;
-  const left = list.map((it, i) => pkg(it, i, 1)).join("");
-  const right = [...list].reverse().map((it, i) => pkg(it, i, 2)).join("");
-  document.getElementById("railL").innerHTML = left + left + left;
-  document.getElementById("railR").innerHTML = right + right + right;
-  const pace = () => ["railL", "railR"].forEach(id => {
-    const t = document.getElementById(id), loop = t.scrollHeight / 3;
-    if (loop > 0) t.style.animationDuration = `${(loop / 30).toFixed(1)}s`; // about 30px per second
-  });
-  requestAnimationFrame(pace); addEventListener("resize", pace);
   const c = document.getElementById("contactLinks");
   c.innerHTML = `<a href="mailto:${esc(SITE.email)}">${esc(SITE.email)}</a>
     <button type="button" id="copyEmail">Copy email</button>
