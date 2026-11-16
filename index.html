@@ -134,6 +134,20 @@ p { margin: 0; }
 .tape { position: absolute; top: -12px; left: 50%; width: 92px; height: 24px; transform: translateX(-50%) rotate(3deg); background: rgba(201, 166, 113, .8); }
 .down { font-family: var(--f-hand); font-size: 22px; color: var(--kraft); text-decoration: none; margin-top: 14px; }
 
+
+/* ---------- About page scroll effects (after the Arun site) ---------- */
+.hero h1 .w { display: inline-block; white-space: nowrap; }
+.hero h1 .ch { display: inline-block; will-change: transform; transition: translate .25s ease-out, scale .25s ease-out; }
+.hero .fx-fade { will-change: opacity, transform; }
+.deal > .dl { opacity: 0; transform: translate(var(--dx, 0), 56px) rotate(var(--dr, 3deg)); transition: opacity .55s ease-out, transform .95s cubic-bezier(.16,.9,.24,1); }
+.deal > .dl.in { opacity: 1; transform: none; }
+.rows.deal > .row { --dx: -60px; --dr: -2deg; }
+.rows.deal > .row.flip { --dx: 60px; --dr: 2deg; }
+.manifest.deal > .line { --dx: -28px; --dr: 0deg; }
+.hobbies.deal > .hobby { --dr: 9deg; }
+.hobbies.deal > .hobby:nth-child(even) { --dr: -9deg; }
+@media (prefers-reduced-motion: reduce) { .deal > .dl { opacity: 1; transform: none; transition: none; } }
+
 /* ---------- work rows ---------- */
 .rows { display: grid; gap: 72px; }
 .row { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; }
@@ -917,10 +931,10 @@ function home() {
   return `
   <div class="hero">
     ${monogram()}
-    <h1>${esc(SITE.name)}</h1>
-    <p class="sub">${esc(SITE.subtitle)}</p>
+    <h1 aria-label="${esc(SITE.name)}">${SITE.name.split(" ").map(w => `<span class="w" aria-hidden="true">${[...w].map(c => `<span class="ch">${esc(c)}</span>`).join("")}</span>`).join(" ")}</h1>
+    <p class="sub fx-fade">${esc(SITE.subtitle)}</p>
     <figure class="polaroid" style="margin-inline:auto"><span class="tape"></span><div class="ph">${photo}</div><figcaption>${esc(SITE.photoCaption)}</figcaption></figure>
-    <a class="down" href="#work">${esc(SITE.tagline)}</a>
+    <a class="down fx-fade" href="#work">${esc(SITE.tagline)}</a>
   </div>
 
   <section id="work" aria-labelledby="h-work">
@@ -1602,6 +1616,101 @@ document.addEventListener("keydown", e => {
 /* =============================================================
    Router + chrome
    ============================================================= */
+
+/* =============================================================
+   About page scroll effects, after the Arun site:
+   the name scatters as you scroll, headings decode into place,
+   and work, manifest lines and stamps deal in one by one.
+   ============================================================= */
+let HOME_FX_OFF = null;
+function initHomeFX() {
+  if (HOME_FX_OFF) { HOME_FX_OFF(); HOME_FX_OFF = null; }
+  if (matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  const view = document.querySelector("#main .view"), hero = view && view.querySelector(".hero");
+  if (!hero) return;
+  const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
+  const smooth = t => t * t * (3 - 2 * t);
+
+  /* 1. hero: letters fly off, photo lifts away, words fade */
+  const chs = [...hero.querySelectorAll("h1 .ch")], fades = [...hero.querySelectorAll(".fx-fade")];
+  const pol = hero.querySelector(".polaroid"), stamp = hero.querySelector(".stamp");
+  let lastP = -1, raf = 0;
+  function frame() {
+    raf = 0;
+    const span = Math.max(300, hero.offsetHeight * 0.8);
+    const start = Math.max(0, hero.getBoundingClientRect().top + window.scrollY - 120);
+    const p = clamp((window.scrollY - start) / span);
+    if (p === lastP) return; lastP = p;
+    chs.forEach((c, j) => {
+      const e = smooth(clamp((p - (0.03 + j * 0.028)) / 0.32));
+      c.style.transform = e ? `translate3d(${(((j * 37) % 11) - 5) * 5 * e}vw,${-70 * e}vh,0) rotate(${(((j * 53) % 13) - 6) * 10 * e}deg)` : "";
+      c.style.opacity = e ? String(1 - e * 0.85) : "";
+    });
+    fades.forEach(f => { f.style.opacity = p ? String(clamp(1 - p * 2.2)) : ""; f.style.transform = p ? `translateY(${-p * 40}px)` : ""; });
+    if (pol) pol.style.transform = p ? `translateY(${-p * 110}px) rotate(${-2.5 + p * 16}deg) scale(${1 + p * 0.06})` : "";
+    if (stamp) stamp.style.transform = p ? `rotate(${p * 140}deg) scale(${1 - p * 0.3})` : "";
+  }
+  const onScroll = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  frame();
+
+  /* the letters lean toward the cursor, like Arun's name does */
+  let onMove = null, onLeave = null;
+  if (matchMedia("(hover: hover) and (pointer: fine)").matches) {
+    let q = false, ex = 0, ey = 0;
+    onMove = ev => {
+      ex = ev.clientX; ey = ev.clientY; if (q) return; q = true;
+      requestAnimationFrame(() => {
+        q = false;
+        for (const c of chs) {
+          const b = c.getBoundingClientRect(), d = Math.hypot(ex - (b.left + b.width / 2), ey - (b.top + b.height / 2)), k = Math.max(0, 1 - d / 220);
+          c.style.translate = k ? `0 ${(-14 * k * k).toFixed(1)}px` : ""; c.style.scale = k ? (1 + 0.12 * k * k).toFixed(3) : "";
+        }
+      });
+    };
+    onLeave = () => chs.forEach(c => { c.style.translate = ""; c.style.scale = ""; });
+    hero.addEventListener("pointermove", onMove);
+    hero.addEventListener("pointerleave", onLeave);
+  }
+
+  /* 2. headings decode, 3. things deal in */
+  const GLYPHS = "0123456789#/-";
+  function decode(el) {
+    const final = el.dataset.final || (el.dataset.final = el.textContent);
+    el.setAttribute("aria-label", final);
+    const t0 = performance.now(), dur = 520 + final.length * 24;
+    const step = now => {
+      if (!el.isConnected) return;
+      const t = clamp((now - t0) / dur), n = Math.floor(t * final.length);
+      let s = final.slice(0, n);
+      for (let i = n; i < final.length; i++) s += final[i] === " " ? " " : GLYPHS[(Math.random() * GLYPHS.length) | 0];
+      el.textContent = s;
+      if (t < 1) requestAnimationFrame(step); else el.textContent = final;
+    };
+    requestAnimationFrame(step);
+  }
+  const queued = new Map();
+  const io = new IntersectionObserver(es => es.forEach(en => {
+    if (!en.isIntersecting) return;
+    const el = en.target; io.unobserve(el);
+    if (el.tagName === "H2") return decode(el);
+    const box = el.parentElement, n = queued.get(box) || 0; queued.set(box, n + 1);
+    setTimeout(() => { el.classList.add("in"); queued.set(box, Math.max(0, (queued.get(box) || 1) - 1)); }, n * 110);
+  }), { threshold: 0.18, rootMargin: "0px 0px -6% 0px" });
+  view.querySelectorAll("section h2").forEach(h => io.observe(h));
+  [[".rows", ":scope > .row"], [".manifest", ":scope > .line"], [".hobbies", ":scope > .hobby"]].forEach(([box, kids]) => {
+    const b = view.querySelector(box); if (!b) return;
+    b.classList.add("deal");
+    b.querySelectorAll(kids).forEach(k => { k.classList.add("dl"); io.observe(k); });
+  });
+
+  HOME_FX_OFF = () => {
+    window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll);
+    if (onMove) { hero.removeEventListener("pointermove", onMove); hero.removeEventListener("pointerleave", onLeave); }
+    io.disconnect(); cancelAnimationFrame(raf);
+  };
+}
 const VIEWS = { home, projects, map: mapView, inventory };
 function route() {
   let v = location.hash.slice(1);
@@ -1617,6 +1726,7 @@ function render(v) {
   main.innerHTML = `<div class="view">${VIEWS[v]()}</div>`;
   MAP_SELECT = null;
   if (v === "map") { initMap(); initPassport(); }
+  initHomeFX();
   setNav(v);
 }
 function setNav(v) {
