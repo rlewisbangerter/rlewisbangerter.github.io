@@ -148,6 +148,28 @@ p { margin: 0; }
 .hobbies.deal > .hobby:nth-child(even) { --dr: -9deg; }
 @media (prefers-reduced-motion: reduce) { .deal > .dl { opacity: 1; transform: none; transition: none; } }
 
+
+.hero-track { position: relative; }
+.hero-track.pin { height: calc(var(--hh, 100vh) + 85vh); }
+.hero-track.pin .hero { position: sticky; top: var(--navh, 56px); }
+.hero { position: relative; perspective: 900px; }
+.hero h1 { perspective: 700px; }
+.hero-ghost { position: absolute; left: 50%; top: 42%; z-index: -1; pointer-events: none; white-space: nowrap; font-family: var(--f-stencil); text-transform: uppercase; font-size: clamp(90px, 22vw, 300px); line-height: .8; color: transparent; -webkit-text-stroke: 1.5px color-mix(in srgb, var(--kraft) 55%, transparent); opacity: 0; transform: translate(-50%, -50%); }
+.belts { position: relative; margin: 10px calc(50% - 50vw) 40px; padding: 30px 0; overflow: hidden; pointer-events: none; }
+.belt { display: flex; white-space: nowrap; padding: 10px 0; border-block: 1px solid var(--rule); background: color-mix(in srgb, var(--night-2) 85%, transparent); }
+.belt.a { transform: rotate(-3deg); }
+.belt.b { transform: rotate(2deg); margin-top: -6px; background: var(--kraft); color: var(--ink); border-color: transparent; }
+.belt-in { display: flex; align-items: center; gap: 22px; padding-right: 22px; will-change: transform; }
+.belt span { font-family: var(--f-display); font-weight: 800; font-size: clamp(22px, 3.4vw, 40px); text-transform: uppercase; letter-spacing: .03em; line-height: 1; }
+.belt i { font-style: normal; color: var(--hivis); font-size: 18px; }
+.belt.b i { color: var(--ink); }
+.rows .obj, .hobbies, .manifest, .rows { will-change: transform; }
+@media (prefers-reduced-motion: no-preference) {
+  .hobbies.deal > .hobby.in .stamp { animation: bob-stamp 3.2s ease-in-out infinite; animation-delay: calc(var(--k, 0) * -.4s); }
+}
+@keyframes bob-stamp { 0%, 100% { translate: 0 0; } 50% { translate: 0 -6px; } }
+@media (prefers-reduced-motion: reduce) { .belts { display: none; } }
+
 /* ---------- work rows ---------- */
 .rows { display: grid; gap: 72px; }
 .row { display: grid; grid-template-columns: 1fr; gap: 28px; align-items: center; }
@@ -928,14 +950,21 @@ function objectFor(w) {
    ============================================================= */
 function home() {
   const photo = SITE.photo ? `<img src="${esc(SITE.photo)}" alt="Photo of ${esc(SITE.name)}">` : "your photo here";
+  const beltA = ["In transit", "New Brunswick, NJ", "Handle with care", "Supply chain", "Business analytics", "Signed for"];
+  const beltB = ["Last mile", "Power BI", "Route optimization", "Rutgers", "Fragile", "Data science"];
+  const belt = (words, cls) => `<div class="belt ${cls}" aria-hidden="true"><div class="belt-in">${Array(4).fill(words.map(w => `<span>${esc(w)}</span><i>✕</i>`).join("")).join("")}</div></div>`;
   return `
+  <div class="hero-track">
   <div class="hero">
+    <div class="hero-ghost" aria-hidden="true">In transit</div>
     ${monogram()}
     <h1 aria-label="${esc(SITE.name)}">${SITE.name.split(" ").map(w => `<span class="w" aria-hidden="true">${[...w].map(c => `<span class="ch">${esc(c)}</span>`).join("")}</span>`).join(" ")}</h1>
     <p class="sub fx-fade">${esc(SITE.subtitle)}</p>
     <figure class="polaroid" style="margin-inline:auto"><span class="tape"></span><div class="ph">${photo}</div><figcaption>${esc(SITE.photoCaption)}</figcaption></figure>
     <a class="down fx-fade" href="#work">${esc(SITE.tagline)}</a>
   </div>
+  </div>
+  <div class="belts">${belt(beltA, "a")}${belt(beltB, "b")}</div>
 
   <section id="work" aria-labelledby="h-work">
     <p class="eyebrow">where I've clocked in</p>
@@ -1631,29 +1660,83 @@ function initHomeFX() {
   const clamp = (x, a = 0, b = 1) => Math.max(a, Math.min(b, x));
   const smooth = t => t * t * (3 - 2 * t);
 
-  /* 1. hero: letters fly off, photo lifts away, words fade */
+  /* 1. hero pinned while the name explodes, then belts and parallax below */
+  const track = view.querySelector(".hero-track");
   const chs = [...hero.querySelectorAll("h1 .ch")], fades = [...hero.querySelectorAll(".fx-fade")];
-  const pol = hero.querySelector(".polaroid"), stamp = hero.querySelector(".stamp");
-  let lastP = -1, raf = 0;
-  function frame() {
+  const pol = hero.querySelector(".polaroid"), stamp = hero.querySelector(".stamp"), ghost = hero.querySelector(".hero-ghost");
+  const belts = [...view.querySelectorAll(".belt-in")];
+  const objs = [...view.querySelectorAll(".rows .obj")];
+  const leaners = [...view.querySelectorAll(".rows, .manifest, .hobbies")];
+  view.querySelectorAll(".hobbies .hobby").forEach((h, i) => h.style.setProperty("--k", i));
+  const navH = () => (document.querySelector("header.nav") || { offsetHeight: 56 }).offsetHeight;
+  function setPin() {
+    const nh = navH(), fits = hero.offsetHeight <= window.innerHeight - nh + 4;
+    track.classList.toggle("pin", fits);
+    track.style.setProperty("--hh", hero.offsetHeight + "px");
+    track.style.setProperty("--navh", nh + "px");
+  }
+  setPin();
+  const mid = (chs.length - 1) / 2;
+  const rnd = (j, n) => { const x = Math.sin((j + 1) * 12.9898 + n * 78.233) * 43758.5453; return x - Math.floor(x); };
+  let raf = 0, alive = true, lastY = window.scrollY, vel = 0, lastT = performance.now();
+  function frame(now) {
     raf = 0;
-    const span = Math.max(300, hero.offsetHeight * 0.8);
-    const start = Math.max(0, hero.getBoundingClientRect().top + window.scrollY - 120);
-    const p = clamp((window.scrollY - start) / span);
-    if (p === lastP) return; lastP = p;
+    if (!alive) return;
+    const y = window.scrollY, dt = Math.max(8, now - lastT); lastT = now;
+    const inst = (y - lastY) / dt * 16; lastY = y;
+    vel += (inst - vel) * 0.18;
+    const vh = window.innerHeight;
+
+    /* hero progress */
+    const tTop = track.getBoundingClientRect().top + y, pinned = track.classList.contains("pin");
+    const run = pinned ? track.offsetHeight - hero.offsetHeight : Math.max(320, hero.offsetHeight * 0.8);
+    const p = clamp((y - Math.max(0, tTop - (pinned ? navH() : 120))) / run);
     chs.forEach((c, j) => {
-      const e = smooth(clamp((p - (0.03 + j * 0.028)) / 0.32));
-      c.style.transform = e ? `translate3d(${(((j * 37) % 11) - 5) * 5 * e}vw,${-70 * e}vh,0) rotate(${(((j * 53) % 13) - 6) * 10 * e}deg)` : "";
-      c.style.opacity = e ? String(1 - e * 0.85) : "";
+      const e = smooth(clamp((p - j * 0.018) / 0.5));
+      if (!e) { c.style.transform = ""; c.style.opacity = ""; return; }
+      const dx = (j - mid) / (mid || 1);
+      const tx = (dx * 55 + (rnd(j, 1) - .5) * 30) * e, ty = (-35 + (rnd(j, 2) - .5) * 90) * e;
+      const rz = (rnd(j, 3) - .5) * 220 * e, rx = (rnd(j, 4) - .5) * 160 * e, ry = (rnd(j, 5) - .5) * 160 * e;
+      c.style.transform = `translate3d(${tx.toFixed(2)}vw,${ty.toFixed(2)}vh,${(e * 260).toFixed(0)}px) rotateX(${rx.toFixed(1)}deg) rotateY(${ry.toFixed(1)}deg) rotate(${rz.toFixed(1)}deg) scale(${(1 + e * 1.4).toFixed(3)})`;
+      c.style.opacity = String(clamp(1 - e * 1.15));
     });
-    fades.forEach(f => { f.style.opacity = p ? String(clamp(1 - p * 2.2)) : ""; f.style.transform = p ? `translateY(${-p * 40}px)` : ""; });
-    if (pol) pol.style.transform = p ? `translateY(${-p * 110}px) rotate(${-2.5 + p * 16}deg) scale(${1 + p * 0.06})` : "";
-    if (stamp) stamp.style.transform = p ? `rotate(${p * 140}deg) scale(${1 - p * 0.3})` : "";
+    fades.forEach(f => { f.style.opacity = p ? String(clamp(1 - p * 3)) : ""; f.style.transform = p ? `translateY(${-p * 60}px)` : ""; });
+    if (pol) {
+      const e = smooth(clamp((p - 0.08) / 0.85));
+      pol.style.transform = e ? `translateY(${(-e * 24).toFixed(2)}vh) translateZ(${(e * 320).toFixed(0)}px) rotateX(${(e * 28).toFixed(1)}deg) rotateY(${(-e * 50).toFixed(1)}deg) rotate(${(-2.5 + e * 22).toFixed(1)}deg)` : "";
+      pol.style.opacity = e ? String(clamp(1 - (e - 0.55) / 0.45)) : "";
+    }
+    if (stamp) stamp.style.transform = p ? `rotate(${(p * 540).toFixed(0)}deg) scale(${(1 + p * 4).toFixed(2)})` : "";
+    if (stamp) stamp.style.opacity = p ? String(clamp(1 - p * 1.8)) : "";
+    if (ghost) {
+      ghost.style.opacity = String(clamp(p * 4) * clamp((1 - p) * 3));
+      ghost.style.transform = `translate(calc(-50% + ${(40 - p * 90).toFixed(1)}vw), -50%) scale(${(0.8 + p * 0.5).toFixed(3)})`;
+    }
+
+    /* belts run with the page and surge with scroll speed */
+    belts.forEach((b, i) => {
+      const w = b.scrollWidth / 4 || 1, dir = i ? 1 : -1;
+      const off = ((y * (0.55 + i * 0.15) + now * 0.03) % w + w) % w;
+      b.style.transform = `translateX(${dir < 0 ? -off : off - w}px) skewX(${clamp(-vel * 0.6, -18, 18).toFixed(2)}deg)`;
+    });
+
+    /* objects drift and turn as they pass through the screen */
+    objs.forEach((o, i) => {
+      const r = o.getBoundingClientRect(); if (r.bottom < -100 || r.top > vh + 100) return;
+      const k = ((r.top + r.height / 2) - vh / 2) / vh, side = i % 2 ? -1 : 1;
+      o.style.transform = `translateY(${(k * -70).toFixed(1)}px) rotate(${(k * 9 * side + clamp(vel * 0.25, -6, 6)).toFixed(2)}deg) scale(${(1.04 - Math.abs(k) * 0.08).toFixed(3)})`;
+    });
+    /* whole sections lean a little with scroll speed */
+    const lean = clamp(vel * 0.09, -3.5, 3.5).toFixed(2);
+    leaners.forEach(l => l.style.transform = Math.abs(lean) > 0.02 ? `skewY(${lean}deg)` : "");
+
+    if (Math.abs(vel) > 0.05 || belts.length) raf = requestAnimationFrame(frame);
   }
   const onScroll = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  const onResize = () => { setPin(); onScroll(); };
   window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  frame();
+  window.addEventListener("resize", onResize);
+  raf = requestAnimationFrame(frame);
 
   /* the letters lean toward the cursor, like Arun's name does */
   let onMove = null, onLeave = null;
@@ -1706,7 +1789,8 @@ function initHomeFX() {
   });
 
   HOME_FX_OFF = () => {
-    window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onScroll);
+    alive = false;
+    window.removeEventListener("scroll", onScroll); window.removeEventListener("resize", onResize);
     if (onMove) { hero.removeEventListener("pointermove", onMove); hero.removeEventListener("pointerleave", onLeave); }
     io.disconnect(); cancelAnimationFrame(raf);
   };
