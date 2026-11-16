@@ -113,6 +113,9 @@ p { margin: 0; }
 .polaroid .ph img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 20%; }
 .polaroid figcaption { position: absolute; left: 0; right: 0; bottom: 6px; font-family: var(--f-hand); color: var(--ink); font-size: 19px; }
 .tape { position: absolute; top: -12px; left: 50%; width: 92px; height: 24px; transform: translateX(-50%) rotate(3deg); background: rgba(201, 166, 113, .8); }
+.playintro { display: inline-flex; align-items: center; gap: 8px; height: 38px; padding: 0 18px 0 14px; border: 1px solid var(--rule); border-radius: 19px; background: none; color: var(--fg); font-family: var(--f-mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; cursor: pointer; transition: border-color .2s, transform .2s; }
+.playintro svg { width: 13px; height: 13px; fill: var(--hivis); }
+.playintro:hover, .playintro:focus-visible { border-color: var(--hivis); transform: translateY(-1px); }
 .down { font-family: var(--f-hand); font-size: 22px; color: var(--kraft); text-decoration: none; margin-top: 14px; }
 
 
@@ -599,13 +602,10 @@ footer .eyebrow { margin: 0; }
   </filter>
 </svg>
 
-<!-- first-visit intro: shown once, skippable; replay from the footer -->
+<!-- intro: opt-in only — plays from the "Play the intro" button, the nav chip, or #intro -->
 <script>
-try { var h = location.hash.slice(1);
-  var today = new Date().toDateString();
-  if (h !== "intro" && (localStorage.getItem("rb-intro-seen") === today || (h && h !== "home"))) document.documentElement.classList.add("intro-skip");
-  else document.documentElement.classList.add("intro-on");
-} catch (e) { document.documentElement.classList.add("intro-on"); }
+try { document.documentElement.classList.add(location.hash === "#intro" ? "intro-on" : "intro-skip"); }
+catch (e) { document.documentElement.classList.add("intro-skip"); }
 </script>
 <div id="intro" tabindex="-1" role="region" aria-label="Intro: places I've been. Scroll to continue or skip.">
   <div class="i-track">
@@ -641,7 +641,7 @@ try { var h = location.hash.slice(1);
 
 <header class="nav">
   <div class="nav-in">
-    <div class="brandrow"><a class="brand" href="#home" aria-label="Reuben Bangerter, home">R·B</a><button type="button" class="introchip" id="introChip" title="Replay the intro"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z"/></svg><span>Intro</span></button></div>
+    <div class="brandrow"><a class="brand" href="#home" aria-label="Reuben Bangerter, home">R·B</a><button type="button" class="introchip" id="introChip" title="Play the intro"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z"/></svg><span>Intro</span></button></div>
     <nav aria-label="Main"><ul>
       <li><a href="#home" data-v="home">About</a></li>
       <li><a href="#projects" data-v="projects">Projects</a></li>
@@ -658,7 +658,7 @@ try { var h = location.hash.slice(1);
   <p class="eyebrow">send a shipment my way</p>
   <div class="contact" id="contactLinks"></div>
   <p class="copy" id="copyline"></p>
-  <button type="button" class="replay" id="replayIntro">replay the intro</button>
+  <button type="button" class="replay" id="replayIntro">play the intro</button>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
@@ -934,6 +934,7 @@ function home() {
     ${monogram()}
     <h1 aria-label="${esc(SITE.name)}">${SITE.name.split(" ").map(w => `<span class="w" aria-hidden="true">${[...w].map(c => `<span class="ch">${esc(c)}</span>`).join("")}</span>`).join(" ")}</h1>
     <p class="sub fx-fade">${esc(SITE.subtitle)}</p>
+    <button type="button" class="playintro fx-fade" data-play-intro><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z"/></svg>Play the intro</button>
     <figure class="polaroid" style="margin-inline:auto"><span class="tape"></span><div class="ph">${photo}</div><figcaption>${esc(SITE.photoCaption)}</figcaption></figure>
     <a class="down fx-fade" href="#work">${esc(SITE.tagline)}</a>
   </div>
@@ -1842,7 +1843,7 @@ skyway();
 /* =============================================================
    Daily intro: an introduction to me, in chapters (first visit each day).
    Doors open → chapters (me, work, projects, travel, hobbies) fly past → arrival.
-   Text lives in SITE.introStory; travel photos in SITE.intro. Shown on the first visit each day; #intro or the nav button replays it.
+   Text lives in SITE.introStory; travel photos in SITE.intro. Opt-in: plays only from the hero button, the nav chip, the footer link, or #intro.
    ============================================================= */
 (function () {
   const el = document.getElementById("intro");
@@ -2056,6 +2057,7 @@ skyway();
 })();
 
 document.getElementById("replayIntro").addEventListener("click", () => window.rbIntro && window.rbIntro.show());
+document.addEventListener("click", e => { if (e.target.closest("[data-play-intro]") && window.rbIntro) window.rbIntro.show(); });
 document.getElementById("introChip").addEventListener("click", () => window.rbIntro && window.rbIntro.show());
 </script>
 
