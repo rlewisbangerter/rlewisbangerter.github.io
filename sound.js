@@ -46,6 +46,36 @@
       o.connect(g); g.connect(bus); o.start(t); o.stop(t + tau * 10 + 0.02);
     }
     const d = (n = 0.012) => 1 + (Math.random() - 0.5) * n;
+
+    /* paper: shared noise buffer, filtered and shaped into page turns */
+    const nLen = Math.floor(SR * 1.2), noise = ctx.createBuffer(1, nLen, SR);
+    { const c = noise.getChannelData(0); let b = 0; for (let i = 0; i < nLen; i++) { const w = Math.random() * 2 - 1; b = 0.82 * b + 0.18 * w; c[i] = w * 0.55 + b * 0.9; } }
+    function rustle(t, dur, gain, f0, f1, q = 0.8, grit = 0.5) {
+      const src = ctx.createBufferSource(); src.buffer = noise;
+      const bp = ctx.createBiquadFilter(); bp.type = 'bandpass'; bp.Q.value = q;
+      bp.frequency.setValueAtTime(f0, t); bp.frequency.exponentialRampToValueAtTime(f1, t + dur);
+      const hp = ctx.createBiquadFilter(); hp.type = 'highpass'; hp.frequency.value = 350;
+      const g = ctx.createGain();
+      /* swell in, then fade, with little uneven crinkles so it reads as paper */
+      g.gain.setValueAtTime(0, t);
+      const steps = Math.max(4, Math.round(dur / 0.018));
+      for (let i = 1; i <= steps; i++) {
+        const x = i / steps, env = Math.sin(Math.PI * Math.pow(x, 0.7));
+        g.gain.linearRampToValueAtTime(gain * env * (1 - grit / 2 + Math.random() * grit), t + x * dur);
+      }
+      src.connect(bp); bp.connect(hp); hp.connect(g); g.connect(bus);
+      src.start(t, Math.random() * (nLen / SR - dur - 0.05)); src.stop(t + dur + 0.02);
+    }
+    /* flap: the page settling flat, a soft papery slap */
+    function flap(t, gain) {
+      const src = ctx.createBufferSource(); src.buffer = noise;
+      const lp = ctx.createBiquadFilter(); lp.type = 'lowpass'; lp.frequency.value = 1400 * d(0.2);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t); g.gain.linearRampToValueAtTime(gain, t + 0.004); g.gain.setTargetAtTime(0, t + 0.004, 0.022);
+      src.connect(lp); lp.connect(g); g.connect(bus);
+      src.start(t, Math.random() * 0.5); src.stop(t + 0.15);
+      pillow(t, 70, gain * 0.35, 0.01);
+    }
     return {
       /* buttons and links: a soft press, and a lighter release */
       down(t) { pip(t, N.F6 * d(), 0.22); pillow(t, 90, 0.11); },
@@ -60,6 +90,15 @@
       /* opening and closing things (photos, drawers, lightboxes) */
       open(t) { pip(t, N.C7, 0.17); pip(t + 0.06, N.G7, 0.13, 0.004, 0); pillow(t, 80, 0.14); },
       close(t) { pip(t, N.G7, 0.13, 0.004, 0); pip(t + 0.06, N.C7, 0.15); pillow(t + 0.06, 80, 0.14); },
+      /* passport: a full page turn (lift, swish across, settle) */
+      flip(t) {
+        const k = d(0.15);
+        rustle(t, 0.07, 0.10, 2400 * k, 3600 * k, 1.2, 0.8);           // corner lifts off the page
+        rustle(t + 0.04, 0.34, 0.20, 1300 * k, 4200 * k, 0.7, 0.45);   // the sheet sweeps over
+        flap(t + 0.40, 0.16);                                          // and lands
+      },
+      /* passport: one page in a quick riffle when jumping several pages */
+      riffle(t) { const k = d(0.25); rustle(t, 0.09, 0.13, 2000 * k, 4500 * k, 0.9, 0.6); flap(t + 0.07, 0.06); },
       /* the "Enter" button on the intro, and turning sound back on */
       hello(t) { [N.C6, N.E6, N.G6, N.C7].forEach((f, i) => pip(t + i * 0.075, f, 0.13, i === 3 ? 0.06 : 0.02)); pillow(t, 70, 0.2, 0.01); }
     };

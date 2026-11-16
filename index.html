@@ -1213,12 +1213,13 @@ function passportView() {
       <p class="eyebrow">stamped &amp; signed for</p>
       <h3 class="pp-title">The passport</h3>
       <p class="pp-hint">flip through it · tap a stamp to find it on the map</p>
-      <div class="pp-tabs" role="group" aria-label="Jump to a section"></div>
+      <div class="pp-tabs" data-nosound role="group" aria-label="Jump to a section"></div>
       <div class="pp-wrap" tabindex="0" role="region" aria-roledescription="passport" aria-label="Travel passport. Use the left and right arrow keys to turn pages."><div class="pp-stage"></div></div>
-      <div class="pp-nav"><button type="button" data-go="-1" aria-label="Previous page">←</button><output aria-live="polite"></output><button type="button" data-go="1" aria-label="Next page">→</button></div>
+      <div class="pp-nav" data-nosound><button type="button" data-go="-1" aria-label="Previous page">←</button><output aria-live="polite"></output><button type="button" data-go="1" aria-label="Next page">→</button></div>
     </div>`;
 }
 
+const ppSound = n => { if (window.RBSound) RBSound.play(n); };
 function initPassport() {
   const root = document.getElementById("pp");
   if (!root) return;
@@ -1290,6 +1291,7 @@ function initPassport() {
       s += dir;
       leaves[j].style.zIndex = z++;
       apply(j);
+      ppSound(many && s !== target ? "riffle" : "flip");
       if (s !== target) setTimeout(step, RM ? 0 : many ? 110 : 0);
       else setTimeout(() => { if (my === token) apply(); }, RM ? 0 : 950);
     };
@@ -1307,6 +1309,7 @@ function initPassport() {
     if (nf > f) { box.insertBefore(nu, old); if (!RM) { old.classList.add("turn-out"); setTimeout(() => old.remove(), 600); } }
     else { box.appendChild(nu); if (!RM) { nu.classList.add("turn-in"); setTimeout(() => { nu.classList.remove("turn-in"); old.remove(); }, 600); } }
     f = nf; status();
+    ppSound("flip");
   }
   const next = () => mode === "spread" ? turnTo(s + 1) : showFace(f + 1);
   const prev = () => mode === "spread" ? turnTo(s - 1) : showFace(f - 1);
